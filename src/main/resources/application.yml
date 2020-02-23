@@ -99,7 +99,8 @@ logging:
 spring:
   profiles: lwj
   datasource:
-    password: root
+    username: root
+    password:  LWJsteve98
     url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     hikari:
       max-lifetime: 3600000
