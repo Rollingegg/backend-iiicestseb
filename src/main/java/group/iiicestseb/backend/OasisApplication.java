@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @MapperScan("group.iiicestseb.backend.mapper")
 @SpringBootApplication
-@EnableScheduling
 public class OasisApplication {
 
 	public static void main(String[] args) {
