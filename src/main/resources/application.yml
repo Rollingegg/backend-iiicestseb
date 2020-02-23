@@ -16,6 +16,7 @@ mybatis:
 server:
   tomcat:
     uri-encoding: utf-8
+  port: 4000
 
 ---
 spring:
@@ -28,10 +29,10 @@ logging:
   level:
     root: info
 server:
-  port: 8080
+  port: 4000
 ---
 spring:
-  profiles: test
+  profiles: dev
   devtools:
     add-properties: true
   datasource:
@@ -40,7 +41,8 @@ spring:
 logging:
   level:
     nju.citix: DEBUG
-
+server:
+  port: 4001
 ---
 spring:
   profiles: dwh
