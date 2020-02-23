@@ -4,7 +4,7 @@ spring:
   datasource:
     type: com.mysql.cj.jdbc.MysqlDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.dwxh.xyz
+    url: jdbc:mysql://3.dwxh.xyz:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: IIICEStseB
   jackson:
@@ -46,6 +46,7 @@ spring:
   profiles: dwh
   datasource:
     password: 123456
+    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     hikari:
       max-lifetime: 3600000
   devtools:
@@ -63,6 +64,7 @@ spring:
   profiles: jh
   datasource:
     password: root
+    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     hikari:
       max-lifetime: 3600000
   devtools:
@@ -80,6 +82,7 @@ spring:
   profiles: wph
   datasource:
     password: root
+    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     hikari:
       max-lifetime: 3600000
   devtools:
@@ -97,6 +100,7 @@ spring:
   profiles: lwj
   datasource:
     password: root
+    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     hikari:
       max-lifetime: 3600000
   devtools:
