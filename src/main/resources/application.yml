@@ -1,0 +1,119 @@
+spring:
+  profiles:
+    active: "@profileActive@"
+  datasource:
+    type: com.mysql.cj.jdbc.MysqlDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://3.dwxh.xyz:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: IIICEStseB
+  jackson:
+    time-zone: GMT+8
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+server:
+  tomcat:
+    uri-encoding: utf-8
+  port: 4000
+
+---
+spring:
+  profiles: prod
+  devtools:
+    add-properties: false
+  datasource:
+    password: root
+logging:
+  level:
+    root: info
+server:
+  port: 4000
+---
+spring:
+  profiles: dev
+  devtools:
+    add-properties: true
+  datasource:
+    username: root
+    password: root
+logging:
+  level:
+    nju.citix: DEBUG
+server:
+  port: 4001
+---
+spring:
+  profiles: dwh
+  datasource:
+    password: 123456
+    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    hikari:
+      max-lifetime: 3600000
+  devtools:
+    add-properties: true
+server:
+  servlet:
+    session:
+      timeout: 7200
+logging:
+  level:
+    nju.citix: DEBUG
+
+---
+spring:
+  profiles: jh
+  datasource:
+    password: root
+    url: jdbc:mysql://localhost:3306/sec?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    hikari:
+      max-lifetime: 3600000
+  devtools:
+    add-properties: true
+server:
+  servlet:
+    session:
+      timeout: 7200
+logging:
+  level:
+    nju.citix: DEBUG
+
+---
+spring:
+  profiles: wph
+  datasource:
+    password: root
+    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    hikari:
+      max-lifetime: 3600000
+  devtools:
+    add-properties: true
+server:
+  servlet:
+    session:
+      timeout: 7200
+logging:
+  level:
+    nju.citix: DEBUG
+
+---
+spring:
+  profiles: lwj
+  datasource:
+    username: root
+    password:  LWJsteve98
+    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    hikari:
+      max-lifetime: 3600000
+  devtools:
+    add-properties: true
+server:
+  servlet:
+    session:
+      timeout: 7200
+logging:
+  level:
+    nju.citix: DEBUG
+
+---
