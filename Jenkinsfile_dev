@@ -26,12 +26,14 @@ node{
     
     stage('package'){
         sh label: 'package', returnStatus: true, script: 'mvn package -P prod -Dmaven.test.skip=true'
+		sh 'mv backend-0.0.1.jar backend-0.0.1_dev.jar'
+		
     }
     
     stage('deploy'){
 		sshPublisher(publishers: [sshPublisherDesc(configName: 'tencent', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''cd /var/www
-./stop.sh
-./start.sh''', execTimeout: 5000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: 'target/', sourceFiles: 'target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+./stop_dev.sh
+./start_dev.sh''', execTimeout: 5000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: 'target/', sourceFiles: 'target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
 		updateGitlabCommitStatus name: 'jenkins', state: 'success'
         echo '=== depoly end ==='
 	}
