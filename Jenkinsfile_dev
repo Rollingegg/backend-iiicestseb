@@ -26,6 +26,7 @@ node{
     
     stage('package'){
         sh label: 'package', returnStatus: true, script: 'mvn package -P prod -Dmaven.test.skip=true'
+		sh 'cd target'
 		sh 'mv backend-0.0.1.jar backend-0.0.1_dev.jar'
 		
     }
