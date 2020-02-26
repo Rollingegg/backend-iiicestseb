@@ -46,7 +46,7 @@ CREATE TABLE paper (
                          author_keywords varchar(100) comment '文章关键词',
                          document_identifer varchar(20) comment 'document_identifer',
                          foreign key (conference_id) references conference(id),
-                         foreign key (ppublisher_id) references  publisher(id)
+                         foreign key (publisher_id) references  publisher(id)
 )ENGINE=InnoDB comment '文献表';
 
 ##创建发表文献关系表
@@ -54,8 +54,8 @@ CREATE TABLE publish (
                            id   INT AUTO_INCREMENT PRIMARY KEY comment '作者发表文献_关系id',
                            author_id int comment '作者id',
                            paper_id int comment '文献id',
-                           foreign key (author_id) references author(author_id),
-                           foreign key (paper_id) references paper(paper_id)
+                           foreign key (author_id) references author(id),
+                           foreign key (paper_id) references paper(id)
 )ENGINE=InnoDB comment '作者发表文献_关系表';
 
 ##创建术语分类标准表
@@ -77,7 +77,7 @@ CREATE TABLE paper_term (
                               id   INT AUTO_INCREMENT PRIMARY KEY comment '文献术语_关系id',
                               paper_id int comment '文献id',
                               term_id int comment '术语id',
-                              foreign key (term_id) references term(id)
+                              foreign key (term_id) references term(id),
 							  foreign key (paper_id) references paper(id)
 )ENGINE=InnoDB comment '文献术语_关系表';
 
