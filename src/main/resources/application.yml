@@ -43,6 +43,12 @@ logging:
     group.iiicestseb.backend: DEBUG
 server:
   port: 4001
+  management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
+
 ---
 spring:
   profiles: dwh
