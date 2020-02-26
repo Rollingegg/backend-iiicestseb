@@ -40,7 +40,7 @@ node{
 	}
     
     stage('archive'){
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'target/backend-0.0.1.jar', onlyIfSuccessful: true
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'target/backend-0.0.1_dev.jar', onlyIfSuccessful: true
         updateGitlabCommitStatus name: 'jenkins', state: 'success'
     }
 }
