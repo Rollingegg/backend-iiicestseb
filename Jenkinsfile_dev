@@ -1,36 +1,36 @@
-node{
+pipeline('backend'){
     stage('git clone'){
         updateGitlabCommitStatus name: 'jenkins', state: 'pending'
         checkout([$class: 'GitSCM', branches: [[name: '*/dev']], browser: [$class: 'GitLab', repoUrl: 'http://212.129.149.40'], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '3', url: 'http://212.129.149.40/171250507_IIICEStseB/Backend-iiicestseb']]])
         echo '=== git clone end ==='
     }
-    
+
     stage('clean'){
         updateGitlabCommitStatus name: 'jenkins', state: 'running'
         sh label: 'test', returnStatus: true, script: 'mvn clean'
     }
-    
+
     stage('test'){
         updateGitlabCommitStatus name: 'jenkins', state: 'running'
         sh label: 'test', returnStatus: true, script: 'mvn test -P test'
     }
-    
+
     stage('report'){
         jacoco()
     }
-    
+
     stage('clean test'){
         updateGitlabCommitStatus name: 'jenkins', state: 'running'
         sh label: 'test', returnStatus: true, script: 'mvn clean'
     }
-    
+
     stage('package'){
         sh label: 'package', returnStatus: true, script: 'mvn package -P prod -Dmaven.test.skip=true'
 		sh 'cd target'
-		sh 'mv /var/lib/jenkins/workspace/backend_dev/target/backend-0.0.1.jar /var/lib/jenkins/workspace/backend_dev/target/backend-0.0.1_dev.jar'
-		
+		sh 'mv backend-0.0.1.jar backend-0.0.1_dev.jar'
+
     }
-    
+
     stage('deploy'){
 		sshPublisher(publishers: [sshPublisherDesc(configName: 'tencent', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''cd /var/www
 ./stop_dev.sh
@@ -38,9 +38,22 @@ node{
 		updateGitlabCommitStatus name: 'jenkins', state: 'success'
         echo '=== depoly end ==='
 	}
-    
+
     stage('archive'){
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'target/backend-0.0.1_dev.jar', onlyIfSuccessful: true
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'target/backend-0.0.1.jar', onlyIfSuccessful: true
         updateGitlabCommitStatus name: 'jenkins', state: 'success'
+    }
+}
+
+def pipeline(String label, Closure body) {
+     node(label) {
+        wrap([$class: 'TimestamperBuildWrapper']) {
+            try {
+                body.call()
+            } catch (Exception e) {
+                updateGitlabCommitStatus name: 'jenkins', state: 'failed'
+                throw e; // rethrow so the build is considered failed
+            }
+        }
     }
 }
