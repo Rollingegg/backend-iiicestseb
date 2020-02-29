@@ -38,14 +38,14 @@ CREATE TABLE paper (
                          pdf_link varchar(200) comment '文献pdf连接',
                          DOI varchar(30) comment  'DOI',
                          paper_title varchar(200) comment '文献标题',
-                         abstract varchar(2000) comment  '摘要',
+                         paper_abstract varchar(2000) comment  '摘要',
                          reference_count int comment  '参考资料数',
                          citation_count int comment '文献被引次数',
                          publication_year int comment '出版年份',
                          start_page int comment '起始页',
                          end_page int comment '终止页',
                          author_keywords varchar(100) comment '文章关键词',
-                         document_identifer varchar(20) comment 'document_identifer',
+                         document_identifier varchar(20) comment 'document_identifier',
                          foreign key (conference_id) references conference(id),
                          foreign key (publisher_id) references  publisher(id)
 )ENGINE=InnoDB comment '文献表';

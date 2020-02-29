@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: "@profileActive@"
+    active: wph
   datasource:
     type: com.mysql.cj.jdbc.MysqlDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -93,12 +93,15 @@ logging:
 spring:
   profiles: wph
   datasource:
-    password: root
-    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    password: shengdasogood
+    url: jdbc:mysql://localhost:3306/oasisdb?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     hikari:
       max-lifetime: 3600000
+    username: root
+    driver-class-name: com.mysql.jdbc.Driver
   devtools:
     add-properties: true
+
 server:
   servlet:
     session:
