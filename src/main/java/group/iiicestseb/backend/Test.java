@@ -1,13 +1,13 @@
 package group.iiicestseb.backend;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import group.iiicestseb.backend.entity.*;
+import jdk.internal.util.xml.impl.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.lang.reflect.Constructor;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author jh
@@ -19,16 +19,64 @@ public class Test {
         Class<?>[] cs = {String.class, Integer.class, LinkedList.class};
     }
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Test.class);
+    private static final Map<String, Integer> STANDARDS = new HashMap<String, Integer>() {
+        {
+            put("IEEE Terms", 1);
+            put("INSPEC Controlled Terms", 2);
+            put("INSPEC Non-Controlled Terms", 3);
+            put("Mesh_Terms", 4);
+        }
+    };
 
-    public static void test() throws Exception {
-        File f = new File("test.csv");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-        String[] ss = (reader.readLine().split("\",\""));
-        ss[0] = ss[0].substring(1);
-        ss[ss.length - 1] = ss[ss.length - 1].substring(0, ss[ss.length - 1].length() - 1);
-        reader.close();
-        System.out.println(ss.length);
-        System.out.println();
+    public static void test() {
+        File file = new File("test.csv");
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+        } catch (FileNotFoundException e) {
+            LOGGER.error("File not found" + file.getName());
+            return;
+        }
+
+        // 这些是已经存在的固定数据，如作者、机构等
+        Map<String, Affiliation> existedAffiliations = new HashMap<>();
+        Map<String, Author> existedAuthors = new HashMap<>();
+        Map<String, Conference> existedConference = new HashMap<>();
+        // 这里term的key值为 word + standard_id(硬编码)
+        Map<String, Term> existedTerm = new HashMap<>();
+
+
+        // 这些是需要新存入数据库的数据
+        List<List<Affiliation>> affiliationList = new LinkedList<>();
+        List<List<Author>> authorsList = new LinkedList<>();
+        List<Conference> conferenceList = new LinkedList<>();
+        List<Paper> paperList = new LinkedList<>();
+        List<List<PaperTerm>> paperTermsList = new LinkedList<>();
+        List<List<Publish>> publishesList = new LinkedList<>();
+        List<Publisher> publisherList = new LinkedList<>();
+        List<TermStandard> termStandardList = new LinkedList<>();
+        List<List<Term>> termsList = new LinkedList<>();
+
+        String line;
+        for (int i = 0; true; i++) {
+            try {
+                line = reader.readLine();
+                if (line.isEmpty()) {
+                    break;
+                }
+                String[] parts = line.substring(1, line.length() - 1).split("\",\"");
+                assert parts.length == 29;
+                Paper paper = new Paper();
+            } catch (IOException e) {
+                LOGGER.warn("第" + i + "行解析出错，跳过该行");
+            }
+        }
+        try {
+            reader.close();
+        } catch (IOException e) {
+            LOGGER.warn("解析csv结束，但是出了未知错误");
+        }
     }
 
     public static void test2() throws Exception {

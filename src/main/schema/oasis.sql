@@ -8,6 +8,7 @@ CREATE TABLE affiliation (
                                name VARCHAR(30) comment '机构名',
                                secondary VARCHAR(30) comment '二级机构'
 )ENGINE=InnoDB comment '机构表';
+create index affiliation_name_hash using hash on affiliation(name);
 
 ##创建作者表
 CREATE TABLE author (
@@ -16,18 +17,21 @@ CREATE TABLE author (
                           affiliation_id int    comment '作者所属机构id',
                           foreign key (affiliation_id) references  affiliation(id)
 )ENGINE=InnoDB comment '作者表';
+create index author_name_hash using hash on author(name);
 
 ##创建发行机构表
 CREATE TABLE publisher (
                              id   INT AUTO_INCREMENT PRIMARY KEY comment '出版社id',
                              name VARCHAR(30) comment '出版社名称'
 )ENGINE=InnoDB comment '出版社表';
+create index publisher_name_hash using hash on publisher(name);
 
 ##创建会议表
 CREATE TABLE conference (
                               id   INT AUTO_INCREMENT PRIMARY KEY comment '会议id',
                               name VARCHAR(30) comment '会议名称'
 )ENGINE=InnoDB comment '会议表';
+create index conference_name_hash using hash on conference(name);
 
 ##创建文献表
 CREATE TABLE paper (
@@ -49,6 +53,7 @@ CREATE TABLE paper (
                          foreign key (conference_id) references conference(id),
                          foreign key (publisher_id) references  publisher(id)
 )ENGINE=InnoDB comment '文献表';
+create index paper_title_hash using hash on paper(paper_title);
 
 ##创建发表文献关系表
 CREATE TABLE publish (
@@ -60,18 +65,20 @@ CREATE TABLE publish (
 )ENGINE=InnoDB comment '作者发表文献_关系表';
 
 ##创建术语分类标准表
-CREATE TABLE standard (
+CREATE TABLE term_standard (
                             id   INT AUTO_INCREMENT PRIMARY KEY comment '术语标准id',
                             name varchar(23) comment '术语标准名'
 )ENGINE=InnoDB comment '术语标准表';
+create index term_standard_name_hash using hash on term_standard(name);
 
 ##创建术语表
 CREATE TABLE term (
-                        id   INT AUTO_INCREMENT PRIMARY KEY comment '术语id',
-                        standard_id int comment '术语标准来源id',
-                        word varchar(20) comment '术语',
-                        foreign key (standard_id) references standard(id)
+                      id   INT AUTO_INCREMENT PRIMARY KEY comment '术语id',
+                      standard_id int comment '术语标准来源id',
+                      word varchar(20) comment '术语',
+                      foreign key (standard_id) references term_standard(id)
 )ENGINE=InnoDB comment '术语表';
+create index term_word_hash using hash on term(word);
 
 ##创建文献术语关系表
 CREATE TABLE paper_term (
@@ -99,3 +106,4 @@ CREATE TABLE user (
                         privilege_level varchar(20) comment '权限等级',
                         foreign key (record_id) references record(id)
 )ENGINE=InnoDB comment '用户表';
+create index username_hash using hash on user(username);

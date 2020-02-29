@@ -1,17 +1,17 @@
 package group.iiicestseb.backend.mapper;
 
-import group.iiicestseb.backend.entity.Standard;
+import group.iiicestseb.backend.entity.TermStandard;
 
 public interface StandardMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(Standard record);
+    int insert(TermStandard record);
 
-    int insertSelective(Standard record);
+    int insertSelective(TermStandard record);
 
-    Standard selectByPrimaryKey(Integer id);
+    TermStandard selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(Standard record);
+    int updateByPrimaryKeySelective(TermStandard record);
 
-    int updateByPrimaryKey(Standard record);
+    int updateByPrimaryKey(TermStandard record);
 }

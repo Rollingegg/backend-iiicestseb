@@ -1,16 +1,20 @@
 package group.iiicestseb.backend.entity;
 
-public class Standard {
+/**
+ * @author jh
+ * @date 2020/2/29
+ */
+public class TermStandard {
     private Integer id;
 
     private String name;
 
-    public Standard(Integer id, String name) {
+    public TermStandard(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Standard() {
+    public TermStandard() {
         super();
     }
 
