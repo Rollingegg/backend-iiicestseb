@@ -103,9 +103,6 @@ spring:
     add-properties: true
 
 server:
-  tomcat:
-    uri-encoding: utf-8
-  port: 7000
   servlet:
     session:
       timeout: 7200

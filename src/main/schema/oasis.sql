@@ -44,7 +44,7 @@ CREATE TABLE paper (
                          start_page int comment '起始页',
                          end_page int comment '终止页',
                          author_keywords varchar(100) comment '文章关键词',
-                         document_identifer varchar(20) comment 'document_identifer',
+                         document_identifier varchar(20) comment 'document_identifier',
                          foreign key (conference_id) references conference(id),
                          foreign key (publisher_id) references  publisher(id)
 )ENGINE=InnoDB comment '文献表';
