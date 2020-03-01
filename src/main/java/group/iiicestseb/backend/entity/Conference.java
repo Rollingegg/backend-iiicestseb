@@ -1,8 +1,22 @@
 package group.iiicestseb.backend.entity;
+import lombok.Data;
 
+
+/**
+ * @author wph
+ * @date 2020/2/29
+ */
+@Data
 public class Conference {
+
+    /**
+     * 会议id
+     */
     private Integer id;
 
+    /**
+     * 会议名称
+     */
     private String name;
 
     public Conference(Integer id, String name) {
@@ -12,21 +26,5 @@ public class Conference {
 
     public Conference() {
         super();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
     }
 }

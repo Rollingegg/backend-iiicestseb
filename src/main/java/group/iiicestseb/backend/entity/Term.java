@@ -1,11 +1,31 @@
 package group.iiicestseb.backend.entity;
 
+
+import lombok.Data;
+
+
+/**
+ * @author wph
+ * @date 2020/2/29
+ */
+@Data
 public class Term {
+
+    /**
+     * 术语id
+     */
     private Integer id;
 
+    /**
+     * 术语标准来源id
+     */
     private Integer standardId;
 
+    /**
+     * 术语
+     */
     private String word;
+
 
     public Term(Integer id, Integer standardId, String word) {
         this.id = id;
@@ -17,27 +37,4 @@ public class Term {
         super();
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getStandardId() {
-        return standardId;
-    }
-
-    public void setStandardId(Integer standardId) {
-        this.standardId = standardId;
-    }
-
-    public String getWord() {
-        return word;
-    }
-
-    public void setWord(String word) {
-        this.word = word == null ? null : word.trim();
-    }
 }

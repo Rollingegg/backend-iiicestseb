@@ -1,12 +1,22 @@
 package group.iiicestseb.backend.entity;
 
+import lombok.Data;
+
 /**
  * @author jh
  * @date 2020/2/29
  */
+@Data
 public class TermStandard {
+
+    /**
+     * 术语标准id
+     */
     private Integer id;
 
+    /**
+     * 术语标准名
+     */
     private String name;
 
     public TermStandard(Integer id, String name) {
@@ -18,19 +28,4 @@ public class TermStandard {
         super();
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
 }

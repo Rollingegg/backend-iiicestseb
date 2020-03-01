@@ -1,14 +1,37 @@
 package group.iiicestseb.backend.entity;
 
+
+import lombok.Data;
+/**
+ * @author wph
+ * @date 2020/2/29
+ */
+@Data
 public class User {
+
+    /**
+     * 用户id
+     */
     private Integer id;
 
+    /**
+     * 用户浏览记录id
+     */
     private Integer recordId;
 
+    /**
+     * 用户名
+     */
     private String username;
 
+    /**
+     * 密码
+     */
     private String password;
 
+    /**
+     * 权限等级
+     */
     private String privilegeLevel;
 
     public User(Integer id, Integer recordId, String username, String password, String privilegeLevel) {
@@ -21,45 +44,5 @@ public class User {
 
     public User() {
         super();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getRecordId() {
-        return recordId;
-    }
-
-    public void setRecordId(Integer recordId) {
-        this.recordId = recordId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username == null ? null : username.trim();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
-    }
-
-    public String getPrivilegeLevel() {
-        return privilegeLevel;
-    }
-
-    public void setPrivilegeLevel(String privilegeLevel) {
-        this.privilegeLevel = privilegeLevel == null ? null : privilegeLevel.trim();
     }
 }

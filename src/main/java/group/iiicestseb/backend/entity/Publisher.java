@@ -1,6 +1,18 @@
 package group.iiicestseb.backend.entity;
 
+
+import lombok.Data;
+
+/**
+ * @author wph
+ * @date 2020/2/29
+ */
+@Data
 public class Publisher {
+
+    /**
+     * 作者发表文献_关系id
+     */
     private Integer id;
 
     private String name;
@@ -14,19 +26,4 @@ public class Publisher {
         super();
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
 }

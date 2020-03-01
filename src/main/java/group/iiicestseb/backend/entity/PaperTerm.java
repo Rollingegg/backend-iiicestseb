@@ -1,10 +1,26 @@
 package group.iiicestseb.backend.entity;
 
+import lombok.Data;
+/**
+ * @author wph
+ * @date 2020/2/29
+ */
+@Data
 public class PaperTerm {
+
+    /**
+     * 文献术语_关系id
+     */
     private Integer id;
 
+    /**
+     * 文献id
+     */
     private Integer paperId;
 
+    /**
+     * 术语id
+     */
     private Integer termId;
 
     public PaperTerm(Integer id, Integer paperId, Integer termId) {
@@ -17,27 +33,4 @@ public class PaperTerm {
         super();
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getPaperId() {
-        return paperId;
-    }
-
-    public void setPaperId(Integer paperId) {
-        this.paperId = paperId;
-    }
-
-    public Integer getTermId() {
-        return termId;
-    }
-
-    public void setTermId(Integer termId) {
-        this.termId = termId;
-    }
 }

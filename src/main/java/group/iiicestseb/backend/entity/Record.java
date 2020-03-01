@@ -1,10 +1,28 @@
 package group.iiicestseb.backend.entity;
 
+
+import lombok.Data;
+
+/**
+ * @author wph
+ * @date 2020/2/29
+ */
+@Data
 public class Record {
+
+    /**
+     * 历史记录id
+     */
     private Integer id;
 
+    /**
+     * 搜索记录字段
+     */
     private String searchRecord;
 
+    /**
+     * 历史浏览记录
+     */
     private String browseRecord;
 
     public Record(Integer id, String searchRecord, String browseRecord) {
@@ -15,29 +33,5 @@ public class Record {
 
     public Record() {
         super();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getSearchRecord() {
-        return searchRecord;
-    }
-
-    public void setSearchRecord(String searchRecord) {
-        this.searchRecord = searchRecord == null ? null : searchRecord.trim();
-    }
-
-    public String getBrowseRecord() {
-        return browseRecord;
-    }
-
-    public void setBrowseRecord(String browseRecord) {
-        this.browseRecord = browseRecord == null ? null : browseRecord.trim();
     }
 }
