@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class Test {
     public static void main(String[] args) throws Exception {
-        test("test.csv");
+        analyzeCSV("test.csv");
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Test.class);
@@ -28,9 +28,9 @@ public class Test {
 //        }
 //    };
 
-    public static void test(String filename) {
+    public static void analyzeCSV(String filename) {
         List<String[]> lines = new LinkedList<>();
-        AnalyzeCSVLines(filename, lines);
+        analyzeCSVLines(filename, lines);
 
         // TODO: 这些是已经存在的固定数据，如作者、机构等，后面有空的话可以用redis来优化
         Map<String, Affiliation> existedAffiliation = new HashMap<>();
@@ -47,23 +47,24 @@ public class Test {
         List<Paper> paperList = new LinkedList<>();
         List<Publisher> publisherList = new LinkedList<>();
         List<List<Term>> termsList = new LinkedList<>();
+        List<Publish> publishList = new LinkedList<>();
+        List<PaperTerm> paperTermList = new LinkedList<>();
 
+        analyzeAffiliation(lines, affiliationList, existedAffiliation);
+        analyzeAuthor(lines, authorsList, affiliationList, existedAuthor);
+        analyzeConference(filename, lines, conferenceList, existedConference);
+        analyzePublisher(lines, publisherList, existedPublisher);
+        analyzeTerm(lines, termsList, existedTerm);
+        analyzePaper(lines, paperList, publisherList, conferenceList, existedPaper);
 
-        // TODO: 解析lines
-        AnalyzeAffiliation(lines, affiliationList, existedAffiliation);
-        AnalyzeAuthor(lines, authorsList, affiliationList, existedAuthor);
-        AnalyzeConference(filename, lines, conferenceList, existedConference);
-        AnalyzePublisher(lines, publisherList, existedPublisher);
-        AnalyzeTerm(lines, termsList, existedTerm);
-        AnalyzePaper(lines, paperList, publisherList, conferenceList, existedPaper);
+        analyzePublish(paperList, authorsList, publishList);
+        analyzePaperTerm(paperList, termsList, paperTermList);
         // TODO: 将上面的数据全部写入数据库
-
-
         System.out.println();
 
     }
 
-    private static void AnalyzeCSVLines(String filename, List<String[]> lines) {
+    private static void analyzeCSVLines(String filename, List<String[]> lines) {
         File file = new File(filename);
         BufferedReader reader;
         try {
@@ -95,7 +96,7 @@ public class Test {
         }
     }
 
-    private static void AnalyzeAffiliation(List<String[]> lines, List<List<Affiliation>> affiliationList, Map<String, Affiliation> existedAffiliation) {
+    private static void analyzeAffiliation(List<String[]> lines, List<List<Affiliation>> affiliationList, Map<String, Affiliation> existedAffiliation) {
         List<Affiliation> newAffiliations = new LinkedList<>();
         for (String[] parts : lines) {
             String[] raw = parts[2].split("; ");
@@ -120,7 +121,7 @@ public class Test {
         //insert into db newList;
     }
 
-    private static void AnalyzeAuthor(List<String[]> lines, List<List<Author>> authorsList, List<List<Affiliation>> affiliationList, Map<String, Author> existedAuthor) {
+    private static void analyzeAuthor(List<String[]> lines, List<List<Author>> authorsList, List<List<Affiliation>> affiliationList, Map<String, Author> existedAuthor) {
         List<Author> newAuthors = new LinkedList<>();
         Iterator<List<Affiliation>> outerItr = affiliationList.iterator();
         for (String[] parts : lines) {
@@ -147,7 +148,7 @@ public class Test {
         //insert into db;
     }
 
-    private static void AnalyzeConference(String filename, List<String[]> lines, List<Conference> conferenceList, Map<String, Conference> existedConference) {
+    private static void analyzeConference(String filename, List<String[]> lines, List<Conference> conferenceList, Map<String, Conference> existedConference) {
         List<Conference> newConference = new LinkedList<>();
         Conference conference;
         String name = filename.split("\\.")[0];
@@ -167,7 +168,7 @@ public class Test {
         //insert into db;
     }
 
-    private static void AnalyzePublisher(List<String[]> lines, List<Publisher> publisherList, Map<String, Publisher> existedPublisher) {
+    private static void analyzePublisher(List<String[]> lines, List<Publisher> publisherList, Map<String, Publisher> existedPublisher) {
         List<Publisher> newPublisher = new LinkedList<>();
         for (String[] parts : lines) {
             String name = parts[27];
@@ -186,7 +187,7 @@ public class Test {
         //insert into db;
     }
 
-    private static void AnalyzeTerm(List<String[]> lines, List<List<Term>> termList, Map<String, Term> existedTerm) {
+    private static void analyzeTerm(List<String[]> lines, List<List<Term>> termList, Map<String, Term> existedTerm) {
         List<Term> newTerms = new LinkedList<>();
         for (String[] parts : lines) {
             List<Term> terms = new LinkedList<>();
@@ -215,7 +216,7 @@ public class Test {
         //insert into db newList;
     }
 
-    private static void AnalyzePaper(List<String[]> lines, List<Paper> paperList, List<Publisher> publisherList, List<Conference> conferenceList, Map<String, Paper> existedPaper) {
+    private static void analyzePaper(List<String[]> lines, List<Paper> paperList, List<Publisher> publisherList, List<Conference> conferenceList, Map<String, Paper> existedPaper) {
         List<Paper> newPaper = new LinkedList<>();
         Iterator<Publisher> publisherItr = publisherList.iterator();
         Iterator<Conference> conferenceItr = conferenceList.iterator();
@@ -248,6 +249,30 @@ public class Test {
             }
         }
         //insert into db;
+    }
+
+    private static void analyzePaperTerm(List<Paper> paperList, List<List<Term>> termsList, List<PaperTerm> paperTermList) {
+        Iterator<Paper> paperItr = paperList.iterator();
+        Iterator<List<Term>> termsItr = termsList.iterator();
+        while (paperItr.hasNext()){
+            Paper p = paperItr.next();
+            for (Term term : termsItr.next()) {
+                paperTermList.add(new PaperTerm(p, term));
+            }
+        }
+        // insert to db
+    }
+
+    private static void analyzePublish(List<Paper> paperList, List<List<Author>> authorsList, List<Publish> publishList) {
+        Iterator<Paper> paperItr = paperList.iterator();
+        Iterator<List<Author>> authorsItr = authorsList.iterator();
+        while (paperItr.hasNext()){
+            Paper p = paperItr.next();
+            for (Author author : authorsItr.next()) {
+                publishList.add(new Publish(p, author));
+            }
+        }
+        // insert to db
     }
 
 }

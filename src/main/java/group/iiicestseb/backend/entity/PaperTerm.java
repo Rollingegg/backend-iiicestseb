@@ -23,14 +23,20 @@ public class PaperTerm {
      */
     private Integer termId;
 
+    public PaperTerm() {
+        super();
+    }
+
+
     public PaperTerm(Integer id, Integer paperId, Integer termId) {
         this.id = id;
         this.paperId = paperId;
         this.termId = termId;
     }
 
-    public PaperTerm() {
-        super();
+    public PaperTerm(Paper paper, Term term) {
+        this.paperId = paper.getId();
+        this.termId = term.getId();
     }
 
 }
