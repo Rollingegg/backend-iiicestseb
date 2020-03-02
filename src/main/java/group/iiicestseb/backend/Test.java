@@ -1,7 +1,6 @@
 package group.iiicestseb.backend;
 
 import group.iiicestseb.backend.entity.*;
-import jdk.internal.util.xml.impl.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,7 @@ public class Test {
             put("IEEE Terms", 1);
             put("INSPEC Controlled Terms", 2);
             put("INSPEC Non-Controlled Terms", 3);
-            put("Mesh_Terms", 4);
+            put("Mesh Terms", 4);
         }
     };
 
@@ -39,15 +38,17 @@ public class Test {
             return;
         }
 
-        // 这些是已经存在的固定数据，如作者、机构等
-        Map<String, Affiliation> existedAffiliations = new HashMap<>();
-        Map<String, Author> existedAuthors = new HashMap<>();
+        // TODO: 这些是已经存在的固定数据，如作者、机构等，后面有空的话可以用redis来优化
+        Map<String, Affiliation> existedAffiliation = new HashMap<>();
+        Map<String, Author> existedAuthor = new HashMap<>();
         Map<String, Conference> existedConference = new HashMap<>();
         // 这里term的key值为 word + standard_id(硬编码)
         Map<String, Term> existedTerm = new HashMap<>();
+        Map<String, Publisher> existedPublisher = new HashMap<>();
 
+        // TODO: 重复论文也需要排除，不过这个后面有空再做吧
 
-        // 这些是需要新存入数据库的数据
+        // 初始化需要存入数据库的数据
         List<List<Affiliation>> affiliationList = new LinkedList<>();
         List<List<Author>> authorsList = new LinkedList<>();
         List<Conference> conferenceList = new LinkedList<>();
@@ -58,7 +59,8 @@ public class Test {
         List<TermStandard> termStandardList = new LinkedList<>();
         List<List<Term>> termsList = new LinkedList<>();
 
-        String line;
+        // 读取csv并逐步解析
+        String line, temp;
         for (int i = 0; true; i++) {
             try {
                 line = reader.readLine();
@@ -66,18 +68,66 @@ public class Test {
                     break;
                 }
                 String[] parts = line.substring(1, line.length() - 1).split("\",\"");
+                String[] affiliationNames = parts[2].split("; ");
+                List<Affiliation> affiliations = new LinkedList<>();
+                for (String s : affiliationNames) {
+                    if (!existedAffiliation.containsKey(s)){
+                        // TODO: selectAffiliationByName(String name)
+                        Affiliation a = new Affiliation();
+                        if (a!=null){
+                            existedAffiliation.put(s, a);
+                        }
+
+                        affiliations.add(a);
+                    } else {
+
+                    }
+                }
+                String[] authorNames = parts[1].split("; ");
                 assert parts.length == 29;
-                Paper paper = new Paper();
+                temp = parts[0];
             } catch (IOException e) {
                 LOGGER.warn("第" + i + "行解析出错，跳过该行");
+            } catch (Exception e) {
+                LOGGER.warn("第" + i + "行解析发生未知错误，跳过该行");
             }
         }
+
         try {
             reader.close();
         } catch (IOException e) {
-            LOGGER.warn("解析csv结束，但是出了未知错误");
+            LOGGER.warn("解析csv结束，但是关闭文件流时出了未知错误");
         }
+
+        // TODO: 将上面的数据全部写入数据库
+
+
     }
+
+    private static void getAffiliation(String[] parts, List<Affiliation> affiliationList, Map<String, Affiliation> existedAffiliation){
+
+    }
+
+    private static void getAuthor(String[] parts, List<List<Author>> authorsList, List<Affiliation> affiliationList, Map<String, Conference> existedAuthor){
+
+    }
+
+    private static void getConference(String[] parts, List<Conference> conferenceList, Map<String, Conference> existedConference){
+
+    }
+
+    private static void getPublisher(String[] parts, List<Publisher> publisherList, Map<String, Publisher> existedPublisher){
+
+    }
+
+    private static void getTermStandard(String[] parts, List<TermStandard> termList, Map<String, Term> existedTerm){
+        // 这个好像可以不用写，估计要硬编码了
+    }
+
+    private static void getTerm(String[] parts, List<List<Term>> termList, Map<String, Term> existedTerm){
+
+    }
+
 
     public static void test2() throws Exception {
         Class<?> clz = String.class;
