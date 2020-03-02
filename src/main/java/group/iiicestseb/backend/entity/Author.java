@@ -25,6 +25,11 @@ public class Author {
      */
     private Integer affiliationId;
 
+    public Author(String name, Integer affiliationId){
+        this.name = name;
+        this.affiliationId = affiliationId;
+    }
+
     public Author(Integer id, String name, Integer affiliationId) {
         this.id = id;
         this.name = name;

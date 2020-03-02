@@ -20,8 +20,7 @@ public class Affiliation {
     private String name;
 
 
-    public Affiliation(Integer id, String name) {
-        this.id = id;
+    public Affiliation(String name) {
         this.name = name;
     }
 
