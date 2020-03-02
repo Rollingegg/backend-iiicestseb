@@ -4,12 +4,12 @@ import lombok.Data;
 
 
 /**
- * 机构类
+ * 机构页面 机构详细信息
  * @author wph
  * @data 2020/3/2
  */
 @Data
-public class AffiliationVO {
+public class AffiliationInfoVO {
     /**
      * 机构id
      */
@@ -19,10 +19,5 @@ public class AffiliationVO {
      * 机构名
      */
     private String name;
-
-    /**
-     * 机构二级归属
-     */
-    private String secondary;
 
 }

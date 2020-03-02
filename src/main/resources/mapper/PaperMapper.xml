@@ -210,9 +210,9 @@
       publication_year = #{publicationYear,jdbcType=INTEGER},
       start_page = #{startPage,jdbcType=INTEGER},
       end_page = #{endPage,jdbcType=INTEGER},
-      author_keywords = #{authorKeywords,jdbcType=VARCHAR},
-      document_identifer = #{documentIdentifer,jdbcType=VARCHAR}
+      author_keywords = #{authorKeywords,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <delete id="deleteByName"
 </mapper>

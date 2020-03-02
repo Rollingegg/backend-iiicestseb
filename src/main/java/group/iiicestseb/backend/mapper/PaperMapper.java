@@ -48,4 +48,5 @@ public interface PaperMapper {
      * @return
      */
     int updateByPrimaryKey(Paper record);
+
 }

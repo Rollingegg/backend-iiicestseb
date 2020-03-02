@@ -1,11 +1,7 @@
 package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.entity.Affiliation;
-import group.iiicestseb.backend.mapper.AffiliationMapper;
-import group.iiicestseb.backend.vo.AffiliationVO;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
+import group.iiicestseb.backend.vo.AffiliationInfoVO;
 
 /**
  * @author wph
@@ -18,7 +14,18 @@ public interface AffiliationService {
      * @param name 机构名称
      * @return
      */
-    public AffiliationVO getAffiliationInfo(String name);
+    public AffiliationInfoVO getAffiliationInfo(String name);
+
+    /**
+     * --------------------------------以下方法是为了消除循环依赖产生------------------------------
+     */
+
+    /**
+     * 通过id查找Affiliation
+     * @param id 机构id
+     * @return 机构实体
+     */
+    public Affiliation selectById(int id);
 
 
 }

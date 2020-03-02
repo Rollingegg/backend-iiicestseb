@@ -32,11 +32,5 @@ public class AuthorInfoVO {
      */
     private String affiliationName;
 
-    /**
-     * 机构二级归属
-     */
-    private String secondary;
-
-
 
 }

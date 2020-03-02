@@ -20,13 +20,6 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
 
-    /**
-     * 用户登录
-     *
-     * @param userForm 用户账户密码表单
-     * @return 用户信息vo
-     * @author wph
-     */
     @Override
     public UserVO signIn(UserForm userForm) {
         User user;
@@ -44,13 +37,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    /**
-     * 用户注册
-     *
-     * @param userForm 用户账户密码表单
-     * @return 用户信息vo
-     * @author wph
-     */
     @Override
     public void register(UserForm userForm) {
         User newUser = new User();
@@ -61,7 +47,6 @@ public class UserServiceImpl implements UserService {
             newUser.setPrivilegeLevel("用户");
             userMapper.insert(newUser);
             //若注册成功，也该更新历史记录
-            //todo
             return;
         }catch (Exception e){
             throw new UserAlreadyRegisterException();

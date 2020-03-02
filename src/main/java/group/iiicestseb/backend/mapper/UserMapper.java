@@ -62,6 +62,4 @@ public interface UserMapper {
      * @return
      */
     int updateByPrimaryKey(User record);
-
-
 }

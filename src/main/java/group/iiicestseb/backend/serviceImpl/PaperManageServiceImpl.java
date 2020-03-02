@@ -1,7 +1,10 @@
 package group.iiicestseb.backend.serviceImpl;
 
+import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.service.PaperManageService;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * @author jh
@@ -9,8 +12,17 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PaperManageServiceImpl implements PaperManageService {
-//    @Override
-//    public void addPaper() {
-//
-//    }
+    @Resource
+    PaperMapper paperMapper;
+
+    @Override
+    public void deleteById(int id) {
+        paperMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public void deleteByName(String name) {
+        
+
+    }
 }
