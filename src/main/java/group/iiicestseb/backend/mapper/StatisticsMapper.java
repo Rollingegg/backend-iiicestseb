@@ -1,4 +1,5 @@
-package group.iiicestseb.backend.serviceImpl;
+package group.iiicestseb.backend.mapper;
+
 
 import org.springframework.stereotype.Service;
 
@@ -7,5 +8,5 @@ import org.springframework.stereotype.Service;
  * @date 2020/2/22
  */
 @Service
-public class SearchServiceImpl {
+public interface StatisticsMapper {
 }

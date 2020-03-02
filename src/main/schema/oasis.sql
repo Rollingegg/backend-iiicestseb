@@ -1,4 +1,4 @@
-DROP DATABASE IF EXISTS oasisdb;
+DROP DATABASE IF EXISTS oasisdb;c
 CREATE DATABASE oasisdb DEFAULT CHARACTER SET utf8;
 USE oasisdb;
 
@@ -101,7 +101,7 @@ CREATE TABLE record (
 CREATE TABLE user (
                         id   INT AUTO_INCREMENT PRIMARY KEY comment '用户id',
                         record_id int comment '用户浏览记录id',
-                        username varchar(32) comment '用户名',
+                        username varchar(32) comment '用户名' unique ,
                         password varchar(32) comment '密码',
                         privilege_level varchar(20) comment '权限等级',
                         foreign key (record_id) references record(id)
