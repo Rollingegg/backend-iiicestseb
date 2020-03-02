@@ -19,12 +19,18 @@ public class Conference {
      */
     private String name;
 
+    public Conference() {
+        super();
+    }
+
+    public Conference(String name) {
+        this.name = name;
+    }
+
     public Conference(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Conference() {
-        super();
-    }
+
 }

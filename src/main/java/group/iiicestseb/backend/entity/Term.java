@@ -17,24 +17,21 @@ public class Term {
     private Integer id;
 
     /**
-     * 术语标准来源id
-     */
-    private Integer standardId;
-
-    /**
      * 术语
      */
     private String word;
 
+    public Term() {
+        super();
+    }
 
-    public Term(Integer id, Integer standardId, String word) {
-        this.id = id;
-        this.standardId = standardId;
+    public Term(String word) {
         this.word = word;
     }
 
-    public Term() {
-        super();
+    public Term(Integer id, String word) {
+        this.id = id;
+        this.word = word;
     }
 
 }

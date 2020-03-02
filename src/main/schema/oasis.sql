@@ -1,4 +1,4 @@
-DROP DATABASE IF EXISTS oasisdb;c
+DROP DATABASE IF EXISTS oasisdb;
 CREATE DATABASE oasisdb DEFAULT CHARACTER SET utf8;
 USE oasisdb;
 
@@ -64,19 +64,21 @@ CREATE TABLE publish (
                            foreign key (paper_id) references paper(id)
 )ENGINE=InnoDB comment '作者发表文献_关系表';
 
-##创建术语分类标准表
-CREATE TABLE term_standard (
-                            id   INT AUTO_INCREMENT PRIMARY KEY comment '术语标准id',
-                            name varchar(23) comment '术语标准名'
-)ENGINE=InnoDB comment '术语标准表';
-create index term_standard_name_hash using hash on term_standard(name);
+# ##创建术语分类标准表
+# CREATE TABLE term_standard (
+#                             id   INT AUTO_INCREMENT PRIMARY KEY comment '术语标准id',
+#                             name varchar(30) comment '术语标准名'
+# )ENGINE=InnoDB comment '术语标准表';
+# create index term_standard_name_hash using hash on term_standard(name);
+# use sec;
+# insert into term_standard (id, name) VALUES (1, 'IEEE Terms'), (2, 'INSPEC Controlled Terms'), (3, 'INSPEC Non-Controlled Terms'), (4, 'Mesh Terms');
 
 ##创建术语表
 CREATE TABLE term (
                       id   INT AUTO_INCREMENT PRIMARY KEY comment '术语id',
-                      standard_id int comment '术语标准来源id',
-                      word varchar(20) comment '术语',
-                      foreign key (standard_id) references term_standard(id)
+#                       standard_id int comment '术语标准来源id',
+                      word varchar(20) comment '术语'
+#                       foreign key (standard_id) references term_standard(id)
 )ENGINE=InnoDB comment '术语表';
 create index term_word_hash using hash on term(word);
 
