@@ -48,7 +48,7 @@ public class Test {
 
         // TODO: 重复论文也需要排除，不过这个后面有空再做吧
 
-        // 初始化需要存入数据库的数据
+        // 初始化待解析的数据
         List<List<Affiliation>> affiliationList = new LinkedList<>();
         List<List<Author>> authorsList = new LinkedList<>();
         List<Conference> conferenceList = new LinkedList<>();
@@ -59,33 +59,18 @@ public class Test {
         List<TermStandard> termStandardList = new LinkedList<>();
         List<List<Term>> termsList = new LinkedList<>();
 
-        // 读取csv并逐步解析
-        String line, temp;
+        // 读取csv
+        String line;
+        List<String[]> lines = new LinkedList<>();
         for (int i = 0; true; i++) {
             try {
                 line = reader.readLine();
-                if (line.isEmpty()) {
+                if (line == null) {
                     break;
                 }
                 String[] parts = line.substring(1, line.length() - 1).split("\",\"");
-                String[] affiliationNames = parts[2].split("; ");
-                List<Affiliation> affiliations = new LinkedList<>();
-                for (String s : affiliationNames) {
-                    if (!existedAffiliation.containsKey(s)){
-                        // TODO: selectAffiliationByName(String name)
-                        Affiliation a = new Affiliation();
-                        if (a!=null){
-                            existedAffiliation.put(s, a);
-                        }
-
-                        affiliations.add(a);
-                    } else {
-
-                    }
-                }
-                String[] authorNames = parts[1].split("; ");
                 assert parts.length == 29;
-                temp = parts[0];
+                lines.add(parts);
             } catch (IOException e) {
                 LOGGER.warn("第" + i + "行解析出错，跳过该行");
             } catch (Exception e) {
@@ -99,17 +84,62 @@ public class Test {
             LOGGER.warn("解析csv结束，但是关闭文件流时出了未知错误");
         }
 
+        // TODO: 解析lines
+        getAffiliation(lines, affiliationList, existedAffiliation);
+
         // TODO: 将上面的数据全部写入数据库
 
 
     }
 
-    private static void getAffiliation(String[] parts, List<Affiliation> affiliationList, Map<String, Affiliation> existedAffiliation){
-
+    private static void getAffiliation(List<String[]> lines, List<List<Affiliation>> affiliationList, Map<String, Affiliation> existedAffiliation){
+        List<Affiliation> newAffiliations = new LinkedList<>();
+        for (String[] parts : lines) {
+            String[] raw = parts[2].split("; ");
+            List<Affiliation> affiliations = new LinkedList<>();
+            for (String name : raw) {
+                if (existedAffiliation.containsKey(name)) {
+                    affiliations.add(existedAffiliation.get(name));
+                } else {
+                    // 这里访问一下数据库看是否存在
+//                Affiliation a = select from db;
+                    //if (a != null){existedA.add; list.add}
+                    //else
+                    Affiliation a = new Affiliation(name);
+                    newAffiliations.add(a);
+                    existedAffiliation.put(name, a);
+                    affiliations.add(a);
+                    //insert into db;
+                }
+            }
+            affiliationList.add(affiliations);
+        }
+        //insert into db newList;
     }
 
-    private static void getAuthor(String[] parts, List<List<Author>> authorsList, List<Affiliation> affiliationList, Map<String, Conference> existedAuthor){
-
+    private static void getAuthor(List<String[]> lines, List<List<Author>> authorsList, List<List<Affiliation>> affiliationList, Map<String, Author> existedAuthor){
+        for (String[] parts : lines) {
+            String[] names = parts[1].split("; ");
+            Iterator<List<Affiliation>> outerItr = affiliationList.iterator();
+            List<Author> authors = new LinkedList<>();
+            for (String name : names) {
+                List<Affiliation> affiliations = outerItr.next();
+                Iterator<Affiliation> itr = affiliations.iterator();
+                if (existedAuthor.containsKey(name)) {
+                    authors.add(existedAuthor.get(name));
+                } else {
+                    // 这里访问一下数据库看是否存在
+//                Author a = select from db;
+                    //if (a != null){existed.add; list.add}
+                    //else
+                    Author a = new Author(name, itr.next().getId());
+                    existedAuthor.put(name, a);
+                    authors.add(a);
+                }
+            }
+            authorsList.add(authors);
+        }
+        //insert into db;
     }
 
     private static void getConference(String[] parts, List<Conference> conferenceList, Map<String, Conference> existedConference){

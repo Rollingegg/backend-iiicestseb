@@ -19,13 +19,8 @@ public class Affiliation {
      */
     private String name;
 
-    /**
-     * 机构二级归属
-     */
-    private String secondary;
 
-    public Affiliation(Integer id, String name) {
-        this.id = id;
+    public Affiliation(String name) {
         this.name = name;
     }
 
