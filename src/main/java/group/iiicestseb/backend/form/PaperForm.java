@@ -69,12 +69,12 @@ public class PaperForm {
     /**
      * 起始页
      */
-    private Integer startPage;
+    private String startPage;
 
     /**
      * 结束页
      */
-    private Integer endPage;
+    private String endPage;
 
     /**
      * 作者关键字

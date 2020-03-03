@@ -69,12 +69,12 @@ public class PaperInfoVO {
     /**
      * 起始页
      */
-    private Integer startPage;
+    private String startPage;
 
     /**
      * 结束页
      */
-    private Integer endPage;
+    private String endPage;
 
     /**
      * 作者关键字
@@ -98,7 +98,8 @@ public class PaperInfoVO {
 
     public PaperInfoVO(){}
     public PaperInfoVO(Paper paper) {
-        this.authorKeywords = paper.getAuthorKeywords();
+        // TODO: 拼凑文章关键词
+//        this.authorKeywords = paper.getAuthorKeywords();
         this.citationCount = paper.getCitationCount();
         this.conferenceId = paper.getConferenceId();
         this.documentIdentifier = paper.getDocumentIdentifier();

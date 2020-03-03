@@ -3,6 +3,8 @@ package group.iiicestseb.backend.mapper;
 import group.iiicestseb.backend.entity.Author;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 /**
  * @author wph
  * @date 2020/2/29
@@ -26,6 +28,13 @@ public interface AuthorMapper {
     void insert(Author record);
 
     /**
+     * 增加作者列表
+     * @param authorList 作者实体列表
+     * @return 插入的行
+     */
+    int insertAuthorList(@Param("authorList") List<Author> authorList);
+
+    /**
      * 通过id搜寻作者
      * @param id 作者id
      * @return 作者实体
@@ -33,8 +42,6 @@ public interface AuthorMapper {
     @Select("select * from author where id = #{id,jdbcType=INTEGER}")
     @ResultMap("AuthorResultMap")
     Author selectByPrimaryKey(Integer id);
-
-
 
     /**
      * 更新作者信息
