@@ -1,25 +1,24 @@
 package group.iiicestseb.backend.regedit;
 
 import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.PaperForm;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.service.*;
-import group.iiicestseb.backend.vo.AffiliationInfoVO;
-import group.iiicestseb.backend.vo.AuthorInfoVO;
-import group.iiicestseb.backend.vo.PaperInfoVO;
-import group.iiicestseb.backend.vo.UserVO;
+import group.iiicestseb.backend.vo.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author wph
  * @date 2020/3/2
  */
 @Service("Regedit")
-public class Regedit implements AffiliationService,AuthorService,UserService,PaperManageService{
+public class Regedit implements AffiliationService,AuthorService,UserService,PaperManageService,SearchService{
     @Resource(name = "Affiliation")
     private AffiliationService affiliationService;
     @Resource(name = "Author")
@@ -28,9 +27,31 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
     private UserService userService;
     @Resource(name = "Paper")
     private PaperManageService paperManageService;
+    @Resource(name = "Search")
+    private SearchService searchService;
 
 
 
+    //-----------------------为消除循环依赖产生的类
+
+
+    @Override
+    public CopyOnWriteArrayList<String> getAuthorByPaperId(int id) {
+        return authorService.getAuthorByPaperId(id);
+    }
+
+    @Override
+    public CopyOnWriteArrayList<SearchResultVO> simpleSearchPaper(String type, String keyword) {
+        CopyOnWriteArrayList<SearchResultVO> searchResultVOS= searchService.simpleSearchPaper(type,keyword);
+        return addAuthorInfoInfoPaper(searchResultVOS);
+
+    }
+
+    @Override
+    public CopyOnWriteArrayList<SearchResultVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
+        CopyOnWriteArrayList<SearchResultVO> searchResultVOS= searchService.advancedSearchPaper(advancedSearchForm);
+        return addAuthorInfoInfoPaper(searchResultVOS);
+    }
 
     @Override
     public void deletePaperById(int id) {
@@ -89,4 +110,25 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
     public void register(UserForm userForm) {
         userService.register(userForm);
     }
+
+    //————————————————————————————公共方法
+
+    /**
+     * 给文献加上所有作者新信息
+     * @param searchResultVOS
+     * @return
+     */
+    private CopyOnWriteArrayList<SearchResultVO> addAuthorInfoInfoPaper(CopyOnWriteArrayList<SearchResultVO> searchResultVOS){
+        for (SearchResultVO x:searchResultVOS) {
+            CopyOnWriteArrayList<String> authorList = authorService.getAuthorByPaperId(x.getId());
+            CopyOnWriteArrayList<AuthorInfoVO> temp = new CopyOnWriteArrayList<AuthorInfoVO>();
+            for (String y:authorList){
+                temp.add(authorService.getAuthorInfo(y));
+            }
+            x.setAuthorInfoList(temp);
+        }
+        return searchResultVOS;
+    }
+
+
 }

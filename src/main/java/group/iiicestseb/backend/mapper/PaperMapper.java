@@ -1,9 +1,11 @@
 package group.iiicestseb.backend.mapper;
 
 import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.form.AdvancedSearchForm;
 import org.apache.ibatis.annotations.*;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 
 /**
  * @author jh
@@ -93,7 +95,7 @@ public interface PaperMapper {
             "      start_page = #{startPage,jdbcType=INTEGER}," +
             "      end_page = #{endPage,jdbcType=INTEGER}," +
             "      author_keywords = #{authorKeywords,jdbcType=VARCHAR}" +
-            "    paper_title = #{paperTitle,jdbcType=VARCHAR}")
+            "    where paper_title = #{paperTitle,jdbcType=VARCHAR}")
     void updateByName(Paper paper);
 
     /**
@@ -121,28 +123,54 @@ public interface PaperMapper {
     @Select("select conference.name from conference where id = #{id}")
     String selectConferenceNameById(int id);
 
-//    /**
-//     * 适用于查找 DOI、标题、摘要 类型的简单查询
-//     * @param type 查询类型 适用于 DOI 标题 摘要
-//     * @param keywords
-//     * @return 文献列表
-//     */
-//    @Select("select * from paper" +
-//            "where ${type} like '%${keywords}%' order by citation_count DESC")
-//    @ResultMap("PaperResultMap")
-//    ArrayList<Paper> simpleSearchPaperByType(String type,String keywords);
-//
-//
-//    /**
-//     * 适用于查找 全部 类型的简单查询
-//     * @param keywords 关键字
-//     * @return 文献列表
-//     */
-//    @Select("select * from paper" +
-//            "where paper_tile like '%${keywords}%' or" +
-//            "paper_abstract like '%${keywords}%' or" +
-//            "DOI like '%${keywords}%'" +
-//            "order by citation_count DESC")
-//    @ResultMap("PaperResultMap")
-//    ArrayList<Paper> simpleSearchPaperAll(String keywords);
+    /**
+     * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询
+     * @param type 查询类型 适用于 DOI 标题 摘要 作者 机构
+     * @param keywords 搜索关键字
+     * @return 文献列表
+     */
+    @Select("select distinct paper.* from paper,publish,author,affiliation " +
+            "where ${type} like '%${keywords}%' and " +
+            "paper.id = publish.paper_id and " +
+            "publish.author_id = author.id and " +
+            "author.affiliation_id = affiliation.id")
+    @ResultMap("PaperResultMap")
+    CopyOnWriteArrayList<Paper> simpleSearchPaperByType(String type, String keywords);
+
+
+    /**
+     * 适用于模糊字段查找 全部 类型的简单查询
+     * @param keywords 关键字
+     * @return 文献列表
+     */
+    @Select("select distinct paper.* from paper,publish,author,affiliation " +
+            "where paper.id = publish.paper_id and " +
+            "publish.author_id = author.id and " +
+            "author.affiliation_id = affiliation.id and " +
+            "(author.name like '%${keywords}%' or " +
+            "affiliation.name like '%${keywords}%' or " +
+            "paper.DOI like '%${keywords}%' or " +
+            "paper.paper_abstract like '%${keywords}%' or " +
+            "paper.paper_title like '%${keywords}%')" +
+            "order by citation_count DESC ")
+    @ResultMap("PaperResultMap")
+    CopyOnWriteArrayList<Paper> simpleSearchPaperAll(String keywords);
+
+
+    /**
+     * 多字段高级检索
+     * @param advancedSearchForm 高级检索表单
+     * @return 论文列表
+     */
+    @Select("select distinct paper.* from paper,publish,author,affiliation " +
+            "where paper.id = publish.paper_id and " +
+            "publish.author_id = author.id and " +
+            "author.affiliation_id = affiliation.id and " +
+            "(paper.paper_title like #{paperTitleKeyword}  OR #{paperTitleKeyword} IS NULL) and" +
+            "(paper.paper_abstract like #{paperAbstractKeyword}  OR #{paperAbstractKeyword} IS NULL) and " +
+            "(paper.DOI like #{doiKeyword}  OR #{doiKeyword} IS NULL) and " +
+            "(paper.paper_abstract like #{paperAbstractKeyword}  OR #{paperAbstractKeyword} IS NULL)" +
+            "order by citation_count desc")
+    @ResultMap("PaperResultMap")
+    CopyOnWriteArrayList<Paper> advancedSearch(AdvancedSearchForm advancedSearchForm);
 }

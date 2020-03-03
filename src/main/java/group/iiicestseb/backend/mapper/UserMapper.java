@@ -27,7 +27,7 @@ public interface UserMapper {
             "#{recordId,jdbcType=INTEGER}, " +
             "#{username,jdbcType=VARCHAR},  " +
             "#{password,jdbcType=VARCHAR}, " +
-            "#{privilegeLevel,jdbcType=VARCHAR}")
+            "#{privilegeLevel,jdbcType=VARCHAR})")
     @Options(useGeneratedKeys = true)
     void insert(User record);
 

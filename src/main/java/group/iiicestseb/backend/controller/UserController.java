@@ -14,6 +14,7 @@ import javax.annotation.Resource;
  * @date 2020/2/22
  */
 @RestController
+@ResponseBody
 public class UserController {
     @Resource(name = "Regedit")
     private UserService userService;

@@ -3,6 +3,8 @@ package group.iiicestseb.backend.mapper;
 import group.iiicestseb.backend.entity.Author;
 import org.apache.ibatis.annotations.*;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * @author wph
  * @date 2020/2/29
@@ -51,4 +53,15 @@ public interface AuthorMapper {
     @Select("select * from author where name = #{name,jdbcType=VARCHAR}")
     @ResultMap("AuthorResultMap")
     Author selectByName(String name);
+
+    /**
+     * 查询文献的所有作者
+     * @param id 文献id
+     * @return 文献作者列表
+     */
+    @Select("select author.name " +
+            "from author,paper,publish " +
+            "where paper.id = publish.paper_id and " +
+            "publish.author_id = author.id")
+    CopyOnWriteArrayList<String> getAuthorByPaperId(int id);
 }

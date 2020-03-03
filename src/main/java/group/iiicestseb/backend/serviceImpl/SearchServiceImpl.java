@@ -1,14 +1,15 @@
 package group.iiicestseb.backend.serviceImpl;
 
 import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.service.SearchService;
+import group.iiicestseb.backend.vo.SearchResultVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author jh
@@ -20,13 +21,36 @@ public class SearchServiceImpl implements SearchService {
     @Resource
     private PaperMapper paperMapper;
     @Override
-    public ArrayList<Paper> simpleSearchPaper(String  type, String keyword){
+    public CopyOnWriteArrayList<SearchResultVO> simpleSearchPaper(String  type, String keyword){
+        CopyOnWriteArrayList<SearchResultVO> searchResultVOCopyOnWriteArrayList = new CopyOnWriteArrayList<SearchResultVO>();
+        CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList;
         if (type.equals("all")){
-
+            //all类型的全模糊查询
+            paperCopyOnWriteArrayList = paperMapper.simpleSearchPaperAll(keyword);
         }
-        else{
-
+        else {
+            //单一类型的模糊查询
+            if (type.equals("author_name")){
+                type = type.replace('_','.');
+            }
+            else if(type.equals("affiliation_name")){
+                type = type.replace('_','.');
+            }
+            paperCopyOnWriteArrayList = paperMapper.simpleSearchPaperByType(type,keyword);
         }
-        return null;
+        for (Paper paper:paperCopyOnWriteArrayList) {
+            searchResultVOCopyOnWriteArrayList.add(new SearchResultVO(paper));
+        }
+        return searchResultVOCopyOnWriteArrayList;
+    }
+
+    @Override
+    public CopyOnWriteArrayList<SearchResultVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
+        CopyOnWriteArrayList<SearchResultVO> searchResultVOCopyOnWriteArrayList = new CopyOnWriteArrayList<SearchResultVO>();
+        CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList = paperMapper.advancedSearch(advancedSearchForm);;
+        for (Paper paper:paperCopyOnWriteArrayList) {
+            searchResultVOCopyOnWriteArrayList.add(new SearchResultVO(paper));
+        }
+        return searchResultVOCopyOnWriteArrayList;
     }
 }
