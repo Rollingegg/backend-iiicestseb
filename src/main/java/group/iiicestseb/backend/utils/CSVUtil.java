@@ -5,6 +5,7 @@ import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.mapper.PaperMapper;
+import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -145,15 +147,17 @@ public class CSVUtil {
             String[] raw = parts[2].split("; ");
             List<Affiliation> affiliations = new LinkedList<>();
             for (String name : raw) {
-                if (existedAffiliation.containsKey(name)) {
-                    affiliations.add(existedAffiliation.get(name));
+                name = StringUtil.stripAccents(name);
+                String key = name.trim().toLowerCase();
+                if (existedAffiliation.containsKey(key)) {
+                    affiliations.add(existedAffiliation.get(key));
                 } else {
-                    Affiliation a = affiliationMapper.selectByName(name);
+                    Affiliation a= affiliationMapper.selectByName(name);
                     if (a == null) {
                         a = new Affiliation(name);
                         newAffiliations.add(a);
                     }
-                    existedAffiliation.put(name, a);
+                    existedAffiliation.put(key, a);
                     affiliations.add(a);
                 }
             }
@@ -173,15 +177,17 @@ public class CSVUtil {
             List<Affiliation> affiliations = outerItr.next();
             Iterator<Affiliation> itr = affiliations.iterator();
             for (String name : names) {
-                if (existedAuthor.containsKey(name)) {
-                    authors.add(existedAuthor.get(name));
+                name = StringUtil.stripAccents(name);
+                String key = name.trim().toLowerCase();
+                if (existedAuthor.containsKey(key)) {
+                    authors.add(existedAuthor.get(key));
                 } else {
                     Author a = authorMapper.selectByName(name);
                     if (a == null) {
                         a = new Author(name, itr.next().getId());
                         newAuthors.add(a);
                     }
-                    existedAuthor.put(name, a);
+                    existedAuthor.put(key, a);
                     authors.add(a);
                 }
             }
@@ -195,18 +201,18 @@ public class CSVUtil {
     private static void analyzeConference(String filename, List<String[]> lines, List<Conference> conferenceList, Map<String, Conference> existedConference) {
         List<Conference> newConference = new LinkedList<>();
         Conference conference;
-        String name = filename.split("\\.")[0];
-        if (existedConference.containsKey(name)) {
-            conference = existedConference.get(name);
+        String name = StringUtil.stripAccents(filename.split("\\.")[0]);
+        String key = name.trim().toLowerCase();
+        if (existedConference.containsKey(key)) {
+            conference = existedConference.get(key);
         } else {
             conference = paperMapper.selectConferenceByName(name);
-            if (conference != null) {
-                existedConference.put(name, conference);
-                conferenceList.add(conference);
-            } else {
+            if (conference == null) {
                 conference = new Conference(name);
-                existedConference.put(name, conference);
                 newConference.add(conference);
+            } else {
+                conferenceList.add(conference);
+                existedConference.put(key, conference);
             }
         }
         for (String[] ignored : lines) {
@@ -220,16 +226,17 @@ public class CSVUtil {
     private static void analyzePublisher(List<String[]> lines, List<Publisher> publisherList, Map<String, Publisher> existedPublisher) {
         List<Publisher> newPublisher = new LinkedList<>();
         for (String[] parts : lines) {
-            String name = parts[27];
-            if (existedPublisher.containsKey(name)) {
-                publisherList.add(existedPublisher.get(name));
+            String name = StringUtil.stripAccents(parts[27]);
+            String key = name.toLowerCase();
+            if (existedPublisher.containsKey(key)) {
+                publisherList.add(existedPublisher.get(key));
             } else {
                 Publisher p = paperMapper.selectPublisherByName(name);
                 if (p == null) {
                     p = new Publisher(name);
                     newPublisher.add(p);
                 }
-                existedPublisher.put(name, p);
+                existedPublisher.put(key, p);
                 publisherList.add(p);
             }
         }
@@ -253,7 +260,7 @@ public class CSVUtil {
                     continue;
                 }
                 for (String word : words) {
-                    word = word.trim().toLowerCase();
+                    word = StringUtil.stripAccents(word.trim().toLowerCase());
                     if (existedTerm.containsKey(word)) {
                         terms.add(existedTerm.get(word));
                     } else {
@@ -279,22 +286,24 @@ public class CSVUtil {
         Iterator<Publisher> publisherItr = publisherList.iterator();
         Iterator<Conference> conferenceItr = conferenceList.iterator();
         for (String[] parts : lines) {
-            String paperTitle = parts[0];
-            String year = parts[5];
+            String paperTitle = StringUtil.stripAccents(parts[0]);
+            String key = paperTitle.trim().toLowerCase();
+            String year = parts[5].trim();
             // paper的year加在了key的末尾
-            if (existedPaper.containsKey(paperTitle + year)) {
-                Paper ep = existedPaper.get(paperTitle + year);
+            if (existedPaper.containsKey(key + year)) {
+                Paper ep = existedPaper.get(key + year);
                 if (NumberUtil.string2Int(year) == ep.getPublicationYear().getYear()) {
-                    paperList.add(existedPaper.get(paperTitle + year));
+                    paperList.add(existedPaper.get(key + year));
                     continue;
                 }
             }
-            Paper p = paperMapper.selectByName(paperTitle);
+            LocalDateTime publishYear = DateUtil.parseYear(year);
+            Paper p = paperMapper.selectByNameAndYear(paperTitle, publishYear);
             if (p == null) {
                 p = new Paper();
                 p.setPaperTitle(paperTitle);
                 p.setPublicationTitle(parts[3]);
-                p.setPublicationYear(DateUtil.parseYear(year));
+                p.setPublicationYear(publishYear);
                 p.setStartPage(parts[8]);
                 p.setEndPage(parts[9]);
                 p.setPaperAbstract(parts[10]);
@@ -307,7 +316,7 @@ public class CSVUtil {
                 p.setDocumentIdentifier(parts[28]);
                 newPaper.add(p);
             }
-            existedPaper.put(paperTitle + year, p);
+            existedPaper.put(key + year, p);
             paperList.add(p);
         }
         if (!newPaper.isEmpty()) {

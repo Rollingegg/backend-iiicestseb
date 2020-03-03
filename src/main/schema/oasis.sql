@@ -60,7 +60,8 @@ CREATE TABLE publish (
                          author_id int comment '作者id',
                          paper_id int comment '文献id',
                          foreign key (author_id) references author(id),
-                         foreign key (paper_id) references paper(id)
+                         foreign key (paper_id) references paper(id),
+                         unique (author_id, paper_id)
 )ENGINE=InnoDB comment '作者发表文献_关系表';
 
 # ##创建术语分类标准表
@@ -87,7 +88,8 @@ CREATE TABLE paper_term (
                             paper_id int comment '文献id',
                             term_id int comment '术语id',
                             foreign key (term_id) references term(id),
-                            foreign key (paper_id) references paper(id)
+                            foreign key (paper_id) references paper(id),
+                            unique (term_id, paper_id)
 )ENGINE=InnoDB comment '文献术语_关系表';
 
 ##创建浏览记录表
