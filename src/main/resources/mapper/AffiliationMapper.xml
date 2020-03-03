@@ -7,5 +7,14 @@
     <result property="name" column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
   </resultMap>
 
+  <insert id="insertAffiliationList" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="group.iiicestseb.backend.entity.Affiliation">
+    insert into
+    affiliation(name)
+    values
+    <foreach collection="affiliationList" item="aff" separator=",">
+      (#{aff.name,jdbcType=CHAR})
+    </foreach>
+  </insert>
+
 
 </mapper>

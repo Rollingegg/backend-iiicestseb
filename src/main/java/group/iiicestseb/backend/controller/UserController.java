@@ -22,7 +22,7 @@ public class UserController {
 
     /**
      * 用户登录/注册界面 用户登录
-     * @param userForm
+     * @param userForm 用户表单
      * @return 用户个人信息
      */
     @GetMapping("/login")

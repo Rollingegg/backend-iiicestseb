@@ -3,6 +3,7 @@ package group.iiicestseb.backend.mapper;
 import group.iiicestseb.backend.entity.Author;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -13,15 +14,17 @@ public interface AuthorMapper {
 
     /**
      * 通过id删除作者
-     * @author wph
+     *
      * @param id 作者id
      * @return 修改行数
+     * @author wph
      */
     @Delete("delete from author where id = #{id,jdbcType=INTEGER}")
     int deleteByPrimaryKey(Integer id);
 
     /**
      * 增加作者
+     *
      * @param record 作者实体
      * @return 新增作者id
      */
@@ -31,7 +34,16 @@ public interface AuthorMapper {
     int insert(Author record);
 
     /**
+     * 增加作者列表
+     *
+     * @param authorList 作者实体列表
+     * @return 插入的行
+     */
+    int insertAuthorList(@Param("authorList") List<Author> authorList);
+
+    /**
      * 通过id搜寻作者
+     *
      * @param id 作者id
      * @return 作者实体
      */
@@ -39,10 +51,9 @@ public interface AuthorMapper {
     @ResultMap("AuthorResultMap")
     Author selectByPrimaryKey(Integer id);
 
-
-
     /**
      * 更新作者信息
+     *
      * @param record 作者信息实体
      * @return 修改行数
      */
@@ -51,6 +62,7 @@ public interface AuthorMapper {
 
     /**
      * 根据作者名字查找作者信息
+     *
      * @param name 作者名
      * @return 作者实体
      */
@@ -60,6 +72,7 @@ public interface AuthorMapper {
 
     /**
      * 查询文献的所有作者
+     *
      * @param id 文献id
      * @return 文献作者列表
      */

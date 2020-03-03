@@ -50,7 +50,7 @@ public class PaperManageServiceImpl implements PaperManageService {
         Paper paper = paperMapper.selectByName(name);
         PaperInfoVO paperInfoVO = new PaperInfoVO(paper);
         paperInfoVO.setPublisherName(paperMapper.selectPublisherNameById(paperInfoVO.getPublisherId()).getName());
-        paperInfoVO.setConferenceName(paperMapper.selectConferenceNameById(paperInfoVO.getConferenceId()).getName());
+        paperInfoVO.setConferenceName(paperMapper.selectConferenceNameById(paperInfoVO.getConferenceId()));
         return paperInfoVO;
     }
 }

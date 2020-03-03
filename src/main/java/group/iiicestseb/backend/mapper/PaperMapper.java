@@ -1,11 +1,11 @@
 package group.iiicestseb.backend.mapper;
 
-import group.iiicestseb.backend.entity.Conference;
-import group.iiicestseb.backend.entity.Paper;
-import group.iiicestseb.backend.entity.Publisher;
+
+import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
@@ -17,6 +17,7 @@ public interface PaperMapper {
 
     /**
      * 通过id删除文献
+     *
      * @param id 文献id
      * @return 影响行数
      */
@@ -25,6 +26,7 @@ public interface PaperMapper {
 
     /**
      * 插入文献
+     *
      * @param record 文献id
      * @return 插入的id
      */
@@ -32,20 +34,29 @@ public interface PaperMapper {
             "      conference_id, pdf_link, DOI, " +
             "      paper_title, paper_abstract, reference_count, " +
             "      citation_count, publication_year, start_page, " +
-            "      end_page, author_keywords, document_identifier" +
+            "      end_page, document_identifier" +
             "      )" +
             "    values ( #{publicationTitle,jdbcType=VARCHAR}, #{publisherId,jdbcType=INTEGER}, " +
             "      #{conferenceId,jdbcType=INTEGER}, #{pdfLink,jdbcType=VARCHAR}, #{doi,jdbcType=VARCHAR}, " +
             "      #{paperTitle,jdbcType=VARCHAR}, #{paperAbstract,jdbcType=VARCHAR}, #{referenceCount,jdbcType=INTEGER}, " +
-            "      #{citationCount,jdbcType=INTEGER}, #{publicationYear,jdbcType=INTEGER}, #{startPage,jdbcType=INTEGER}, " +
-            "      #{endPage,jdbcType=INTEGER}, #{authorKeywords,jdbcType=VARCHAR}, #{documentIdentifier,jdbcType=VARCHAR}" +
+            "      #{citationCount,jdbcType=INTEGER}, #{publicationYear,jdbcType=INTEGER}, #{startPage,jdbcType=VARCHAR}, " +
+            "      #{endPage,jdbcType=VARCHAR}, #{documentIdentifier,jdbcType=VARCHAR}" +
             "      ) ;" +
             "select last_insert_id()")
     @Options(useGeneratedKeys = true)
     int insert(Paper record);
 
     /**
+     * 插入文献列表
+     *
+     * @param paperList 文献实体列表
+     * @return 插入的行数
+     */
+    int insertPaperList(@Param("paperList") List<Paper> paperList);
+
+    /**
      * 通过id选择文献
+     *
      * @param id 文献id
      * @return 文献实体
      */
@@ -53,9 +64,9 @@ public interface PaperMapper {
     @ResultMap("PaperResultMap")
     Paper selectByPrimaryKey(Integer id);
 
-
     /**
      * 通过id更新文献
+     *
      * @param record 文献实体
      * @return 影响行数
      */
@@ -70,14 +81,14 @@ public interface PaperMapper {
             "      reference_count = #{referenceCount,jdbcType=INTEGER}," +
             "      citation_count = #{citationCount,jdbcType=INTEGER}," +
             "      publication_year = #{publicationYear,jdbcType=INTEGER}," +
-            "      start_page = #{startPage,jdbcType=INTEGER}," +
-            "      end_page = #{endPage,jdbcType=INTEGER}," +
-            "      author_keywords = #{authorKeywords,jdbcType=VARCHAR}" +
+            "      start_page = #{startPage,jdbcType=VARCHAR}," +
+            "      end_page = #{endPage,jdbcType=VARCHAR}" +
             "    where id = #{id,jdbcType=INTEGER}")
     int updateByPrimaryKey(Paper record);
 
     /**
      * 通过文献名删除文献
+     *
      * @param name 文献名
      * @return 影响行数
      */
@@ -85,7 +96,8 @@ public interface PaperMapper {
     int deleteByName(String name);
 
     /**
-     * 通过文献名删除文献
+     * 通过文献名更新文献
+     *
      * @param paper 文献实体
      * @return 影响行数
      */
@@ -100,14 +112,14 @@ public interface PaperMapper {
             "      reference_count = #{referenceCount,jdbcType=INTEGER}," +
             "      citation_count = #{citationCount,jdbcType=INTEGER}," +
             "      publication_year = #{publicationYear,jdbcType=INTEGER}," +
-            "      start_page = #{startPage,jdbcType=INTEGER}," +
-            "      end_page = #{endPage,jdbcType=INTEGER}," +
-            "      author_keywords = #{authorKeywords,jdbcType=VARCHAR}" +
+            "      start_page = #{startPage,jdbcType=VARCHAR}," +
+            "      end_page = #{endPage,jdbcType=VARCHAR}" +
             "    where paper_title = #{paperTitle,jdbcType=VARCHAR}")
     int updateByName(Paper paper);
 
     /**
      * 通过文献名查找文献信息
+     *
      * @param name 文献名
      * @return 文献实体
      */
@@ -117,6 +129,7 @@ public interface PaperMapper {
 
     /**
      * 通过id查找出版社名称
+     *
      * @param id 出版社id
      * @return 出版社名称
      */
@@ -124,16 +137,98 @@ public interface PaperMapper {
     Publisher selectPublisherNameById(int id);
 
     /**
+     * 通过出版社名称查找出版社
+     *
+     * @param name 出版社名
+     * @return 出版社实体对象
+     */
+    @Select("select * from conference where name = #{name}")
+    @ResultMap("PublisherResultMap")
+    Publisher selectPublisherByName(@Param("name") String name);
+
+    /**
+     * 增加出版社列表
+     *
+     * @param publisherList 出版社实体列表
+     * @return 插入的行数
+     */
+    int insertPublisherList(@Param("publisherList") List<Publisher> publisherList);
+
+    /**
      * 通过id查找会议名称
+     *
      * @param id 会议id
      * @return 会议名称
      */
+    @Select("select conference.name from conference where id = #{id}")
+    String selectConferenceNameById(int id);
+
+    /**
+     * 通过id查找会议
+     *
+     * @param id 会议id
+     * @return 会议实体
+     */
     @Select("select * from conference where id = #{id}")
-    Conference selectConferenceNameById(int id);
+    @ResultMap("ConferenceResultMap")
+    Conference selectConferenceById(int id);
+
+    /**
+     * 通过会议名查找会议
+     *
+     * @param name 会议名
+     * @return 会议对象
+     */
+    @Select("select * from conference where name = #{name}")
+    @ResultMap("ConferenceResultMap")
+    Conference selectConferenceByName(@Param("name") String name);
+
+    /**
+     * 增加会议列表
+     *
+     * @param conferenceList 会议实体列表
+     * @return 插入的行数
+     */
+    int insertConferenceList(@Param("conferenceList") List<Conference> conferenceList);
+
+    /**
+     * 通过术语名查找术语
+     *
+     * @param name 术语名
+     * @return 术语对象
+     */
+    @Select("select * from term where word = #{name}")
+    @ResultMap("TermResultMap")
+    Term selectTermByName(String name);
+
+    /**
+     * 增加术语列表
+     *
+     * @param termList 术语实体列表
+     * @return 插入的行数
+     */
+    int insertTermList(@Param("termList") List<Term> termList);
+
+    /**
+     * 增加文献所含术语列表
+     *
+     * @param paperTermList 文献所含术语实体列表
+     * @return 插入的行数
+     */
+    int insertPaperTermList(@Param("paperTermList") List<PaperTerm> paperTermList);
+
+    /**
+     * 增加文献发布列表
+     *
+     * @param publishList 文献发布实体列表
+     * @return 插入的行数
+     */
+    int insertPublishList(@Param("publishList") List<Publish> publishList);
 
     /**
      * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询
-     * @param type 查询类型 适用于 DOI 标题 摘要 作者 机构
+     *
+     * @param type     查询类型 适用于 DOI 标题 摘要 作者 机构
      * @param keywords 搜索关键字
      * @return 文献列表
      */
@@ -148,6 +243,7 @@ public interface PaperMapper {
 
     /**
      * 适用于模糊字段查找 全部 类型的简单查询
+     *
      * @param keywords 关键字
      * @return 文献列表
      */
@@ -167,6 +263,7 @@ public interface PaperMapper {
 
     /**
      * 多字段高级检索
+     *
      * @param advancedSearchForm 高级检索表单
      * @return 论文列表
      */
@@ -181,4 +278,5 @@ public interface PaperMapper {
             "order by citation_count desc")
     @ResultMap("PaperResultMap")
     CopyOnWriteArrayList<Paper> advancedSearch(AdvancedSearchForm advancedSearchForm);
+
 }

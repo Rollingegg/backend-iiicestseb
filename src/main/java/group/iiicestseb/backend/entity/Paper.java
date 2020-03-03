@@ -70,24 +70,19 @@ public class Paper {
     /**
      * 起始页
      */
-    private Integer startPage;
+    private String startPage;
 
     /**
      * 结束页
      */
-    private Integer endPage;
-
-    /**
-     * 作者关键字
-     */
-    private String authorKeywords;
+    private String endPage;
 
     /**
      * document_identifier （讨论中不知道啥意思的项，保留英文）
      */
     private String documentIdentifier;
 
-    public Paper(Integer id, String publicationTitle, Integer publisherId, Integer conferenceId, String pdfLink, String doi, String paperTitle, String paperAbstract, Integer referenceCount, Integer citationCount, LocalDateTime publicationYear, Integer startPage, Integer endPage, String authorKeywords, String documentIdentifier) {
+    public Paper(Integer id, String publicationTitle, Integer publisherId, Integer conferenceId, String pdfLink, String doi, String paperTitle, String paperAbstract, Integer referenceCount, Integer citationCount, LocalDateTime publicationYear, String startPage, String endPage, String documentIdentifier) {
         this.id = id;
         this.publicationTitle = publicationTitle;
         this.publisherId = publisherId;
@@ -101,7 +96,6 @@ public class Paper {
         this.publicationYear = publicationYear;
         this.startPage = startPage;
         this.endPage = endPage;
-        this.authorKeywords = authorKeywords;
         this.documentIdentifier = documentIdentifier;
     }
 
@@ -111,7 +105,6 @@ public class Paper {
 
 
     public Paper(PaperForm paperForm){
-        this.authorKeywords = paperForm.getAuthorKeywords();
         this.citationCount = paperForm.getCitationCount();
         this.conferenceId = paperForm.getConferenceId();
         this.documentIdentifier = paperForm.getDocumentIdentifier();
