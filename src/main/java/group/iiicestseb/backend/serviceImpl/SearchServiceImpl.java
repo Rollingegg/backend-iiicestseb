@@ -18,9 +18,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Transactional(rollbackFor = Exception.class)
 @Service("Search")
 public class SearchServiceImpl implements SearchService {
-    static String ALL = "all";
-    static String AFFILIATION ="affiliation_name";
-    static String AUTHOR ="author_name";
+    public final String ALL = "all";
+    public final String AFFILIATION ="affiliation_name";
+    public final String AUTHOR ="author_name";
 
     @Resource
     private PaperMapper paperMapper;
