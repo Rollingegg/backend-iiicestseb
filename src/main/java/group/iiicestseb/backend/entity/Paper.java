@@ -1,5 +1,6 @@
 package group.iiicestseb.backend.entity;
 
+import group.iiicestseb.backend.form.PaperForm;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -108,4 +109,23 @@ public class Paper {
         super();
     }
 
+
+    public Paper(PaperForm paperForm){
+        this.authorKeywords = paperForm.getAuthorKeywords();
+        this.citationCount = paperForm.getCitationCount();
+        this.conferenceId = paperForm.getConferenceId();
+        this.documentIdentifier = paperForm.getDocumentIdentifier();
+        this.doi = paperForm.getDoi();
+        this.endPage = paperForm.getEndPage();
+        this.startPage = paperForm.getStartPage();
+        this.id = paperForm.getId();
+        this.pdfLink = paperForm.getPdfLink();
+        this.paperAbstract = paperForm.getPaperAbstract();
+        this.paperTitle = paperForm.getPaperTitle();
+        this.publicationYear = paperForm.getPublicationYear();
+        this.referenceCount = paperForm.getReferenceCount();
+        this.publicationTitle = paperForm.getPublicationTitle();
+        this.publisherId = paperForm.getPublisherId();
+
+    }
 }

@@ -19,6 +19,10 @@ public class Affiliation {
      */
     private String name;
 
+    public Affiliation(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public Affiliation(String name) {
         this.name = name;

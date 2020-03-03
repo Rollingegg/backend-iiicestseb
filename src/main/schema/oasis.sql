@@ -5,8 +5,7 @@ USE oasisdb;
 ##创建机构表
 CREATE TABLE affiliation (
                                id   INT AUTO_INCREMENT PRIMARY KEY comment '机构id',
-                               name VARCHAR(30) comment '机构名',
-                               secondary VARCHAR(30) comment '二级机构'
+                               name VARCHAR(30) comment '机构名'
 )ENGINE=InnoDB comment '机构表';
 create index affiliation_name_hash using hash on affiliation(name);
 

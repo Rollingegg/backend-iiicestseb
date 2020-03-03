@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
  * 后端处理结果返回类
  *
  * @author wph
- * @data 2020/03/01
+ * @date 2020/03/01
  */
 @Data
 public class Response {

@@ -1,4 +1,4 @@
-package group.iiicestseb.backend.Form;
+package group.iiicestseb.backend.form;
 
 import lombok.Data;
 

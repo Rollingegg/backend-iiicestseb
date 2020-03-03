@@ -1,6 +1,6 @@
 package group.iiicestseb.backend.controller;
 
-import group.iiicestseb.backend.Form.UserForm;
+import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
 import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
 import group.iiicestseb.backend.service.UserService;
@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  */
 @RestController
 public class UserController {
-    @Resource
+    @Resource(name = "Regedit")
     private UserService userService;
 
     /**
@@ -23,7 +23,7 @@ public class UserController {
      * @param userForm
      * @return 用户个人信息
      */
-    @PostMapping("/login")
+    @GetMapping("/login")
     public Response signIn(@RequestBody UserForm userForm){
         try {
             return Response.buildSuccess(userService.signIn(userForm));
@@ -35,7 +35,7 @@ public class UserController {
     /**
      * 用户登录/注册界面 用户注册
      * @param userForm
-     * @return
+     * @return 无
      */
     @PostMapping("/register")
     public Response register(@RequestBody UserForm userForm){

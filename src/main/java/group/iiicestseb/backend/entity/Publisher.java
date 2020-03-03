@@ -11,7 +11,7 @@ import lombok.Data;
 public class Publisher {
 
     /**
-     * 作者发表文献_关系id
+     * 刊物所属出版社
      */
     private Integer id;
 

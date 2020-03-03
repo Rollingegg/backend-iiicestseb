@@ -1,81 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="group.iiicestseb.backend.mapper.AuthorMapper">
-  <resultMap id="AffiliationResultMap" type="group.iiicestseb.backend.entity.Author">
-    <constructor>
-      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
-      <arg column="affiliation_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-    </constructor>
+  <resultMap id="AuthorResultMap" type="group.iiicestseb.backend.entity.Author">
+    <id property="id" column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result property="name" column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result property="affiliationId" column="affiliation_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
   </resultMap>
-  <sql id="Affiliation_Column_List">
-    id, name, affiliation_id
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="AffiliationResultMap">
-    select 
-    <include refid="Affiliation_Column_List" />
-    from author
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from author
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="group.iiicestseb.backend.entity.Author">
-    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into author (id, name, affiliation_id
-      )
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{affiliationId,jdbcType=INTEGER}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="group.iiicestseb.backend.entity.Author">
-    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into author
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      id,
-      <if test="name != null">
-        name,
-      </if>
-      <if test="affiliationId != null">
-        affiliation_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      #{id,jdbcType=INTEGER},
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="affiliationId != null">
-        #{affiliationId,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="group.iiicestseb.backend.entity.Author">
-    update author
-    <set>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="affiliationId != null">
-        affiliation_id = #{affiliationId,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="group.iiicestseb.backend.entity.Author">
-    update author
-    set name = #{name,jdbcType=VARCHAR},
-      affiliation_id = #{affiliationId,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
 
-  <select id="selectByName" parameterType="string" resultMap="AffiliationResultMap">
-    select *
-    from author
-    where name = #{name}
-  </select>
+
 </mapper>

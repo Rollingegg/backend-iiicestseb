@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * 机构页面 机构详细信息
  * @author wph
- * @data 2020/3/2
+ * @date 2020/3/2
  */
 @Data
 public class AffiliationInfoVO {

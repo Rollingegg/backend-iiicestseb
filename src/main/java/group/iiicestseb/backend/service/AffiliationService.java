@@ -16,16 +16,13 @@ public interface AffiliationService {
      */
     public AffiliationInfoVO getAffiliationInfo(String name);
 
-    /**
-     * --------------------------------以下方法是为了消除循环依赖产生------------------------------
-     */
 
     /**
      * 通过id查找Affiliation
      * @param id 机构id
      * @return 机构实体
      */
-    public Affiliation selectById(int id);
+    public Affiliation selectAffiliationById(int id);
 
 
 }

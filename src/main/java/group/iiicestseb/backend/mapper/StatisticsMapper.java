@@ -1,12 +1,11 @@
 package group.iiicestseb.backend.mapper;
 
 
-import org.springframework.stereotype.Service;
 
 /**
  * @author jh
  * @date 2020/2/22
  */
-@Service
 public interface StatisticsMapper {
+
 }

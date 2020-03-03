@@ -1,6 +1,7 @@
 package group.iiicestseb.backend.mapper;
 
 import group.iiicestseb.backend.entity.User;
+import org.apache.ibatis.annotations.*;
 
 /**
  * @author jh
@@ -11,25 +12,24 @@ public interface UserMapper {
      * 通过id删除用户
      * @author wph
      * @param id 用户id
-     * @return
      */
-    int deleteByPrimaryKey(Integer id);
+    @Delete("delete from user where id = #{id,jdbcType=INTEGER}")
+    void deleteByPrimaryKey(Integer id);
 
     /**
      * 新增用户
      * @author wph
      * @param record 用户实体记录
-     * @return
      */
-    int insert(User record);
-
-    /**
-     * 检查属性是否有空值的新增用户
-     * @author wph
-     * @param record
-     * @return
-     */
-    int insertSelective(User record);
+    @Insert("insert into user (id, record_id, username, password, privilege_level) " +
+            "values (" +
+            "#{id,jdbcType=INTEGER}, " +
+            "#{recordId,jdbcType=INTEGER}, " +
+            "#{username,jdbcType=VARCHAR},  " +
+            "#{password,jdbcType=VARCHAR}, " +
+            "#{privilegeLevel,jdbcType=VARCHAR}")
+    @Options(useGeneratedKeys = true)
+    void insert(User record);
 
     /**
      * 通过主键查找用户
@@ -37,6 +37,7 @@ public interface UserMapper {
      * @param id 用户id
      * @return 用户实体
      */
+    @Select("select * from user where id = #{id,jdbcType=INTEGER}")
     User selectByPrimaryKey(Integer id);
 
     /**
@@ -45,21 +46,20 @@ public interface UserMapper {
      * @param username 用户名
      * @return 用户实体
      */
+    @Select("select * from user where username = #{username,jdbcType = VARCHAR}")
     User selectByUsername(String username);
 
-    /**
-     * 检查是否有空值的 通过一个用户实体更新用户信息
-     * @author wph
-     * @param record 用户实体
-     * @return
-     */
-    int updateByPrimaryKeySelective(User record);
 
     /**
      * 通过一个用户实体更新用户信息
      * @author wph
      * @param record 用户实体
-     * @return
      */
-    int updateByPrimaryKey(User record);
+    @Update("    update user" +
+            "    set record_id = #{recordId,jdbcType=INTEGER}," +
+            "      username = #{username,jdbcType=VARCHAR}," +
+            "      password = #{password,jdbcType=VARCHAR}," +
+            "      privilege_level = #{privilegeLevel,jdbcType=VARCHAR}" +
+            "    where id = #{id,jdbcType=INTEGER}")
+    void updateByPrimaryKey(User record);
 }

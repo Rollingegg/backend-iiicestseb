@@ -1,8 +1,7 @@
 package group.iiicestseb.backend.service;
 
 
-import group.iiicestseb.backend.Form.UserForm;
-import group.iiicestseb.backend.entity.User;
+import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.vo.UserVO;
 
 /**
@@ -23,7 +22,6 @@ public interface UserService {
      * 用户注册
      * @author wph
      * @param userForm 用户账户密码表单
-     * @return 用户信息vo
      */
     public void register(UserForm userForm);
 }

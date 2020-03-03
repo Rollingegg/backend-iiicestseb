@@ -1,14 +1,16 @@
 package group.iiicestseb.backend.exception.user;
 
-import lombok.Data;
 
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 用户注册账号已存在异常
  * @author wph
  * @date 2020/2/22
  */
-@Data
+@Getter
+@Setter
 public class UserAlreadyRegisterException extends RuntimeException{
 
     /**
