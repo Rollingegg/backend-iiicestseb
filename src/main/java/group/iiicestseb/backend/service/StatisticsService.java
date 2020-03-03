@@ -14,4 +14,10 @@ public interface StatisticsService {
      */
     public void loadCsv(String filename);
 
+    /**
+     * 创建用户记录
+     * @return 插入记录主键
+     */
+    public int createUserRecord();
+
 }

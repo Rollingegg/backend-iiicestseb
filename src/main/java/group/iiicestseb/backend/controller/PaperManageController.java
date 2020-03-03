@@ -13,6 +13,8 @@ import javax.annotation.Resource;
  */
 @ResponseBody
 @RestController
+@CrossOrigin
+@RequestMapping("/admin/paper")
 public class PaperManageController {
     @Resource(name = "Paper")
     private PaperManageService paperManageService;
@@ -22,7 +24,7 @@ public class PaperManageController {
      * @param id 论文id
      * @return 无
      */
-    @DeleteMapping("/admin/paper/delete")
+    @DeleteMapping("/delete")
     public Response deletePaper(@RequestParam("id")int id){
         try {
             paperManageService.deletePaperById(id);
@@ -37,7 +39,7 @@ public class PaperManageController {
      * @param paperForm 论文表达
      * @return 无
      */
-    @PutMapping("/admin/paper/update")
+    @PutMapping("/update")
     public Response updatePaper(@RequestBody PaperForm paperForm){
         try {
             paperManageService.updatePaperById(paperForm);

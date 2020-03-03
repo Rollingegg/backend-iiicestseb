@@ -1,10 +1,13 @@
 package group.iiicestseb.backend.mapper;
 
+
 import group.iiicestseb.backend.entity.*;
+import group.iiicestseb.backend.form.AdvancedSearchForm;
 import org.apache.ibatis.annotations.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 
 /**
  * @author jh
@@ -16,29 +19,32 @@ public interface PaperMapper {
      * 通过id删除文献
      *
      * @param id 文献id
+     * @return 影响行数
      */
     @Delete("delete from paper where id = #{id,jdbcType=INTEGER}")
-    void deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer id);
 
     /**
      * 插入文献
      *
      * @param record 文献id
+     * @return 插入的id
      */
-    @Insert("insert into paper (id, publication_title, publisher_id, " +
+    @Insert("insert into paper ( publication_title, publisher_id, " +
             "      conference_id, pdf_link, DOI, " +
             "      paper_title, paper_abstract, reference_count, " +
             "      citation_count, publication_year, start_page, " +
             "      end_page, document_identifier" +
             "      )" +
-            "    values (#{id,jdbcType=INTEGER}, #{publicationTitle,jdbcType=VARCHAR}, #{publisherId,jdbcType=INTEGER}, " +
+            "    values ( #{publicationTitle,jdbcType=VARCHAR}, #{publisherId,jdbcType=INTEGER}, " +
             "      #{conferenceId,jdbcType=INTEGER}, #{pdfLink,jdbcType=VARCHAR}, #{doi,jdbcType=VARCHAR}, " +
             "      #{paperTitle,jdbcType=VARCHAR}, #{paperAbstract,jdbcType=VARCHAR}, #{referenceCount,jdbcType=INTEGER}, " +
-            "      #{citationCount,jdbcType=INTEGER}, #{publicationYear,jdbcType=INTEGER}, #{startPage,jdbcType=INTEGER}, " +
-            "      #{endPage,jdbcType=INTEGER}, #{documentIdentifier,jdbcType=VARCHAR}" +
-            "      ) ")
+            "      #{citationCount,jdbcType=INTEGER}, #{publicationYear,jdbcType=INTEGER}, #{startPage,jdbcType=VARCHAR}, " +
+            "      #{endPage,jdbcType=VARCHAR}, #{documentIdentifier,jdbcType=VARCHAR}" +
+            "      ) ;" +
+            "select last_insert_id()")
     @Options(useGeneratedKeys = true)
-    void insert(Paper record);
+    int insert(Paper record);
 
     /**
      * 插入文献列表
@@ -62,6 +68,7 @@ public interface PaperMapper {
      * 通过id更新文献
      *
      * @param record 文献实体
+     * @return 影响行数
      */
     @Update("update paper" +
             "    set publication_title = #{publicationTitle,jdbcType=VARCHAR}," +
@@ -74,23 +81,25 @@ public interface PaperMapper {
             "      reference_count = #{referenceCount,jdbcType=INTEGER}," +
             "      citation_count = #{citationCount,jdbcType=INTEGER}," +
             "      publication_year = #{publicationYear,jdbcType=INTEGER}," +
-            "      start_page = #{startPage,jdbcType=INTEGER}," +
-            "      end_page = #{endPage,jdbcType=INTEGER}" +
+            "      start_page = #{startPage,jdbcType=VARCHAR}," +
+            "      end_page = #{endPage,jdbcType=VARCHAR}" +
             "    where id = #{id,jdbcType=INTEGER}")
-    void updateByPrimaryKey(Paper record);
+    int updateByPrimaryKey(Paper record);
 
     /**
      * 通过文献名删除文献
      *
      * @param name 文献名
+     * @return 影响行数
      */
     @Delete("delete from paper where paper_title = #{name,jdbcType=VARCHAR}")
-    void deleteByName(String name);
+    int deleteByName(String name);
 
     /**
-     * 通过文献名删除文献
+     * 通过文献名更新文献
      *
      * @param paper 文献实体
+     * @return 影响行数
      */
     @Update("update paper" +
             "    set publication_title = #{publicationTitle,jdbcType=VARCHAR}," +
@@ -103,10 +112,10 @@ public interface PaperMapper {
             "      reference_count = #{referenceCount,jdbcType=INTEGER}," +
             "      citation_count = #{citationCount,jdbcType=INTEGER}," +
             "      publication_year = #{publicationYear,jdbcType=INTEGER}," +
-            "      start_page = #{startPage,jdbcType=INTEGER}," +
-            "      end_page = #{endPage,jdbcType=INTEGER}," +
-            "    paper_title = #{paperTitle,jdbcType=VARCHAR}")
-    void updateByName(Paper paper);
+            "      start_page = #{startPage,jdbcType=VARCHAR}," +
+            "      end_page = #{endPage,jdbcType=VARCHAR}" +
+            "    where paper_title = #{paperTitle,jdbcType=VARCHAR}")
+    int updateByName(Paper paper);
 
     /**
      * 通过文献名查找文献信息
@@ -124,8 +133,8 @@ public interface PaperMapper {
      * @param id 出版社id
      * @return 出版社名称
      */
-    @Select("select publisher.name from publisher where id = #{id};")
-    String selectPublisherNameById(int id);
+    @Select("select * from publisher where id = #{id};")
+    Publisher selectPublisherNameById(int id);
 
     /**
      * 通过出版社名称查找出版社
@@ -153,6 +162,16 @@ public interface PaperMapper {
      */
     @Select("select conference.name from conference where id = #{id}")
     String selectConferenceNameById(int id);
+
+    /**
+     * 通过id查找会议
+     *
+     * @param id 会议id
+     * @return 会议实体
+     */
+    @Select("select * from conference where id = #{id}")
+    @ResultMap("ConferenceResultMap")
+    Conference selectConferenceById(int id);
 
     /**
      * 通过会议名查找会议
@@ -206,29 +225,58 @@ public interface PaperMapper {
      */
     int insertPublishList(@Param("publishList") List<Publish> publishList);
 
+    /**
+     * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询
+     *
+     * @param type     查询类型 适用于 DOI 标题 摘要 作者 机构
+     * @param keywords 搜索关键字
+     * @return 文献列表
+     */
+    @Select("select distinct paper.* from paper,publish,author,affiliation " +
+            "where ${type} like '%${keywords}%' and " +
+            "paper.id = publish.paper_id and " +
+            "publish.author_id = author.id and " +
+            "author.affiliation_id = affiliation.id")
+    @ResultMap("PaperResultMap")
+    CopyOnWriteArrayList<Paper> simpleSearchPaperByType(String type, String keywords);
 
-//    /**
-//     * 适用于查找 DOI、标题、摘要 类型的简单查询
-//     * @param type 查询类型 适用于 DOI 标题 摘要
-//     * @param keywords
-//     * @return 文献列表
-//     */
-//    @Select("select * from paper" +
-//            "where ${type} like '%${keywords}%' order by citation_count DESC")
-//    @ResultMap("PaperResultMap")
-//    ArrayList<Paper> simpleSearchPaperByType(String type,String keywords);
-//
-//
-//    /**
-//     * 适用于查找 全部 类型的简单查询
-//     * @param keywords 关键字
-//     * @return 文献列表
-//     */
-//    @Select("select * from paper" +
-//            "where paper_tile like '%${keywords}%' or" +
-//            "paper_abstract like '%${keywords}%' or" +
-//            "DOI like '%${keywords}%'" +
-//            "order by citation_count DESC")
-//    @ResultMap("PaperResultMap")
-//    ArrayList<Paper> simpleSearchPaperAll(String keywords);
+
+    /**
+     * 适用于模糊字段查找 全部 类型的简单查询
+     *
+     * @param keywords 关键字
+     * @return 文献列表
+     */
+    @Select("select distinct paper.* from paper,publish,author,affiliation " +
+            "where paper.id = publish.paper_id and " +
+            "publish.author_id = author.id and " +
+            "author.affiliation_id = affiliation.id and " +
+            "(author.name like '%${keywords}%' or " +
+            "affiliation.name like '%${keywords}%' or " +
+            "paper.DOI like '%${keywords}%' or " +
+            "paper.paper_abstract like '%${keywords}%' or " +
+            "paper.paper_title like '%${keywords}%')" +
+            "order by citation_count DESC ")
+    @ResultMap("PaperResultMap")
+    CopyOnWriteArrayList<Paper> simpleSearchPaperAll(String keywords);
+
+
+    /**
+     * 多字段高级检索
+     *
+     * @param advancedSearchForm 高级检索表单
+     * @return 论文列表
+     */
+    @Select("select distinct paper.* from paper,publish,author,affiliation " +
+            "where paper.id = publish.paper_id and " +
+            "publish.author_id = author.id and " +
+            "author.affiliation_id = affiliation.id and " +
+            "(paper.paper_title like #{paperTitleKeyword}  OR #{paperTitleKeyword} IS NULL) and" +
+            "(paper.paper_abstract like #{paperAbstractKeyword}  OR #{paperAbstractKeyword} IS NULL) and " +
+            "(paper.DOI like #{doiKeyword}  OR #{doiKeyword} IS NULL) and " +
+            "(paper.paper_abstract like #{paperAbstractKeyword}  OR #{paperAbstractKeyword} IS NULL)" +
+            "order by citation_count desc")
+    @ResultMap("PaperResultMap")
+    CopyOnWriteArrayList<Paper> advancedSearch(AdvancedSearchForm advancedSearchForm);
+
 }

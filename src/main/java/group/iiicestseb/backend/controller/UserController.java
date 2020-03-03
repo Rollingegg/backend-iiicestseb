@@ -14,13 +14,15 @@ import javax.annotation.Resource;
  * @date 2020/2/22
  */
 @RestController
+@ResponseBody
+@CrossOrigin
 public class UserController {
     @Resource(name = "Regedit")
     private UserService userService;
 
     /**
      * 用户登录/注册界面 用户登录
-     * @param userForm
+     * @param userForm 用户表单
      * @return 用户个人信息
      */
     @GetMapping("/login")
@@ -34,7 +36,7 @@ public class UserController {
 
     /**
      * 用户登录/注册界面 用户注册
-     * @param userForm
+     * @param userForm 用户表单
      * @return 无
      */
     @PostMapping("/register")

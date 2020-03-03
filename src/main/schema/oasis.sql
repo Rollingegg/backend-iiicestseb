@@ -45,8 +45,8 @@ CREATE TABLE paper (
                        reference_count int comment  '参考资料数',
                        citation_count int comment '文献被引次数',
                        publication_year timestamp comment '出版年份',
-                       start_page varchar(10) comment '起始页',
-                       end_page varchar(10) comment '终止页',
+                       start_page varchar(15) comment '起始页',
+                       end_page varchar(15) comment '终止页',
 #                          author_keywords varchar(100) comment '文章关键词',
                        document_identifier varchar(30) comment 'document_identifier',
                        foreign key (conference_id) references conference(id),
@@ -76,7 +76,7 @@ CREATE TABLE publish (
 CREATE TABLE term (
                       id   INT AUTO_INCREMENT PRIMARY KEY comment '术语id',
 #                       standard_id int comment '术语标准来源id',
-                      word varchar(70) comment '术语'
+                      word varchar(80) comment '术语'
 #                       foreign key (standard_id) references term_standard(id)
 )ENGINE=InnoDB comment '术语表';
 create index term_word_hash using hash on term(word);

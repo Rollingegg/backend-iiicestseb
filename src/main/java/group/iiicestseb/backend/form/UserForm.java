@@ -20,4 +20,9 @@ public class UserForm {
      */
     private String password;
 
+    /**
+     * 记录id
+     */
+    private Integer recordId;
+
 }

@@ -44,8 +44,10 @@ public class UserServiceImpl implements UserService {
         User newUser = new User();
         //检查用户是否已注册
         try {
+
             newUser.setUsername(userForm.getUsername());
             newUser.setPassword(userForm.getPassword());
+            newUser.setRecordId(userForm.getRecordId());
             newUser.setPrivilegeLevel("用户");
             userMapper.insert(newUser);
             //若注册成功，也该更新历史记录
