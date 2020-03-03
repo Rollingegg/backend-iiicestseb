@@ -12,24 +12,26 @@ public interface UserMapper {
      * 通过id删除用户
      * @author wph
      * @param id 用户id
+     * @return 影响行数
      */
     @Delete("delete from user where id = #{id,jdbcType=INTEGER}")
-    void deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer id);
 
     /**
      * 新增用户
      * @author wph
      * @param record 用户实体记录
+     * @return 插入的主键
      */
-    @Insert("insert into user (id, record_id, username, password, privilege_level) " +
+    @Insert("insert into user (record_id, username, password, privilege_level) " +
             "values (" +
-            "#{id,jdbcType=INTEGER}, " +
             "#{recordId,jdbcType=INTEGER}, " +
             "#{username,jdbcType=VARCHAR},  " +
             "#{password,jdbcType=VARCHAR}, " +
-            "#{privilegeLevel,jdbcType=VARCHAR})")
+            "#{privilegeLevel,jdbcType=VARCHAR});" +
+            "select LAST_INSERT_ID() as id")
     @Options(useGeneratedKeys = true)
-    void insert(User record);
+    int insert(User record);
 
     /**
      * 通过主键查找用户
@@ -54,6 +56,7 @@ public interface UserMapper {
      * 通过一个用户实体更新用户信息
      * @author wph
      * @param record 用户实体
+     * @return 影响行数
      */
     @Update("    update user" +
             "    set record_id = #{recordId,jdbcType=INTEGER}," +
@@ -61,5 +64,5 @@ public interface UserMapper {
             "      password = #{password,jdbcType=VARCHAR}," +
             "      privilege_level = #{privilegeLevel,jdbcType=VARCHAR}" +
             "    where id = #{id,jdbcType=INTEGER}")
-    void updateByPrimaryKey(User record);
+    int updateByPrimaryKey(User record);
 }

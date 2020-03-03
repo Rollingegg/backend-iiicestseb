@@ -1,6 +1,8 @@
 package group.iiicestseb.backend.mapper;
 
+import group.iiicestseb.backend.entity.Conference;
 import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.entity.Publisher;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import org.apache.ibatis.annotations.*;
 
@@ -16,28 +18,31 @@ public interface PaperMapper {
     /**
      * 通过id删除文献
      * @param id 文献id
+     * @return 影响行数
      */
     @Delete("delete from paper where id = #{id,jdbcType=INTEGER}")
-    void deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer id);
 
     /**
      * 插入文献
      * @param record 文献id
+     * @return 插入的id
      */
-    @Insert("insert into paper (id, publication_title, publisher_id, " +
+    @Insert("insert into paper ( publication_title, publisher_id, " +
             "      conference_id, pdf_link, DOI, " +
             "      paper_title, paper_abstract, reference_count, " +
             "      citation_count, publication_year, start_page, " +
             "      end_page, author_keywords, document_identifier" +
             "      )" +
-            "    values (#{id,jdbcType=INTEGER}, #{publicationTitle,jdbcType=VARCHAR}, #{publisherId,jdbcType=INTEGER}, " +
+            "    values ( #{publicationTitle,jdbcType=VARCHAR}, #{publisherId,jdbcType=INTEGER}, " +
             "      #{conferenceId,jdbcType=INTEGER}, #{pdfLink,jdbcType=VARCHAR}, #{doi,jdbcType=VARCHAR}, " +
             "      #{paperTitle,jdbcType=VARCHAR}, #{paperAbstract,jdbcType=VARCHAR}, #{referenceCount,jdbcType=INTEGER}, " +
             "      #{citationCount,jdbcType=INTEGER}, #{publicationYear,jdbcType=INTEGER}, #{startPage,jdbcType=INTEGER}, " +
-            "      #{endPage,jdbcType=INTEGER}, #{authorKeywords,jdbcType=VARCHAR}, #{documentIdentifer,jdbcType=VARCHAR}" +
-            "      ) ")
+            "      #{endPage,jdbcType=INTEGER}, #{authorKeywords,jdbcType=VARCHAR}, #{documentIdentifier,jdbcType=VARCHAR}" +
+            "      ) ;" +
+            "select last_insert_id()")
     @Options(useGeneratedKeys = true)
-    void insert(Paper record);
+    int insert(Paper record);
 
     /**
      * 通过id选择文献
@@ -52,6 +57,7 @@ public interface PaperMapper {
     /**
      * 通过id更新文献
      * @param record 文献实体
+     * @return 影响行数
      */
     @Update("update paper" +
             "    set publication_title = #{publicationTitle,jdbcType=VARCHAR}," +
@@ -68,18 +74,20 @@ public interface PaperMapper {
             "      end_page = #{endPage,jdbcType=INTEGER}," +
             "      author_keywords = #{authorKeywords,jdbcType=VARCHAR}" +
             "    where id = #{id,jdbcType=INTEGER}")
-    void updateByPrimaryKey(Paper record);
+    int updateByPrimaryKey(Paper record);
 
     /**
      * 通过文献名删除文献
      * @param name 文献名
+     * @return 影响行数
      */
     @Delete("delete from paper where paper_title = #{name,jdbcType=VARCHAR}")
-    void deleteByName(String name);
+    int deleteByName(String name);
 
     /**
      * 通过文献名删除文献
      * @param paper 文献实体
+     * @return 影响行数
      */
     @Update("update paper" +
             "    set publication_title = #{publicationTitle,jdbcType=VARCHAR}," +
@@ -96,7 +104,7 @@ public interface PaperMapper {
             "      end_page = #{endPage,jdbcType=INTEGER}," +
             "      author_keywords = #{authorKeywords,jdbcType=VARCHAR}" +
             "    where paper_title = #{paperTitle,jdbcType=VARCHAR}")
-    void updateByName(Paper paper);
+    int updateByName(Paper paper);
 
     /**
      * 通过文献名查找文献信息
@@ -112,16 +120,16 @@ public interface PaperMapper {
      * @param id 出版社id
      * @return 出版社名称
      */
-    @Select("select publisher.name from publisher where id = #{id};")
-    String selectPublisherNameById(int id);
+    @Select("select * from publisher where id = #{id};")
+    Publisher selectPublisherNameById(int id);
 
     /**
      * 通过id查找会议名称
      * @param id 会议id
      * @return 会议名称
      */
-    @Select("select conference.name from conference where id = #{id}")
-    String selectConferenceNameById(int id);
+    @Select("select * from conference where id = #{id}")
+    Conference selectConferenceNameById(int id);
 
     /**
      * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询

@@ -29,6 +29,8 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
     private PaperManageService paperManageService;
     @Resource(name = "Search")
     private SearchService searchService;
+    @Resource(name = "Statistics")
+    private StatisticsService statisticsService;
 
 
 
@@ -108,6 +110,8 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
 
     @Override
     public void register(UserForm userForm) {
+        int recordId = statisticsService.createUserRecord();
+        userForm.setRecordId(recordId);
         userService.register(userForm);
     }
 
@@ -115,8 +119,8 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
 
     /**
      * 给文献加上所有作者新信息
-     * @param searchResultVOS
-     * @return
+     * @param searchResultVOS 搜索结果列表（目前内缺作者信息）
+     * @return 搜索结果列表（信息完整）
      */
     private CopyOnWriteArrayList<SearchResultVO> addAuthorInfoInfoPaper(CopyOnWriteArrayList<SearchResultVO> searchResultVOS){
         for (SearchResultVO x:searchResultVOS) {

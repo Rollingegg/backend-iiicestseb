@@ -12,6 +12,7 @@ import javax.annotation.Resource;
  */
 @ResponseBody
 @RestController
+@CrossOrigin
 public class AffiliationController {
     @Resource(name = "Regedit")
     private AffiliationService affiliationService;

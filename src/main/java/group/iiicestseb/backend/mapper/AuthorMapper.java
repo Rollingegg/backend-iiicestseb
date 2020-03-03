@@ -15,17 +15,20 @@ public interface AuthorMapper {
      * 通过id删除作者
      * @author wph
      * @param id 作者id
+     * @return 修改行数
      */
     @Delete("delete from author where id = #{id,jdbcType=INTEGER}")
-    void deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer id);
 
     /**
      * 增加作者
      * @param record 作者实体
+     * @return 新增作者id
      */
-    @Insert("insert into author (id, name, affiliation_id) values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{affiliationId,jdbcType=INTEGER})")
+    @Insert("insert into author (name, affiliation_id) values (#{name,jdbcType=VARCHAR}, #{affiliationId,jdbcType=INTEGER});" +
+            "select last_insert_id()")
     @Options(useGeneratedKeys = true)
-    void insert(Author record);
+    int insert(Author record);
 
     /**
      * 通过id搜寻作者
@@ -41,9 +44,10 @@ public interface AuthorMapper {
     /**
      * 更新作者信息
      * @param record 作者信息实体
+     * @return 修改行数
      */
     @Update("update author set name = #{name,jdbcType=VARCHAR}, affiliation_id = #{affiliationId,jdbcType=INTEGER} where id = #{id,jdbcType=INTEGER}")
-    void updateByPrimaryKey(Author record);
+    int updateByPrimaryKey(Author record);
 
     /**
      * 根据作者名字查找作者信息

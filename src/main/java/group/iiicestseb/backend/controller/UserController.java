@@ -15,6 +15,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @ResponseBody
+@CrossOrigin
 public class UserController {
     @Resource(name = "Regedit")
     private UserService userService;
@@ -35,7 +36,7 @@ public class UserController {
 
     /**
      * 用户登录/注册界面 用户注册
-     * @param userForm
+     * @param userForm 用户表单
      * @return 无
      */
     @PostMapping("/register")

@@ -13,6 +13,7 @@ import javax.annotation.Resource;
  */
 @ResponseBody
 @RestController
+@CrossOrigin
 @RequestMapping("/admin/paper")
 public class PaperManageController {
     @Resource(name = "Paper")

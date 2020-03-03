@@ -13,9 +13,10 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/search")
+@CrossOrigin
 public class SearchController {
 
-    @Resource
+    @Resource(name = "Regedit")
     SearchService searchService;
 
     /**

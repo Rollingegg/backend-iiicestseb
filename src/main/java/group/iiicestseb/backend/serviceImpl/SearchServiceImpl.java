@@ -18,22 +18,26 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Transactional(rollbackFor = Exception.class)
 @Service("Search")
 public class SearchServiceImpl implements SearchService {
+    static String ALL = "all";
+    static String AFFILIATION ="affiliation_name";
+    static String AUTHOR ="author_name";
+
     @Resource
     private PaperMapper paperMapper;
     @Override
     public CopyOnWriteArrayList<SearchResultVO> simpleSearchPaper(String  type, String keyword){
         CopyOnWriteArrayList<SearchResultVO> searchResultVOCopyOnWriteArrayList = new CopyOnWriteArrayList<SearchResultVO>();
         CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList;
-        if (type.equals("all")){
+        if (ALL.equals(type)){
             //all类型的全模糊查询
             paperCopyOnWriteArrayList = paperMapper.simpleSearchPaperAll(keyword);
         }
         else {
             //单一类型的模糊查询
-            if (type.equals("author_name")){
+            if (AUTHOR.equals(type)){
                 type = type.replace('_','.');
             }
-            else if(type.equals("affiliation_name")){
+            else if(AFFILIATION.equals(type)){
                 type = type.replace('_','.');
             }
             paperCopyOnWriteArrayList = paperMapper.simpleSearchPaperByType(type,keyword);

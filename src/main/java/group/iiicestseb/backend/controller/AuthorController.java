@@ -3,10 +3,7 @@ package group.iiicestseb.backend.controller;
 
 import group.iiicestseb.backend.service.AuthorService;
 import group.iiicestseb.backend.vo.Response;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -16,6 +13,7 @@ import javax.annotation.Resource;
  */
 @ResponseBody
 @RestController
+@CrossOrigin
 public class AuthorController {
     @Resource(name = "Regedit")
     private AuthorService authorService;
