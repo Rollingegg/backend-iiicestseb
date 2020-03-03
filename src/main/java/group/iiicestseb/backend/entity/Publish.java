@@ -25,14 +25,19 @@ public class Publish {
      */
     private Integer paperId;
 
+    public Publish() {
+        super();
+    }
+
     public Publish(Integer id, Integer authorId, Integer paperId) {
         this.id = id;
         this.authorId = authorId;
         this.paperId = paperId;
     }
 
-    public Publish() {
-        super();
+    public Publish(Paper paper, Author author){
+        this.authorId = author.getId();
+        this.paperId = paper.getId();
     }
 
 }

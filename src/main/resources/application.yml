@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: wph
+    active: "@profileActive@"
   datasource:
     type: com.mysql.cj.jdbc.MysqlDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -23,8 +23,6 @@ spring:
   profiles: prod
   devtools:
     add-properties: false
-  datasource:
-    password: root
 logging:
   level:
     root: info
@@ -37,7 +35,6 @@ spring:
     add-properties: true
   datasource:
     username: root
-    password: root
 logging:
   level:
     group.iiicestseb.backend: DEBUG
@@ -67,7 +64,14 @@ logging:
     group:
       iiicestseb:
         backend: DEBUG
-
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 ---
 spring:
   profiles: jh
@@ -88,6 +92,14 @@ logging:
       iiicestseb:
         backend:
           DEBUG
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 ---
 spring:
@@ -112,6 +124,14 @@ logging:
       iiicestseb:
         backend:
           DEBUG
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 ---
 spring:
@@ -134,5 +154,13 @@ logging:
       iiicestseb:
         backend:
           DEBUG
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 ---

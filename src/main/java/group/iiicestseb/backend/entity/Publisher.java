@@ -17,13 +17,19 @@ public class Publisher {
 
     private String name;
 
+    public Publisher() {
+        super();
+    }
+
+    public Publisher(String name) {
+        this.name = name;
+    }
+
     public Publisher(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Publisher() {
-        super();
-    }
+
 
 }
