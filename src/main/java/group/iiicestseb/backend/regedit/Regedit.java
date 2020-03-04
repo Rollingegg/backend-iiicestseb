@@ -1,6 +1,7 @@
 package group.iiicestseb.backend.regedit;
 
 import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.entity.Record;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.PaperForm;
 import group.iiicestseb.backend.form.UserForm;
@@ -110,7 +111,7 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
 
     @Override
     public void register(UserForm userForm) {
-        int recordId = statisticsService.createUserRecord();
+        int recordId = statisticsService.createUserRecord(new Record("",""));
         userForm.setRecordId(recordId);
         userService.register(userForm);
     }

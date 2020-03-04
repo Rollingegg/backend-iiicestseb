@@ -25,8 +25,7 @@ public class Record {
      */
     private String browseRecord;
 
-    public Record(Integer id, String searchRecord, String browseRecord) {
-        this.id = id;
+    public Record(String searchRecord, String browseRecord) {
         this.searchRecord = searchRecord;
         this.browseRecord = browseRecord;
     }

@@ -25,8 +25,8 @@ public class SearchController {
      * @param keyword 搜索关键字
      * @return 文献搜索结果列表
      */
-    @GetMapping("/{type}/{keyword}")
-    public Response simpleSearchPaper(@PathVariable String  type, @PathVariable String keyword){
+    @GetMapping("/simple")
+    public Response simpleSearchPaper(@RequestParam(name = "type") String  type, @RequestParam(name = "keyword") String keyword){
         try{
             return Response.buildSuccess(searchService.simpleSearchPaper(type,keyword));
         }catch (Exception e){

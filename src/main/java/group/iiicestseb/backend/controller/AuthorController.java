@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 @ResponseBody
 @RestController
 @CrossOrigin
+@RequestMapping("/author")
 public class AuthorController {
     @Resource(name = "Regedit")
     private AuthorService authorService;
@@ -23,7 +24,7 @@ public class AuthorController {
      * @param name 作者名字
      * @return 作者详细信息
      */
-    @GetMapping("/author")
+    @GetMapping("/info")
     public Response getAuthorInfo(@RequestParam("name") String name){
         try {
             return Response.buildSuccess(authorService.getAuthorInfo(name));

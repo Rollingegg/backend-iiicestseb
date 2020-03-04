@@ -26,10 +26,7 @@ public class UserVO {
      */
     private String username;
 
-    /**
-     * 密码
-     */
-    private String password;
+
 
     /**
      * 权限等级
@@ -40,7 +37,6 @@ public class UserVO {
         this.id = user.getId();
         this.recordId = user.getRecordId();
         this.username = user.getUsername();
-        this.password = user.getPassword();
         this.privilegeLevel = user.getPrivilegeLevel();
     }
 

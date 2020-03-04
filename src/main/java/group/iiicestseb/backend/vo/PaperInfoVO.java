@@ -4,6 +4,7 @@ import group.iiicestseb.backend.entity.Paper;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 文献管理页面 文献的详细信息
@@ -95,6 +96,14 @@ public class PaperInfoVO {
      * 会议名称
      */
     private String conferenceName;
+
+    /**
+     * 作者列表
+     */
+    private CopyOnWriteArrayList<AuthorInfoVO> authorInfoList;
+
+
+
 
     public PaperInfoVO(){}
     public PaperInfoVO(Paper paper) {

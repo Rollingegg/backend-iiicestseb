@@ -1,6 +1,7 @@
 package group.iiicestseb.backend.service;
 
 
+import group.iiicestseb.backend.entity.Record;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -20,7 +21,7 @@ public interface StatisticsService {
      * 创建用户记录
      * @return 插入记录主键
      */
-    public int createUserRecord();
+    public int createUserRecord(Record record);
 
     /**
      * 解析上传的csv文件

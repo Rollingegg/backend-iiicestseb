@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 @RestController
 @ResponseBody
 @CrossOrigin
+@RequestMapping("/user")
 public class UserController {
     @Resource(name = "Regedit")
     private UserService userService;
@@ -25,7 +26,7 @@ public class UserController {
      * @param userForm 用户表单
      * @return 用户个人信息
      */
-    @GetMapping("/login")
+    @PostMapping("/login")
     public Response signIn(@RequestBody UserForm userForm){
         try {
             return Response.buildSuccess(userService.signIn(userForm));

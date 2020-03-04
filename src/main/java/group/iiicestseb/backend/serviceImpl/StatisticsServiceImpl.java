@@ -1,5 +1,6 @@
 package group.iiicestseb.backend.serviceImpl;
 
+import group.iiicestseb.backend.entity.Record;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.mapper.PaperMapper;
@@ -40,8 +41,8 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public int createUserRecord() {
-        return statisticsMapper.insertUserRecord();
+    public int createUserRecord(Record record) {
+        return statisticsMapper.insertUserRecord(record);
     }
 
     @Override

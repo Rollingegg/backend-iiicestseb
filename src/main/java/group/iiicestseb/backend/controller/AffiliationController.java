@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 @ResponseBody
 @RestController
 @CrossOrigin
+@RequestMapping("/affiliation")
 public class AffiliationController {
     @Resource(name = "Regedit")
     private AffiliationService affiliationService;
@@ -22,7 +23,7 @@ public class AffiliationController {
      * @param name 机构名称
      * @return 机构详细信息
      */
-    @GetMapping("/affiliation")
+    @GetMapping("/info")
     public Response getAffiliationInfo(@RequestParam("name")String name){
         try{
             return  Response.buildSuccess(affiliationService.getAffiliationInfo(name));
