@@ -6,11 +6,15 @@ import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.mapper.StatisticsMapper;
 import group.iiicestseb.backend.service.StatisticsService;
 import group.iiicestseb.backend.utils.CSVUtil;
+import group.iiicestseb.backend.vo.AuthorInfoVO;
+import group.iiicestseb.backend.vo.AuthorWithPublish;
+import group.iiicestseb.backend.vo.TermWithHotVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 /**
@@ -49,5 +53,16 @@ public class StatisticsServiceImpl implements StatisticsService {
     public void analyzeUploadedCSV(MultipartFile file) {
         CSVUtil.analyzeUploadedCSV(file);
     }
+
+    @Override
+    public List<TermWithHotVO> calculateHotTerms(Integer num) {
+        return statisticsMapper.selectTermsWithHotLimit(num);
+    }
+
+    @Override
+    public List<AuthorWithPublish> calculateMaxPublishAuthor(Integer num) {
+        return statisticsMapper.selectMaxPublishAuthorLimit(num);
+    }
+
 
 }
