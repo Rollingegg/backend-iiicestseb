@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
             throw new WrongLoginInfoException();
         }
         //检验用户密码是否正确
-        if (user.getPassword().equals(userForm.getPassword())) {
+        if (user != null && user.getPassword().equals(userForm.getPassword())) {
             return new UserVO(user);
         } else {
             throw new WrongLoginInfoException();

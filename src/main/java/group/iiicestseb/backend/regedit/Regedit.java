@@ -49,15 +49,15 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
     }
 
     @Override
-    public CopyOnWriteArrayList<Paper> simpleSearchPaper(String type, String keyword) {
-        CopyOnWriteArrayList<Paper> searchResultVOS= searchService.simpleSearchPaper(type,keyword);
+    public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String type, String keyword) {
+        CopyOnWriteArrayList<PaperInfoVO> searchResultVOS= searchService.simpleSearchPaper(type,keyword);
         return addAuthorInfoInfoPaper(searchResultVOS);
 
     }
 
     @Override
-    public CopyOnWriteArrayList<Paper> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
-        CopyOnWriteArrayList<Paper> searchResultVOS= searchService.advancedSearchPaper(advancedSearchForm);
+    public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
+        CopyOnWriteArrayList<PaperInfoVO> searchResultVOS= searchService.advancedSearchPaper(advancedSearchForm);
         return addAuthorInfoInfoPaper(searchResultVOS);
     }
 
@@ -129,17 +129,14 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
      * @param searchResultVOS 搜索结果列表（目前内缺作者信息）
      * @return 搜索结果列表（信息完整）
      */
-    private CopyOnWriteArrayList<Paper> addAuthorInfoInfoPaper(CopyOnWriteArrayList<Paper> searchResultVOS){
-        CopyOnWriteArrayList<PaperInfoVO>  resultList = new CopyOnWriteArrayList<PaperInfoVO>();
-        for (Paper x:searchResultVOS) {
-            PaperInfoVO paperInfoVO = new PaperInfoVO(x);
+    private CopyOnWriteArrayList<PaperInfoVO> addAuthorInfoInfoPaper(CopyOnWriteArrayList<PaperInfoVO> searchResultVOS){
+        for (PaperInfoVO x:searchResultVOS) {
             CopyOnWriteArrayList<String> authorList = authorService.getAuthorByPaperId(x.getId());
             CopyOnWriteArrayList<AuthorInfoVO> temp = new CopyOnWriteArrayList<AuthorInfoVO>();
             for (String y:authorList){
                 temp.add(authorService.getAuthorInfo(y));
             }
-            paperInfoVO.setAuthorInfoList(temp);
-            //resultList.add(temp);
+            x.setAuthorInfoList(temp);
         }
         return searchResultVOS;
     }

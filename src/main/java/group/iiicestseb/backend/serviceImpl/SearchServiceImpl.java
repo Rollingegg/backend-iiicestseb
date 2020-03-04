@@ -4,6 +4,8 @@ import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.service.SearchService;
+import group.iiicestseb.backend.vo.AuthorInfoVO;
+import group.iiicestseb.backend.vo.PaperInfoVO;
 import group.iiicestseb.backend.vo.SearchResultVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ public class SearchServiceImpl implements SearchService {
     @Resource
     private PaperMapper paperMapper;
     @Override
-    public CopyOnWriteArrayList<Paper> simpleSearchPaper(String  type, String keyword){
+    public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String  type, String keyword){
         CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList;
         if (ALL.equals(type)){
             //all类型的全模糊查询
@@ -41,12 +43,20 @@ public class SearchServiceImpl implements SearchService {
             }
             paperCopyOnWriteArrayList = paperMapper.simpleSearchPaperByType(type,keyword);
         }
-        return paperCopyOnWriteArrayList;
+        CopyOnWriteArrayList<PaperInfoVO> resultList = new  CopyOnWriteArrayList<>();
+        for (Paper x: paperCopyOnWriteArrayList) {
+            resultList.add(new PaperInfoVO(x));
+        }
+        return resultList;
     }
 
     @Override
-    public CopyOnWriteArrayList<Paper> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
+    public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
         CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList = paperMapper.advancedSearch(advancedSearchForm);
-        return paperCopyOnWriteArrayList;
+        CopyOnWriteArrayList<PaperInfoVO> resultList = new  CopyOnWriteArrayList<>();
+        for (Paper x: paperCopyOnWriteArrayList) {
+            resultList.add(new PaperInfoVO(x));
+        }
+        return resultList;
     }
 }
