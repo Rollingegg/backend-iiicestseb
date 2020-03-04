@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -21,7 +22,7 @@ import java.util.*;
  * @author jh
  * @date 2020/3/3
  */
-@Component
+@Service
 public class CSVUtil {
     public static final String CSV_PATH = CSVUtil.class.getResource("/").getPath() + "csv/";
 
