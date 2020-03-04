@@ -131,10 +131,10 @@ public interface PaperMapper {
      * 通过id查找出版社名称
      *
      * @param id 出版社id
-     * @return 出版社名称
+     * @return 出版社名称实体
      */
     @Select("select * from publisher where id = #{id};")
-    Publisher selectPublisherNameById(int id);
+    Publisher selectPublisherById(int id);
 
     /**
      * 通过出版社名称查找出版社
@@ -154,14 +154,7 @@ public interface PaperMapper {
      */
     int insertPublisherList(@Param("publisherList") List<Publisher> publisherList);
 
-    /**
-     * 通过id查找会议名称
-     *
-     * @param id 会议id
-     * @return 会议名称
-     */
-    @Select("select conference.name from conference where id = #{id}")
-    String selectConferenceNameById(int id);
+
 
     /**
      * 通过id查找会议

@@ -24,9 +24,8 @@ public class AffiliationServiceImpl implements AffiliationService {
     public AffiliationInfoVO getAffiliationInfo(String name) {
         AffiliationInfoVO affiliationInfoVO = new AffiliationInfoVO();
         //获取机构信息
-        System.out.println(name);
         Affiliation affiliation = affiliationMapper.selectByName(name);
-        System.out.println(affiliation.getName());
+        System.out.println(affiliation.getId());
         affiliationInfoVO.setId(affiliation.getId());
         affiliationInfoVO.setName(affiliation.getName());
         return affiliationInfoVO;

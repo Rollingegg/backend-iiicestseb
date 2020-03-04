@@ -18,8 +18,8 @@ import static org.junit.Assert.*;
 @Transactional
 public class AffiliationMapperTest {
     @Resource
-    private AffiliationMapper affiliationMapper
-;
+    private AffiliationMapper affiliationMapper;
+
     @Test
     public void deleteByPrimaryKey() {
         affiliationMapper.deleteByPrimaryKey(1);

@@ -12,7 +12,7 @@ public interface AffiliationService {
     /**
      * 获取机构页面的机构详细信息
      * @param name 机构名称
-     * @return
+     * @return 机构详细信息
      */
     public AffiliationInfoVO getAffiliationInfo(String name);
 
