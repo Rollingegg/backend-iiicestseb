@@ -28,9 +28,8 @@ public interface UserMapper {
             "#{recordId,jdbcType=INTEGER}, " +
             "#{username,jdbcType=VARCHAR},  " +
             "#{password,jdbcType=VARCHAR}, " +
-            "#{privilegeLevel,jdbcType=VARCHAR});" +
-            "select LAST_INSERT_ID() as id")
-    @Options(useGeneratedKeys = true)
+            "#{privilegeLevel,jdbcType=VARCHAR});")
+    @Options(useGeneratedKeys = true,keyProperty = "id")
     int insert(User record);
 
     /**

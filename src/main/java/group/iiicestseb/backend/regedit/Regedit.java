@@ -111,8 +111,9 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
 
     @Override
     public void register(UserForm userForm) {
-        int recordId = statisticsService.createUserRecord(new Record("",""));
-        userForm.setRecordId(recordId);
+        Record r = new Record("","");
+        int recordId = statisticsService.createUserRecord(r);
+        userForm.setRecordId(r.getId());
         userService.register(userForm);
     }
 
