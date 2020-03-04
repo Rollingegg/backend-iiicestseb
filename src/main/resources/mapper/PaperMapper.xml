@@ -1,5 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="group.iiicestseb.backend.mapper.PaperManageMapper">
+<mapper namespace="group.iiicestseb.backend.mapper.PaperMapper">
+    <resultMap id="PaperResultMap" type="group.iiicestseb.backend.entity.Paper">
+        <id property="id" column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="publicationTitle" column="publication_title" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="publisherId" column="publisher_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="conferenceId" column="conference_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="pdfLink" column="pdf_link" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="doi" column="DOI" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="paperTitle" column="paper_title" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="paperAbstract" column="paper_abstract" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="referenceCount" column="reference_count" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="citationCount" column="citation_count" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="publicationYear" column="publication_year" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP"/>
+        <result property="startPage" column="start_page" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="endPage" column="end_page" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="documentIdentifier" column="document_identifier" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="ConferenceResultMap" type="group.iiicestseb.backend.entity.Conference">
+        <id property="id" column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="name" column="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="PublisherResultMap" type="group.iiicestseb.backend.entity.Publisher">
+        <id property="id" column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="name" column="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="TermResultMap" type="group.iiicestseb.backend.entity.Term">
+        <id property="id" column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="word" column="word" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insertConferenceList" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+            parameterType="group.iiicestseb.backend.entity.Conference">
+        insert into
+        conference(name)
+        values
+        <foreach collection="conferenceList" item="conf" separator=",">
+            (#{conf.name,jdbcType=CHAR})
+        </foreach>
+    </insert>
+
+    <insert id="insertPublisherList" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+            parameterType="group.iiicestseb.backend.entity.Publisher">
+        insert into
+        publisher(name)
+        values
+        <foreach collection="publisherList" item="pub" separator=",">
+            (#{pub.name,jdbcType=CHAR})
+        </foreach>
+    </insert>
+
+    <insert id="insertTermList" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+            parameterType="group.iiicestseb.backend.entity.Term">
+        insert into
+        term(word)
+        values
+        <foreach collection="termList" item="term" separator=",">
+            (#{term.word,jdbcType=CHAR})
+        </foreach>
+    </insert>
+
+    <insert id="insertPaperList" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+            parameterType="group.iiicestseb.backend.entity.Paper">
+        insert into
+        paper(publication_title, publisher_id, conference_id, pdf_link, DOI, paper_title, paper_abstract,
+        reference_count, citation_count, publication_year, start_page, end_page, document_identifier)
+        values
+        <foreach collection="paperList" item="p" separator=",">
+            (#{p.publicationTitle,jdbcType=VARCHAR}, #{p.publisherId,jdbcType=INTEGER}, #{p.conferenceId,jdbcType=INTEGER},
+            #{p.pdfLink,jdbcType=VARCHAR}, #{p.doi,jdbcType=VARCHAR}, #{p.paperTitle,jdbcType=VARCHAR},
+            #{p.paperAbstract,jdbcType=VARCHAR}, #{p.referenceCount,jdbcType=INTEGER}, #{p.citationCount,jdbcType=INTEGER},
+            #{p.publicationYear,jdbcType=TIMESTAMP}, #{p.startPage,jdbcType=VARCHAR}, #{p.endPage,jdbcType=VARCHAR},
+            #{p.documentIdentifier,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <insert id="insertPaperTermList" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+            parameterType="group.iiicestseb.backend.entity.PaperTerm">
+        insert ignore into
+        paper_term(paper_id, term_id)
+        values
+        <foreach collection="paperTermList" item="pt" separator=",">
+            (#{pt.paperId, jdbcType=INTEGER}, #{pt.termId, jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <insert id="insertPublishList" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+            parameterType="group.iiicestseb.backend.entity.Publish">
+        insert ignore into
+        publish(author_id, paper_id)
+        values
+        <foreach collection="publishList" item="publish" separator=",">
+            (#{publish.authorId,jdbcType=INTEGER}, #{publish.paperId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
 
 </mapper>

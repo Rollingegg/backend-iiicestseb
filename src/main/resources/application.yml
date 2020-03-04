@@ -23,8 +23,6 @@ spring:
   profiles: prod
   devtools:
     add-properties: false
-  datasource:
-    password: root
 logging:
   level:
     root: info
@@ -37,7 +35,6 @@ spring:
     add-properties: true
   datasource:
     username: root
-    password: root
 logging:
   level:
     group.iiicestseb.backend: DEBUG
@@ -67,13 +64,20 @@ logging:
     group:
       iiicestseb:
         backend: DEBUG
-
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 ---
 spring:
   profiles: jh
   datasource:
     password: root
-    url: jdbc:mysql://localhost:3306/sec?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/oasisdb?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     hikari:
       max-lifetime: 3600000
   devtools:
@@ -88,17 +92,28 @@ logging:
       iiicestseb:
         backend:
           DEBUG
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 ---
 spring:
   profiles: wph
   datasource:
-    password: root
-    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    password: shengdasogood
+    url: jdbc:mysql://localhost:3306/oasisdb?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     hikari:
       max-lifetime: 3600000
+    username: root
+    driver-class-name: com.mysql.jdbc.Driver
   devtools:
     add-properties: true
+
 server:
   servlet:
     session:
@@ -109,6 +124,14 @@ logging:
       iiicestseb:
         backend:
           DEBUG
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 ---
 spring:
@@ -131,5 +154,13 @@ logging:
       iiicestseb:
         backend:
           DEBUG
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 ---

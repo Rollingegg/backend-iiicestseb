@@ -64,6 +64,17 @@
 			<artifactId>jacoco-maven-plugin</artifactId>
 			<version>0.8.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>17.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>4.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -98,6 +109,26 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<!--Mybatis-generator插件,用于自动生成Mapper和POJO-->
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>1.3.4</version>
+				<configuration>
+					<!--配置文件的位置-->
+					<verbose>true</verbose>
+					<overwrite>true</overwrite>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.mybatis.generator</groupId>
+						<artifactId>mybatis-generator-core</artifactId>
+						<version>1.3.4</version>
+					</dependency>
+					<!-- https://mvnrepository.com/artifact/org.easymock/easymock -->
+
+				</dependencies>
+			</plugin>
 		</plugins>
 
 	</build>
@@ -124,5 +155,6 @@
 			</properties>
 		</profile>
 	</profiles>
+
 </project>
 
