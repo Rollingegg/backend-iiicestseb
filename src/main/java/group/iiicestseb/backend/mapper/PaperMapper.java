@@ -5,6 +5,7 @@ import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -117,8 +118,9 @@ public interface PaperMapper {
             "    where paper_title = #{paperTitle,jdbcType=VARCHAR}")
     int updateByName(Paper paper);
 
+
     /**
-     * 通过文献名查找文献信息
+     * 通过文献名查找文献信息 TODO: 应该返回一个列表，因为有同名文献
      *
      * @param name 文献名
      * @return 文献实体
@@ -126,6 +128,17 @@ public interface PaperMapper {
     @Select("select * from paper where paper_title = #{name}")
     @ResultMap("PaperResultMap")
     Paper selectByName(String name);
+
+    /**
+     * 通过文献名和文献发布年份查找文献信息
+     *
+     * @param name 文献名
+     * @param year 发布年份
+     * @return 文献实体
+     */
+    @Select("select * from paper where paper_title = #{name} and publication_year = #{year}")
+    @ResultMap("PaperResultMap")
+    Paper selectByNameAndYear(String name, LocalDateTime year);
 
     /**
      * 通过id查找出版社名称

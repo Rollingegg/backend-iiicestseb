@@ -12,7 +12,7 @@
         <result property="paperAbstract" column="paper_abstract" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="referenceCount" column="reference_count" javaType="java.lang.Integer" jdbcType="INTEGER"/>
         <result property="citationCount" column="citation_count" javaType="java.lang.Integer" jdbcType="INTEGER"/>
-        <result property="publicationYear" column="publication_year" javaType="java.lang.Integer" jdbcType="TIMESTAMP"/>
+        <result property="publicationYear" column="publication_year" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP"/>
         <result property="startPage" column="start_page" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="endPage" column="end_page" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="documentIdentifier" column="document_identifier" javaType="java.lang.String"
@@ -74,14 +74,14 @@
             (#{p.publicationTitle,jdbcType=VARCHAR}, #{p.publisherId,jdbcType=INTEGER}, #{p.conferenceId,jdbcType=INTEGER},
             #{p.pdfLink,jdbcType=VARCHAR}, #{p.doi,jdbcType=VARCHAR}, #{p.paperTitle,jdbcType=VARCHAR},
             #{p.paperAbstract,jdbcType=VARCHAR}, #{p.referenceCount,jdbcType=INTEGER}, #{p.citationCount,jdbcType=INTEGER},
-            #{p.publicationYear,jdbcType=INTEGER}, #{p.startPage,jdbcType=VARCHAR}, #{p.endPage,jdbcType=VARCHAR},
+            #{p.publicationYear,jdbcType=TIMESTAMP}, #{p.startPage,jdbcType=VARCHAR}, #{p.endPage,jdbcType=VARCHAR},
             #{p.documentIdentifier,jdbcType=VARCHAR})
         </foreach>
     </insert>
 
     <insert id="insertPaperTermList" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
             parameterType="group.iiicestseb.backend.entity.PaperTerm">
-        insert into
+        insert ignore into
         paper_term(paper_id, term_id)
         values
         <foreach collection="paperTermList" item="pt" separator=",">
@@ -91,7 +91,7 @@
 
     <insert id="insertPublishList" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
             parameterType="group.iiicestseb.backend.entity.Publish">
-        insert into
+        insert ignore into
         publish(author_id, paper_id)
         values
         <foreach collection="publishList" item="publish" separator=",">

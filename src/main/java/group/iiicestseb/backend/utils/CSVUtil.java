@@ -5,6 +5,7 @@ import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.mapper.PaperMapper;
+import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -43,6 +45,17 @@ public class CSVUtil {
         CSVUtil.paperMapper = this.papMapper;
     }
 
+    /**
+     * TODO: 这些是已经存在的固定数据，如作者、机构等，后面有空的话可以用redis来优化
+     */
+    private static Map<String, Affiliation> existedAffiliation = new HashMap<>();
+    private static Map<String, Author> existedAuthor = new HashMap<>();
+    private static Map<String, Conference> existedConference = new HashMap<>();
+    private static Map<String, Term> existedTerm = new HashMap<>();
+    private static Map<String, Publisher> existedPublisher = new HashMap<>();
+    // 这里的key为paperTitle+年份
+    private static Map<String, Paper> existedPaper = new HashMap<>();
+
 //    private static final Map<String, Integer> STANDARDS = new HashMap<String, Integer>() {
 //        {
 //            put("IEEE Terms", 1);
@@ -60,15 +73,6 @@ public class CSVUtil {
     public static void analyzeCsv(String filename) {
         List<String[]> lines = new LinkedList<>();
         analyzeCsvLines(filename, lines);
-
-        // TODO: 这些是已经存在的固定数据，如作者、机构等，后面有空的话可以用redis来优化
-        Map<String, Affiliation> existedAffiliation = new HashMap<>();
-        Map<String, Author> existedAuthor = new HashMap<>();
-        Map<String, Conference> existedConference = new HashMap<>();
-        Map<String, Term> existedTerm = new HashMap<>();
-        Map<String, Publisher> existedPublisher = new HashMap<>();
-        // 这里的key为paperTitle+年份
-        Map<String, Paper> existedPaper = new HashMap<>();
 
         // 初始化待解析的数据
         List<List<Affiliation>> affiliationList = new LinkedList<>();
@@ -94,6 +98,11 @@ public class CSVUtil {
 
     }
 
+    /**
+     * 解析传入的csv文件，该文件应在目录下能找到
+     *
+     * @param filename csv文件名
+     */
     private static void analyzeCsvLines(String filename, List<String[]> lines) {
         File file = new File(filename);
         BufferedReader reader;
@@ -139,21 +148,29 @@ public class CSVUtil {
         }
     }
 
+    /**
+     * 解析学者所属机构，如有新数据则存入数据库
+     * @param lines csv数据矩阵
+     * @param affiliationList 需要存放csv中机构信息的二维链表
+     * @param existedAffiliation 已经存在的机构的内存缓存
+     */
     private static void analyzeAffiliation(List<String[]> lines, List<List<Affiliation>> affiliationList, Map<String, Affiliation> existedAffiliation) {
         List<Affiliation> newAffiliations = new LinkedList<>();
         for (String[] parts : lines) {
             String[] raw = parts[2].split("; ");
             List<Affiliation> affiliations = new LinkedList<>();
             for (String name : raw) {
-                if (existedAffiliation.containsKey(name)) {
-                    affiliations.add(existedAffiliation.get(name));
+                name = StringUtil.stripAccents(name);
+                String key = name.trim().toLowerCase();
+                if (existedAffiliation.containsKey(key)) {
+                    affiliations.add(existedAffiliation.get(key));
                 } else {
-                    Affiliation a = affiliationMapper.selectByName(name);
+                    Affiliation a= affiliationMapper.selectByName(name);
                     if (a == null) {
                         a = new Affiliation(name);
                         newAffiliations.add(a);
                     }
-                    existedAffiliation.put(name, a);
+                    existedAffiliation.put(key, a);
                     affiliations.add(a);
                 }
             }
@@ -164,6 +181,13 @@ public class CSVUtil {
         }
     }
 
+    /**
+     * 解析学者信息，如有新数据则存入数据库
+     * @param lines csv数据矩阵
+     * @param authorsList 需要存放csv中学者信息的二维链表
+     * @param affiliationList csv中的机构信息，是一个二维链表
+     * @param existedAuthor 已经存在的学者的内存缓存
+     */
     private static void analyzeAuthor(List<String[]> lines, List<List<Author>> authorsList, List<List<Affiliation>> affiliationList, Map<String, Author> existedAuthor) {
         List<Author> newAuthors = new LinkedList<>();
         Iterator<List<Affiliation>> outerItr = affiliationList.iterator();
@@ -173,15 +197,17 @@ public class CSVUtil {
             List<Affiliation> affiliations = outerItr.next();
             Iterator<Affiliation> itr = affiliations.iterator();
             for (String name : names) {
-                if (existedAuthor.containsKey(name)) {
-                    authors.add(existedAuthor.get(name));
+                name = StringUtil.stripAccents(name);
+                String key = name.trim().toLowerCase();
+                if (existedAuthor.containsKey(key)) {
+                    authors.add(existedAuthor.get(key));
                 } else {
                     Author a = authorMapper.selectByName(name);
                     if (a == null) {
                         a = new Author(name, itr.next().getId());
                         newAuthors.add(a);
                     }
-                    existedAuthor.put(name, a);
+                    existedAuthor.put(key, a);
                     authors.add(a);
                 }
             }
@@ -192,21 +218,28 @@ public class CSVUtil {
         }
     }
 
+    /**
+     * 解析会议信息，如有新数据则存入数据库
+     * @param filename csv文件名，实际上会议信息由文件名获取
+     * @param lines csv数据矩阵
+     * @param conferenceList csv中的会议信息的一维链表
+     * @param existedConference 已经存在的会议实体的内存缓存
+     */
     private static void analyzeConference(String filename, List<String[]> lines, List<Conference> conferenceList, Map<String, Conference> existedConference) {
         List<Conference> newConference = new LinkedList<>();
         Conference conference;
-        String name = filename.split("\\.")[0];
-        if (existedConference.containsKey(name)) {
-            conference = existedConference.get(name);
+        String name = StringUtil.stripAccents(filename.split("\\.")[0]);
+        String key = name.trim().toLowerCase();
+        if (existedConference.containsKey(key)) {
+            conference = existedConference.get(key);
         } else {
             conference = paperMapper.selectConferenceByName(name);
-            if (conference != null) {
-                existedConference.put(name, conference);
-                conferenceList.add(conference);
-            } else {
+            if (conference == null) {
                 conference = new Conference(name);
-                existedConference.put(name, conference);
                 newConference.add(conference);
+            } else {
+                conferenceList.add(conference);
+                existedConference.put(key, conference);
             }
         }
         for (String[] ignored : lines) {
@@ -217,19 +250,26 @@ public class CSVUtil {
         }
     }
 
+    /**
+     * 解析出版社的信息，如有新数据则存入数据库
+     * @param lines csv数据矩阵
+     * @param publisherList 需要存放csv中出版社的一维链表
+     * @param existedPublisher 已经存在的出版社信息内存缓存
+     */
     private static void analyzePublisher(List<String[]> lines, List<Publisher> publisherList, Map<String, Publisher> existedPublisher) {
         List<Publisher> newPublisher = new LinkedList<>();
         for (String[] parts : lines) {
-            String name = parts[27];
-            if (existedPublisher.containsKey(name)) {
-                publisherList.add(existedPublisher.get(name));
+            String name = StringUtil.stripAccents(parts[27]);
+            String key = name.toLowerCase();
+            if (existedPublisher.containsKey(key)) {
+                publisherList.add(existedPublisher.get(key));
             } else {
                 Publisher p = paperMapper.selectPublisherByName(name);
                 if (p == null) {
                     p = new Publisher(name);
                     newPublisher.add(p);
                 }
-                existedPublisher.put(name, p);
+                existedPublisher.put(key, p);
                 publisherList.add(p);
             }
         }
@@ -238,6 +278,12 @@ public class CSVUtil {
         }
     }
 
+    /**
+     * 解析术语信息，如有新数据则存入数据库
+     * @param lines csv数据矩阵
+     * @param termList 需要存放csv中术语信息的二维链表
+     * @param existedTerm 已经存在的术语信息的内存缓存
+     */
     private static void analyzeTerm(List<String[]> lines, List<List<Term>> termList, Map<String, Term> existedTerm) {
         List<Term> newTerms = new LinkedList<>();
         for (String[] parts : lines) {
@@ -253,7 +299,7 @@ public class CSVUtil {
                     continue;
                 }
                 for (String word : words) {
-                    word = word.trim().toLowerCase();
+                    word = StringUtil.stripAccents(word.trim().toLowerCase());
                     if (existedTerm.containsKey(word)) {
                         terms.add(existedTerm.get(word));
                     } else {
@@ -274,27 +320,37 @@ public class CSVUtil {
         }
     }
 
+    /**
+     * 解析文献信息，如有新数据则存入数据库
+     * @param lines csv数据矩阵
+     * @param paperList 需要存放csv中文献信息的二维链表
+     * @param publisherList 解析后的出版社信息一维链表
+     * @param conferenceList  解析后的会议信息一维链表
+     * @param existedPaper  已经存在的文献信息内的存缓存
+     */
     private static void analyzePaper(List<String[]> lines, List<Paper> paperList, List<Publisher> publisherList, List<Conference> conferenceList, Map<String, Paper> existedPaper) {
         List<Paper> newPaper = new LinkedList<>();
         Iterator<Publisher> publisherItr = publisherList.iterator();
         Iterator<Conference> conferenceItr = conferenceList.iterator();
         for (String[] parts : lines) {
-            String paperTitle = parts[0];
-            String year = parts[5];
+            String paperTitle = StringUtil.stripAccents(parts[0]);
+            String key = paperTitle.trim().toLowerCase();
+            String year = parts[5].trim();
             // paper的year加在了key的末尾
-            if (existedPaper.containsKey(paperTitle + year)) {
-                Paper ep = existedPaper.get(paperTitle + year);
+            if (existedPaper.containsKey(key + year)) {
+                Paper ep = existedPaper.get(key + year);
                 if (NumberUtil.string2Int(year) == ep.getPublicationYear().getYear()) {
-                    paperList.add(existedPaper.get(paperTitle + year));
+                    paperList.add(existedPaper.get(key + year));
                     continue;
                 }
             }
-            Paper p = paperMapper.selectByName(paperTitle);
+            LocalDateTime publishYear = DateUtil.parseYear(year);
+            Paper p = paperMapper.selectByNameAndYear(paperTitle, publishYear);
             if (p == null) {
                 p = new Paper();
                 p.setPaperTitle(paperTitle);
                 p.setPublicationTitle(parts[3]);
-                p.setPublicationYear(DateUtil.parseYear(year));
+                p.setPublicationYear(publishYear);
                 p.setStartPage(parts[8]);
                 p.setEndPage(parts[9]);
                 p.setPaperAbstract(parts[10]);
@@ -307,7 +363,7 @@ public class CSVUtil {
                 p.setDocumentIdentifier(parts[28]);
                 newPaper.add(p);
             }
-            existedPaper.put(paperTitle + year, p);
+            existedPaper.put(key + year, p);
             paperList.add(p);
         }
         if (!newPaper.isEmpty()) {
@@ -315,6 +371,12 @@ public class CSVUtil {
         }
     }
 
+    /**
+     * 解析文献和术语的联系，如有新数据则存入数据库
+     * @param paperList 解析后的csv中文献信息的二维链表
+     * @param termsList 解析后的csv中术语信息的二维链表
+     * @param paperTermList 需要存放csv中文献术语联系的一维链表
+     */
     private static void analyzePaperTerm(List<Paper> paperList, List<List<Term>> termsList, List<PaperTerm> paperTermList) {
         Iterator<Paper> paperItr = paperList.iterator();
         Iterator<List<Term>> termsItr = termsList.iterator();
@@ -329,6 +391,12 @@ public class CSVUtil {
         }
     }
 
+    /**
+     * 解析文献和学者的联系，如有新数据则存入数据库
+     * @param paperList 解析后的csv中文献信息的二维链表
+     * @param authorsList 解析后的csv中学者信息的二维链表
+     * @param publishList 需要存放csv中文献与学者联系的一维链表
+     */
     private static void analyzePublish(List<Paper> paperList, List<List<Author>> authorsList, List<Publish> publishList) {
         Iterator<Paper> paperItr = paperList.iterator();
         Iterator<List<Author>> authorsItr = authorsList.iterator();
