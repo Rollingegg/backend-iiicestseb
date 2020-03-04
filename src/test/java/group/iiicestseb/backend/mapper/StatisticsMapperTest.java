@@ -21,7 +21,6 @@ public class StatisticsMapperTest {
     StatisticsMapper statisticsMapper;
     @Test
     public void insertUserRecord() {
-
         statisticsMapper.insertUserRecord(new Record("",""));
     }
 }

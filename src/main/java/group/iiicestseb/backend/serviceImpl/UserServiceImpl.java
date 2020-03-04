@@ -55,4 +55,13 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyRegisterException();
         }
     }
+
+    @Override
+    public void judgeUsername(String username) {
+        try{
+            userMapper.selectByUsername(username);
+        }catch (Exception e){
+        }
+
+    }
 }

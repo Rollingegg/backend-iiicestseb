@@ -28,8 +28,7 @@ public interface AffiliationMapper {
      * @param record 机构实体
      * @return 新增机构id
      */
-    @Insert("insert into affiliation (name) values ( #{name,jdbcType=VARCHAR});" +
-            "select last_insert_id()")
+    @Insert("insert into affiliation (name) values ( #{name,jdbcType=VARCHAR});")
     @Options(useGeneratedKeys = true)
     int insert(Affiliation record);
 

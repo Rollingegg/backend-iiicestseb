@@ -39,20 +39,25 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
 
 
     @Override
+    public void judgeUsername(String username) {
+        userService.judgeUsername(username);
+    }
+
+    @Override
     public CopyOnWriteArrayList<String> getAuthorByPaperId(int id) {
         return authorService.getAuthorByPaperId(id);
     }
 
     @Override
-    public CopyOnWriteArrayList<SearchResultVO> simpleSearchPaper(String type, String keyword) {
-        CopyOnWriteArrayList<SearchResultVO> searchResultVOS= searchService.simpleSearchPaper(type,keyword);
+    public CopyOnWriteArrayList<Paper> simpleSearchPaper(String type, String keyword) {
+        CopyOnWriteArrayList<Paper> searchResultVOS= searchService.simpleSearchPaper(type,keyword);
         return addAuthorInfoInfoPaper(searchResultVOS);
 
     }
 
     @Override
-    public CopyOnWriteArrayList<SearchResultVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
-        CopyOnWriteArrayList<SearchResultVO> searchResultVOS= searchService.advancedSearchPaper(advancedSearchForm);
+    public CopyOnWriteArrayList<Paper> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
+        CopyOnWriteArrayList<Paper> searchResultVOS= searchService.advancedSearchPaper(advancedSearchForm);
         return addAuthorInfoInfoPaper(searchResultVOS);
     }
 
@@ -111,9 +116,9 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
 
     @Override
     public void register(UserForm userForm) {
-        Record r = new Record("","");
-        int recordId = statisticsService.createUserRecord(r);
-        userForm.setRecordId(r.getId());
+        Record record = new Record("","");
+        statisticsService.createUserRecord(record);
+        userForm.setRecordId(record.getId());
         userService.register(userForm);
     }
 
@@ -124,14 +129,17 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
      * @param searchResultVOS 搜索结果列表（目前内缺作者信息）
      * @return 搜索结果列表（信息完整）
      */
-    private CopyOnWriteArrayList<SearchResultVO> addAuthorInfoInfoPaper(CopyOnWriteArrayList<SearchResultVO> searchResultVOS){
-        for (SearchResultVO x:searchResultVOS) {
+    private CopyOnWriteArrayList<Paper> addAuthorInfoInfoPaper(CopyOnWriteArrayList<Paper> searchResultVOS){
+        CopyOnWriteArrayList<PaperInfoVO>  resultList = new CopyOnWriteArrayList<PaperInfoVO>();
+        for (Paper x:searchResultVOS) {
+            PaperInfoVO paperInfoVO = new PaperInfoVO(x);
             CopyOnWriteArrayList<String> authorList = authorService.getAuthorByPaperId(x.getId());
             CopyOnWriteArrayList<AuthorInfoVO> temp = new CopyOnWriteArrayList<AuthorInfoVO>();
             for (String y:authorList){
                 temp.add(authorService.getAuthorInfo(y));
             }
-            x.setAuthorInfoList(temp);
+            paperInfoVO.setAuthorInfoList(temp);
+            //resultList.add(temp);
         }
         return searchResultVOS;
     }
