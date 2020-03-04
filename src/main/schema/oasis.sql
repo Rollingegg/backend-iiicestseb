@@ -1,6 +1,10 @@
-DROP DATABASE IF EXISTS oasisdb;
-CREATE DATABASE oasisdb DEFAULT CHARACTER SET utf8;
-USE oasisdb;
+DROP DATABASE IF EXISTS IIICEStseB;
+CREATE DATABASE IIICEStseB DEFAULT CHARACTER SET utf8;
+USE IIICEStseB;
+
+CREATE USER if not exists 'iii'@'Localhost' IDENTIFIED BY 'iii';
+grant all on IIICEStseB.* to 'iii'@'Localhost';
+flush privileges;
 
 ##创建机构表
 CREATE TABLE affiliation (

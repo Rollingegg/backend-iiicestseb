@@ -155,7 +155,7 @@ public interface PaperMapper {
      * @param name 出版社名
      * @return 出版社实体对象
      */
-    @Select("select * from conference where name = #{name}")
+    @Select("select * from publisher where name = #{name}")
     @ResultMap("PublisherResultMap")
     Publisher selectPublisherByName(@Param("name") String name);
 

@@ -154,6 +154,12 @@
 				<profileActive>dev</profileActive>
 			</properties>
 		</profile>
+		<profile>
+			<id>local</id>
+			<properties>
+				<profileActive>local</profileActive>
+			</properties>
+		</profile>
 	</profiles>
 
 </project>
