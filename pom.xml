@@ -75,6 +75,19 @@
 			<version>4.2</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher -->
+<!--		<dependency>-->
+<!--			<groupId>org.junit.platform</groupId>-->
+<!--			<artifactId>junit-platform-launcher</artifactId>-->
+<!--			<version>1.5.2</version>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.junit.vintage</groupId>-->
+<!--			<artifactId>junit-vintage-engine</artifactId>-->
+<!--			<version>5.5.2</version>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
 	</dependencies>
 
 	<build>
@@ -89,9 +102,10 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.3</version>
 				<configuration>
-					<includes>
-						<include>com/**/*</include>
-					</includes>
+					<propertyName>surefireArgLine</propertyName>
+<!--					<includes>-->
+<!--						<include>/**/*Test.java</include>-->
+<!--					</includes>-->
 				</configuration>
 				<executions>
 					<execution>
@@ -108,6 +122,24 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19</version>
+				<configuration>
+					<includes>
+						<include>/**/*Test.java</include>
+					</includes>
+					<argLine>@{surefireArgLine}</argLine>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit4</artifactId>
+						<version>2.19</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<!--Mybatis-generator插件,用于自动生成Mapper和POJO-->

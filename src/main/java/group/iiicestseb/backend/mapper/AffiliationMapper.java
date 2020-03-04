@@ -65,7 +65,7 @@ public interface AffiliationMapper {
      * @param name 机构名
      * @return 机构实体
      */
-//    @Select("select * from affiliation where name=#{name}")
-//    @ResultMap("AffiliationResultMap")
+    @Select("select * from affiliation where name=#{name}")
+    @ResultMap("AffiliationResultMap")
     Affiliation selectByName(String name);
 }
