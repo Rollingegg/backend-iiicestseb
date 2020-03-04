@@ -51,7 +51,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public CopyOnWriteArrayList<SearchResultVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
         CopyOnWriteArrayList<SearchResultVO> searchResultVOCopyOnWriteArrayList = new CopyOnWriteArrayList<SearchResultVO>();
-        CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList = paperMapper.advancedSearch(advancedSearchForm);;
+        CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList = paperMapper.advancedSearch(advancedSearchForm);
         for (Paper paper:paperCopyOnWriteArrayList) {
             searchResultVOCopyOnWriteArrayList.add(new SearchResultVO(paper));
         }

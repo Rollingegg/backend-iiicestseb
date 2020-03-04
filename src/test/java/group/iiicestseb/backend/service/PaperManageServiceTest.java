@@ -5,6 +5,7 @@ import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.entity.Publisher;
 import group.iiicestseb.backend.form.PaperForm;
 import group.iiicestseb.backend.mapper.PaperMapper;
+import group.iiicestseb.backend.serviceImpl.PaperManageServiceImpl;
 import group.iiicestseb.backend.vo.PaperInfoVO;
 import org.easymock.*;
 import org.junit.Rule;
@@ -23,11 +24,11 @@ public class PaperManageServiceTest extends EasyMockSupport {
     private PaperMapper paperMapper;
 
     @TestSubject
-    private PaperManageService paperManageService;
+    private PaperManageService paperManageService = new PaperManageServiceImpl();
 
     @Test
     public void deletePaperById() {
-        paperMapper.deleteByPrimaryKey(1);
+        EasyMock.expect(paperMapper.deleteByPrimaryKey(1)).andReturn(1) ;
         replayAll();
         paperManageService.deletePaperById(1);
         verifyAll();
@@ -35,24 +36,24 @@ public class PaperManageServiceTest extends EasyMockSupport {
 
     @Test
     public void deletePaperByName() {
-        paperMapper.deleteByName("seciii");
-        replayAll();
-        paperManageService.deletePaperById(2);
-        verifyAll();
-    }
-
-    @Test
-    public void updatePaperByName() {
-        paperMapper.deleteByName("seciii");
+        EasyMock.expect(paperMapper.deleteByName("seciii")).andReturn(1);
         replayAll();
         paperManageService.deletePaperByName("seciii");
         verifyAll();
     }
 
     @Test
+    public void updatePaperByName() {
+        EasyMock.expect(paperMapper.updateByName((Paper) EasyMock.anyObject())).andReturn(1);
+        replayAll();
+        paperManageService.updatePaperByName(new PaperForm());
+        verifyAll();
+    }
+
+    @Test
     public void updatePaperById() {
 
-        paperMapper.updateByPrimaryKey(new Paper());
+        EasyMock.expect(paperMapper.updateByPrimaryKey((Paper) EasyMock.anyObject())).andReturn(1);
         replayAll();
         paperManageService.updatePaperById(new PaperForm());
         verifyAll();
@@ -62,13 +63,15 @@ public class PaperManageServiceTest extends EasyMockSupport {
     public void getPaperInfoVO() {
         Paper paper = new Paper();
         paper.setId(1);
+        paper.setPublisherId(1);
+        paper.setConferenceId(1);
         EasyMock.expect(paperMapper.selectByName("seciii")).andReturn(paper);
         EasyMock.expect(paperMapper.selectPublisherById(1)).andReturn(new Publisher(1,"nju"));
         EasyMock.expect(paperMapper.selectConferenceById(1)).andReturn(new Conference(1,"ieee"));
         replayAll();
         PaperInfoVO paperInfoVO = paperManageService.getPaperInfoVO("seciii");
         assertEquals("nju",paperInfoVO.getPublisherName());
-        assertEquals("seciii",paperInfoVO.getConferenceName());
+        assertEquals("ieee",paperInfoVO.getConferenceName());
         verifyAll();
     }
 }

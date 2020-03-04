@@ -23,10 +23,6 @@ public class SearchResultVO {
      */
     private String paperTitle;
 
-    /**
-     * 作者名
-     */
-    private String authorName;
 
     /**
      * 被引次数

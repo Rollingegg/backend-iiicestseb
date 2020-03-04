@@ -45,7 +45,7 @@ public class SearchServiceTest extends EasyMockSupport {
 
     @Test
     public void advancedSearchPaper() {
-        CopyOnWriteArrayList<Paper> paperList = new CopyOnWriteArrayList<>();
+        CopyOnWriteArrayList<Paper> paperList = new CopyOnWriteArrayList<Paper>();
         Paper paperA = new Paper();
         paperA.setPaperTitle("jh");
         paperA.setId(1);
@@ -54,7 +54,9 @@ public class SearchServiceTest extends EasyMockSupport {
         paperList.add(paperA);
         AdvancedSearchForm form = new AdvancedSearchForm();
         EasyMock.expect(paperMapper.advancedSearch(form)).andReturn(paperList);
+        replayAll();
         assertEquals(searchService.advancedSearchPaper(form).get(0).getPaperTitle(),"jh");
+        verifyAll();
 
 
     }
