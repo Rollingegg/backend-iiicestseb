@@ -24,4 +24,10 @@ public interface UserService {
      * @param userForm 用户账户密码表单
      */
     public void register(UserForm userForm);
+
+    /**
+     * 判断用户名存在
+     * @param username 用户名
+     */
+    public void judgeUsername(String username);
 }
