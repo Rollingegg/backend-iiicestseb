@@ -31,7 +31,7 @@ public class UserController {
         try {
             return Response.buildSuccess(userService.signIn(userForm));
         }catch (WrongLoginInfoException e){
-            return Response.buildFailure(e.getCode()+":"+e.getMessage());
+            return Response.buildFailure(e.getMessage());
         }
     }
 
@@ -46,7 +46,7 @@ public class UserController {
             userService.register(userForm);
             return Response.buildSuccess();
         }catch (UserAlreadyRegisterException e){
-            return Response.buildFailure(e.getCode()+":"+e.getMessage());
+            return Response.buildFailure(e.getMessage());
         }
     }
 

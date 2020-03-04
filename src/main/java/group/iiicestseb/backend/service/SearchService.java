@@ -2,6 +2,7 @@ package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
+import group.iiicestseb.backend.vo.PaperInfoVO;
 import group.iiicestseb.backend.vo.SearchResultVO;
 
 import java.util.ArrayList;
@@ -19,12 +20,12 @@ public interface SearchService {
      * @param keyword 搜索关键字
      * @return 论文列表
      */
-    public CopyOnWriteArrayList<Paper> simpleSearchPaper(String  type, String keyword);
+    public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String  type, String keyword);
 
     /**
      * 论文高级检索
      * @param advancedSearchForm 所有搜索关键词表单
      * @return 论文列表
      */
-    public CopyOnWriteArrayList<Paper> advancedSearchPaper(AdvancedSearchForm advancedSearchForm);
+    public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm);
 }
