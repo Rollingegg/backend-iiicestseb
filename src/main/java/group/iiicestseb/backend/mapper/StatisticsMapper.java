@@ -24,7 +24,7 @@ public interface StatisticsMapper {
      */
     @Insert("insert into record(search_record, browse_record) " +
             "value (#{searchRecord,jdbcType=VARCHAR},#{browseRecord,jdbcType=VARCHAR})")
-    @Options(useGeneratedKeys = true)
+    @Options(useGeneratedKeys = true,keyProperty = "id")
     public int insertUserRecord(Record record);
 
     /**
