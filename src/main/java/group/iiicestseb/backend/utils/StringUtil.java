@@ -18,6 +18,7 @@ public class StringUtil {
             put('â', 'a');
             put('ą', 'a');
             put('ç', 'c');
+            put('ć', 'c');
             put('È', 'E');
             put('É', 'E');
             put('Ê', 'E');

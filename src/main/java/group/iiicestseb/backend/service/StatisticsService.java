@@ -1,6 +1,8 @@
 package group.iiicestseb.backend.service;
 
 
+import org.springframework.web.multipart.MultipartFile;
+
 /**
  * @author jh
  * @date 2020/2/22
@@ -12,7 +14,7 @@ public interface StatisticsService {
      *
      * @param filename 文件名
      */
-    public void loadCsv(String filename);
+    public void loadExistedCSV(String filename);
 
     /**
      * 创建用户记录
@@ -20,4 +22,10 @@ public interface StatisticsService {
      */
     public int createUserRecord();
 
+    /**
+     * 解析上传的csv文件
+     *
+     * @param file 文件
+     */
+    public void analyzeUploadedCSV(MultipartFile file);
 }

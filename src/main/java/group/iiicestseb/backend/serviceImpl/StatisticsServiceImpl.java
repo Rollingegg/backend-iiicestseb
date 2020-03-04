@@ -8,6 +8,7 @@ import group.iiicestseb.backend.service.StatisticsService;
 import group.iiicestseb.backend.utils.CSVUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -34,13 +35,19 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public void loadCsv(String filename) {
-        CSVUtil.analyzeCsv(filename);
+    public void loadExistedCSV(String filename) {
+        CSVUtil.analyzeExistedCSV(filename);
     }
 
     @Override
     public int createUserRecord() {
         return statisticsMapper.insertUserRecord();
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void analyzeUploadedCSV(MultipartFile file) {
+        CSVUtil.analyzeUploadedCSV(file);
     }
 
 }

@@ -12,6 +12,10 @@ import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /**
  * @author jh
@@ -19,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("statistics")
-@ResponseBody
 @CrossOrigin
 public class StatisticsController {
     public static final String CSV_ANALYZE_ERROR = "CSV解析错误，请查阅日志";
@@ -28,13 +31,24 @@ public class StatisticsController {
     private StatisticsService statisticsService;
 
     @PostMapping("/analyzeCSV")
-    public Response getAffiliationInfo(@RequestParam("filename") String filename) {
+    public Response analyzeCSV(@RequestParam("filename") String filename) {
         try {
-            statisticsService.loadCsv(filename);
+            statisticsService.loadExistedCSV(filename);
             return Response.buildSuccess();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.buildFailure(CSV_ANALYZE_ERROR);
+            return Response.buildFailure(e.getMessage());
+        }
+    }
+
+    @PostMapping("/uploadCSV")
+    public Response uploadCSV(@RequestParam("file") MultipartFile file) {
+        try {
+            statisticsService.analyzeUploadedCSV(file);
+            return Response.buildSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.buildFailure(e.getMessage());
         }
     }
 
