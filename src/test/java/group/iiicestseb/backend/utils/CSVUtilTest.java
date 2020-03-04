@@ -7,7 +7,7 @@ import group.iiicestseb.backend.mapper.PaperMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +30,7 @@ import static org.junit.Assert.fail;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-class CSVUtilTest {
+public class CSVUtilTest {
 
     @Resource
     private AffiliationMapper affiliationMapper;
