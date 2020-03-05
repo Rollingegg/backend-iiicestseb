@@ -89,12 +89,12 @@ public class CSVUtilTest {
     }
 
     @Test
-    public void analyzeUploadedCSVSuccess() throws IOException {
+    public void uploadedCSVSuccess() throws IOException {
         String path = this.getClass().getResource("/").getPath();
         String filename = path + "csv/Standard.csv";
         File file = new File(filename);
         FileInputStream fileInput = new FileInputStream(file);
-        MultipartFile multipartFile = new MockMultipartFile(file.getName(), "Standard.csv", "multipart/form-data", fileInput);
+        MultipartFile multipartFile = new MockMultipartFile(file.getName(), "Standard.csv", "text/plain", fileInput);
         CSVUtil.analyzeUploadedCSV(multipartFile);
         Author aut = authorMapper.selectByName("author2");
         Assert.assertNotNull(aut.getAffiliationId());
@@ -112,12 +112,12 @@ public class CSVUtilTest {
     }
 
     @Test
-    public void analyzeUploadedCSVHeaderError() throws IOException {
+    public void uploadedCSVHeaderError() throws IOException {
         String path = this.getClass().getResource("/").getPath();
         String filename = path + "csv/HeaderError.csv";
         File file = new File(filename);
         FileInputStream fileInput = new FileInputStream(file);
-        MultipartFile multipartFile = new MockMultipartFile(file.getName(), "HeaderError.csv", "multipart/form-data", fileInput);
+        MultipartFile multipartFile = new MockMultipartFile(file.getName(), "HeaderError.csv", "text/plain", fileInput);
         try {
             CSVUtil.analyzeUploadedCSV(multipartFile);
             fail();
@@ -127,12 +127,12 @@ public class CSVUtilTest {
     }
 
     @Test
-    public void analyzeUploadedCSVLineContentError() throws IOException {
+    public void uploadedCSVLineContentError() throws IOException {
         String path = this.getClass().getResource("/").getPath();
         String filename = path + "csv/LineErrorAt5.csv";
         File file = new File(filename);
         FileInputStream fileInput = new FileInputStream(file);
-        MultipartFile multipartFile = new MockMultipartFile(file.getName(), "LineErrorAt5.csv", "multipart/form-data", fileInput);
+        MultipartFile multipartFile = new MockMultipartFile(file.getName(), "LineErrorAt5.csv", "text/plain", fileInput);
         try {
             CSVUtil.analyzeUploadedCSV(multipartFile);
             fail();
