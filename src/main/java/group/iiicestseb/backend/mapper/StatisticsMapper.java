@@ -51,7 +51,7 @@ public interface StatisticsMapper {
      */
     @Select("select aut.id as id, aut.name as name, aff.name as aff_name, count(*) as publish_num" +
             "   from publish p, author aut, affiliation aff" +
-            "       where aut.id = p.author_id and aut.affiliation_id = aff.id" +
+            "       where aut.id = p.author_id and aut.affiliation_id = aff.id and aut.name<>''" +
             "           group by aut.id" +
             "           order by publish_num desc" +
             "           limit #{num}")

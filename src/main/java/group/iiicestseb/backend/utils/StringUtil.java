@@ -12,11 +12,15 @@ public class StringUtil {
 
     private static final Map<Character, Character> ACCENTS = new TreeMap<Character, Character>() {
         {
+            put('Á', 'A');
             put('À', 'A');
             put('Â', 'A');
+            put('á', 'a');
             put('à', 'a');
             put('â', 'a');
+            put('ä', 'a');
             put('ą', 'a');
+            put('ß', 'B');
             put('ç', 'c');
             put('ć', 'c');
             put('È', 'E');
@@ -31,8 +35,15 @@ public class StringUtil {
             put('Ï', 'I');
             put('î', 'i');
             put('ï', 'i');
+            put('⊘', 'o');
             put('Ô', 'O');
+            put('Ö', 'O');
+            put('ø', 'o');
+            put('ó', 'o');
             put('ô', 'o');
+            put('ö', 'o');
+            put('õ', 'o');
+            put('ò', 'o');
             put('Û', 'U');
             put('Ù', 'U');
             put('ü', 'u');
@@ -45,7 +56,7 @@ public class StringUtil {
         StringBuilder sb = new StringBuilder(raw);
         for (int i = 0; i < raw.length(); i++) {
             char c = raw.charAt(i);
-            if (ACCENTS.containsKey(c)){
+            if (ACCENTS.containsKey(c)) {
                 sb.setCharAt(i, ACCENTS.get(c));
             }
         }
