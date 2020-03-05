@@ -38,7 +38,8 @@ public class AffiliationMapperTest {
 
     @Test
     public void insert() {
-        assertEquals(1,affiliationMapper.insert(affiliation));
+        affiliationMapper.insert(affiliation);
+        assertEquals(affiliation,affiliationMapper.selectByPrimaryKey(affiliation.getId()));
     }
 
     @Test
@@ -47,12 +48,14 @@ public class AffiliationMapperTest {
         test.add(affiliation);
         test.add(affiliation2);
         assertEquals(2,affiliationMapper.insertAffiliationList(test));
+        assertEquals(affiliation,affiliationMapper.selectByPrimaryKey(affiliation.getId()));
+        assertEquals(affiliation2,affiliationMapper.selectByPrimaryKey(affiliation2.getId()));
     }
 
     @Test
     public void selectByPrimaryKey() {
-        affiliationMapper.insert(affiliation);
-        assertEquals("unit",affiliationMapper.selectByPrimaryKey(affiliation.getId()).getName());
+        affiliationMapper.insert(affiliation2);
+        assertEquals(affiliation2,affiliationMapper.selectByPrimaryKey(affiliation2.getId()));
     }
 
     @Test
@@ -60,12 +63,13 @@ public class AffiliationMapperTest {
         affiliationMapper.insert(affiliation);
         affiliation.setName("test_init");
         affiliationMapper.updateByPrimaryKey(affiliation);
+        assertEquals(affiliation,affiliationMapper.selectByPrimaryKey(affiliation.getId()));
     }
 
     @Test
     public void selectByName() {
         affiliation.setName("gogo");
         affiliationMapper.insert(affiliation);
-        assertEquals(affiliation.getId(),affiliationMapper.selectByName(affiliation.getName()).getId());
+        assertEquals(affiliation,affiliationMapper.selectByName(affiliation.getName()));
     }
 }

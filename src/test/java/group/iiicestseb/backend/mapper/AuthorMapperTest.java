@@ -2,6 +2,8 @@ package group.iiicestseb.backend.mapper;
 
 import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.entity.Author;
+import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.entity.Publish;
 import group.iiicestseb.backend.service.AuthorService;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +28,8 @@ import static org.junit.Assert.*;
 public class AuthorMapperTest {
     @Resource
     private AuthorMapper authorMapper;
+    @Resource
+    private PaperMapper paperMapper;
     @Resource
     private AffiliationMapper affiliationMapper;
     private Author author1 = new Author();
@@ -53,7 +57,9 @@ public class AuthorMapperTest {
 
     @Test
     public void insert() {
+
         assertEquals(1,authorMapper.insert(author1));
+        assertEquals(author1,authorMapper.selectByPrimaryKey(author1.getId()));
     }
 
     @Test
@@ -62,31 +68,46 @@ public class AuthorMapperTest {
         authors.add(author1);
         authors.add(author2);
         assertEquals(2,authorMapper.insertAuthorList(authors));
+        assertEquals(author1,affiliationMapper.selectByPrimaryKey(author1.getId()));
+        assertEquals(author2,affiliationMapper.selectByPrimaryKey(author2.getId()));
     }
 
     @Test
     public void selectByPrimaryKey() {
         authorMapper.insert(author1);
-        assertEquals("hxd",authorMapper.selectByPrimaryKey(author1.getId()).getName());
+        assertEquals(author1,authorMapper.selectByPrimaryKey(author1.getId()));
     }
 
     @Test
     public void updateByPrimaryKey() {
         authorMapper.insert(author1);
         author1.setName("gogo");
-        System.out.println(author1.getId());
-        assertEquals(1,authorMapper.updateByPrimaryKey(author1));
+        authorMapper.updateByPrimaryKey(author1);
+        assertEquals(author1,authorMapper.selectByPrimaryKey(author1.getId()));
     }
 
     @Test
     public void selectByName() {
         authorMapper.insert(author1);
-        assertEquals(author1.getId(),authorMapper.selectByName(author1.getName()).getId());
+        assertEquals(author1,authorMapper.selectByName(author1.getName()));
     }
 
     @Test
     public void getAuthorByPaperId() {
         //assertEquals(1,2);
         //todo 写测试
+        authorMapper.insert(author1);
+        authorMapper.insert(author2);
+        Paper paper = new Paper();
+        paperMapper.insert(paper);
+        Publish publish1 = new Publish(paper,author1);
+        Publish publish2 = new Publish(paper,author2);
+        List<Publish> publishes = new ArrayList<>();
+        publishes.add(publish1);
+        publishes.add(publish2);
+        paperMapper.insertPublishList(publishes);
+        List<String> authorList = authorMapper.getAuthorByPaperId(paper.getId());
+        assertEquals(authorList.get(0),author1.getName());
+        assertEquals(authorList.get(1),author2.getName());
     }
 }

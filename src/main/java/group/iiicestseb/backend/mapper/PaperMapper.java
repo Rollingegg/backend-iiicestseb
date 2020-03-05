@@ -42,9 +42,8 @@ public interface PaperMapper {
             "      #{paperTitle,jdbcType=VARCHAR}, #{paperAbstract,jdbcType=VARCHAR}, #{referenceCount,jdbcType=INTEGER}, " +
             "      #{citationCount,jdbcType=INTEGER}, #{publicationYear,jdbcType=INTEGER}, #{startPage,jdbcType=VARCHAR}, " +
             "      #{endPage,jdbcType=VARCHAR}, #{documentIdentifier,jdbcType=VARCHAR}" +
-            "      ) ;" +
-            "select last_insert_id()")
-    @Options(useGeneratedKeys = true)
+            "      ) ;")
+    @Options(useGeneratedKeys = true,keyProperty = "id")
     int insert(Paper record);
 
     /**

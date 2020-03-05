@@ -48,7 +48,7 @@ CREATE TABLE paper (
                        paper_abstract text comment  '摘要',
                        reference_count int comment  '参考资料数',
                        citation_count int comment '文献被引次数',
-                       publication_year timestamp comment '出版年份',
+                       publication_year timestamp default 0 comment '出版年份',
                        start_page varchar(15) comment '起始页',
                        end_page varchar(15) comment '终止页',
 #                          author_keywords varchar(100) comment '文章关键词',

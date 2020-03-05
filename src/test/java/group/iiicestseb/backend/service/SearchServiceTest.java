@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.junit.Assert.*;
 
+
 @Transactional
 public class SearchServiceTest extends EasyMockSupport {
     @Rule
