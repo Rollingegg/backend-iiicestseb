@@ -39,15 +39,15 @@ public class PaperManageController {
      * @param paperForm 论文表达
      * @return 无
      */
-    @PutMapping("/update")
-    public Response updatePaper(@RequestBody PaperForm paperForm){
-        try {
-            paperManageService.updatePaperById(paperForm);
-            return Response.buildSuccess();
-        }catch(Exception e){
-            return Response.buildFailure("修改论文数据失败");
-        }
-    }
+//    @PutMapping("/update")
+//    public Response updatePaper(@RequestBody PaperForm paperForm){
+//        try {
+//            paperManageService.updatePaperById(paperForm);
+//            return Response.buildSuccess();
+//        }catch(Exception e){
+//            return Response.buildFailure("修改论文数据失败");
+//        }
+//    }
 
 
 }

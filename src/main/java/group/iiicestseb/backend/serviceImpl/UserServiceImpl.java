@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean judgeUsername(String username) {
             if(null ==userMapper.selectByUsername(username)) {
+                //不存在返回false
                 return false;
             }
             else{

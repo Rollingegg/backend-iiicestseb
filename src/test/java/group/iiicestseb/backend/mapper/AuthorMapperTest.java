@@ -40,8 +40,6 @@ public class AuthorMapperTest {
     @Before
     public void setUp() throws Exception {
         affiliationMapper.insert(affiliation);
-        author1.setId(1);
-        author2.setId(2);
         author1.setName("hxd");
         author2.setName("jh");
         author1.setAffiliationId(affiliation.getId());
@@ -67,9 +65,10 @@ public class AuthorMapperTest {
         List<Author> authors = new ArrayList<>();
         authors.add(author1);
         authors.add(author2);
+
         assertEquals(2,authorMapper.insertAuthorList(authors));
-        assertEquals(author1,affiliationMapper.selectByPrimaryKey(author1.getId()));
-        assertEquals(author2,affiliationMapper.selectByPrimaryKey(author2.getId()));
+        assertEquals(author1,authorMapper.selectByPrimaryKey(author1.getId()));
+        assertEquals(author2,authorMapper.selectByPrimaryKey(author2.getId()));
     }
 
     @Test
