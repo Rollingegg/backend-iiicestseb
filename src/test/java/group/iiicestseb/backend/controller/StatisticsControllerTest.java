@@ -155,6 +155,7 @@ public class StatisticsControllerTest {
     @Test
     public void getHotTermsSuccess() throws Exception {
         int param = 10;
+        statisticsService.loadExistedCSV("Standard.csv");
         mvc.perform(MockMvcRequestBuilders.get("/statistics/hotTerms")
                 .param("num", Integer.toString(param))
                 .accept(MediaType.APPLICATION_JSON)
@@ -166,13 +167,14 @@ public class StatisticsControllerTest {
 
     @Test
     public void getMaxPublishAuthorSuccess() throws Exception {
-        int param = 10;
+        int param = 5;
+        statisticsService.loadExistedCSV("Standard.csv");
         mvc.perform(MockMvcRequestBuilders.get("/statistics/maxPublishAuthor")
                 .param("num", Integer.toString(param))
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[9]").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[4]").exists());
     }
 }

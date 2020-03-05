@@ -40,7 +40,7 @@ public interface PaperMapper {
             "    values ( #{publicationTitle,jdbcType=VARCHAR}, #{publisherId,jdbcType=INTEGER}, " +
             "      #{conferenceId,jdbcType=INTEGER}, #{pdfLink,jdbcType=VARCHAR}, #{doi,jdbcType=VARCHAR}, " +
             "      #{paperTitle,jdbcType=VARCHAR}, #{paperAbstract,jdbcType=VARCHAR}, #{referenceCount,jdbcType=INTEGER}, " +
-            "      #{citationCount,jdbcType=INTEGER}, #{publicationYear,jdbcType=INTEGER}, #{startPage,jdbcType=VARCHAR}, " +
+            "      #{citationCount,jdbcType=INTEGER}, #{publicationYear,jdbcType=TIMESTAMP}, #{startPage,jdbcType=VARCHAR}, " +
             "      #{endPage,jdbcType=VARCHAR}, #{documentIdentifier,jdbcType=VARCHAR}" +
             "      ) ;")
     @Options(useGeneratedKeys = true,keyProperty = "id")
@@ -80,7 +80,7 @@ public interface PaperMapper {
             "      paper_abstract = #{paperAbstract,jdbcType=VARCHAR}," +
             "      reference_count = #{referenceCount,jdbcType=INTEGER}," +
             "      citation_count = #{citationCount,jdbcType=INTEGER}," +
-            "      publication_year = #{publicationYear,jdbcType=INTEGER}," +
+            "      publication_year = #{publicationYear,jdbcType=TIMESTAMP}," +
             "      start_page = #{startPage,jdbcType=VARCHAR}," +
             "      end_page = #{endPage,jdbcType=VARCHAR}" +
             "    where id = #{id,jdbcType=INTEGER}")
@@ -111,7 +111,7 @@ public interface PaperMapper {
             "      paper_abstract = #{paperAbstract,jdbcType=VARCHAR}," +
             "      reference_count = #{referenceCount,jdbcType=INTEGER}," +
             "      citation_count = #{citationCount,jdbcType=INTEGER}," +
-            "      publication_year = #{publicationYear,jdbcType=INTEGER}," +
+            "      publication_year = #{publicationYear,jdbcType=TIMESTAMP}," +
             "      start_page = #{startPage,jdbcType=VARCHAR}," +
             "      end_page = #{endPage,jdbcType=VARCHAR}" +
             "    where paper_title = #{paperTitle,jdbcType=VARCHAR}")
