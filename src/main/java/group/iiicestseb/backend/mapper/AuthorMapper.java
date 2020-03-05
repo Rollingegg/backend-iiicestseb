@@ -28,9 +28,8 @@ public interface AuthorMapper {
      * @param record 作者实体
      * @return 新增作者id
      */
-    @Insert("insert into author (name, affiliation_id) values (#{name,jdbcType=VARCHAR}, #{affiliationId,jdbcType=INTEGER});" +
-            "select last_insert_id()")
-    @Options(useGeneratedKeys = true)
+    @Insert("insert into author (name, affiliation_id) values (#{name,jdbcType=VARCHAR}, #{affiliationId,jdbcType=INTEGER});")
+    @Options(useGeneratedKeys = true,keyProperty = "id")
     int insert(Author record);
 
     /**

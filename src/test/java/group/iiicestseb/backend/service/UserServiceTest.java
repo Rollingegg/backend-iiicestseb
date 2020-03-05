@@ -48,4 +48,8 @@ public class UserServiceTest extends EasyMockSupport {
         userService.register(userForm);
         verifyAll();
     }
+
+    @Test
+    public void judgeUsername() {
+    }
 }

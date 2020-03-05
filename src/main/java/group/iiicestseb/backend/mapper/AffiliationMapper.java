@@ -29,15 +29,16 @@ public interface AffiliationMapper {
      * @return 新增机构id
      */
     @Insert("insert into affiliation (name) values ( #{name,jdbcType=VARCHAR});")
-    @Options(useGeneratedKeys = true)
+    @Options(useGeneratedKeys = true,keyProperty = "id")
     int insert(Affiliation record);
 
     /**
      * 新增机构列表
      *
      * @param affiliationList 机构实体列表
+     * @return 修改行数
      */
-    void insertAffiliationList(@Param("affiliationList") List<Affiliation> affiliationList);
+    int insertAffiliationList(@Param("affiliationList") List<Affiliation> affiliationList);
 
     /**
      * 通过id搜索机构

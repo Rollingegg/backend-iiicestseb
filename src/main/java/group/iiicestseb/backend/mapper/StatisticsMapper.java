@@ -19,7 +19,7 @@ public interface StatisticsMapper {
 
     /**
      * Insert user record int.
-     *
+     * @param record 用户记录
      * @return the int
      */
     @Insert("insert into record(search_record, browse_record) " +

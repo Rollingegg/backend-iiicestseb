@@ -16,7 +16,7 @@ public class SearchResultVO {
     /**
      * 论文id
      */
-    private int id;
+    private Integer id;
 
     /**
      * 论文标题

@@ -28,6 +28,7 @@ public interface UserService {
     /**
      * 判断用户名存在
      * @param username 用户名
+     * @return 是否重名
      */
-    public void judgeUsername(String username);
+    public boolean judgeUsername(String username);
 }

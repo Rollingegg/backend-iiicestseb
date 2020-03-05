@@ -57,4 +57,5 @@ public class AuthorServiceTest extends EasyMockSupport {
         assertEquals(result.get(2),"lwj");
         verifyAll();
     }
+
 }

@@ -57,11 +57,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void judgeUsername(String username) {
-        try{
-            userMapper.selectByUsername(username);
-        }catch (Exception e){
-        }
-
+    public boolean judgeUsername(String username) {
+            if(null ==userMapper.selectByUsername(username)) {
+                return false;
+            }
+            else{
+                return true;
+            }
     }
 }

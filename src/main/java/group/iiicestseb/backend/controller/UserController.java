@@ -52,10 +52,9 @@ public class UserController {
 
     @GetMapping("/judge/{username}")
     public Response judgeUsername(@PathVariable String username){
-        try {
-            userService.judgeUsername(username);
+        if( userService.judgeUsername(username)){
             return Response.buildSuccess();
-        }catch (UserAlreadyRegisterException e){
+        }else {
             return Response.buildFailure("用户名已存在");
         }
     }

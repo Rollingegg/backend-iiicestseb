@@ -8,16 +8,26 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
+import static org.junit.Assert.*;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @Transactional
 public class StatisticsMapperTest {
 
     @Resource
-    StatisticsMapper statisticsMapper;
+    private StatisticsMapper statisticsMapper;
+
+    private Record record =  new Record("","");
     @Test
     public void insertUserRecord() {
-        statisticsMapper.insertUserRecord(new Record("",""));
+        assertEquals(1,statisticsMapper.insertUserRecord(record));
+    }
+
+    @Test
+    public void selectTermsWithHotLimit() {
+    }
+
+    @Test
+    public void selectMaxPublishAuthorLimit() {
     }
 }

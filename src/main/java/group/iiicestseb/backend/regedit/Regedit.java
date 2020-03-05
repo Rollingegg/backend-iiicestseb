@@ -39,8 +39,8 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
 
 
     @Override
-    public void judgeUsername(String username) {
-        userService.judgeUsername(username);
+    public boolean judgeUsername(String username) {
+        return userService.judgeUsername(username);
     }
 
     @Override
