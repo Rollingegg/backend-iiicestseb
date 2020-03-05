@@ -21,6 +21,7 @@ public class StatisticsMapperTest {
     @Test
     public void insertUserRecord() {
         assertEquals(1,statisticsMapper.insertUserRecord(record));
+
     }
 
     @Test

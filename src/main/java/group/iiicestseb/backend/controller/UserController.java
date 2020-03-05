@@ -20,7 +20,8 @@ import javax.annotation.Resource;
 public class UserController {
     @Resource(name = "Regedit")
     private UserService userService;
-
+    public static String USER_EXIST = "用户已注册";
+    public static String WRONG_LOGIN_INFO = "用户名或密码错误";
     /**
      * 用户登录/注册界面 用户登录
      * @param userForm 用户表单
@@ -31,7 +32,8 @@ public class UserController {
         try {
             return Response.buildSuccess(userService.signIn(userForm));
         }catch (WrongLoginInfoException e){
-            return Response.buildFailure(e.getMessage());
+            return Response.buildFailure(WRONG_LOGIN_INFO);
+
         }
     }
 
@@ -46,16 +48,18 @@ public class UserController {
             userService.register(userForm);
             return Response.buildSuccess();
         }catch (UserAlreadyRegisterException e){
-            return Response.buildFailure(e.getMessage());
+            return Response.buildFailure(USER_EXIST);
         }
     }
 
     @GetMapping("/judge/{username}")
     public Response judgeUsername(@PathVariable String username){
-        if( userService.judgeUsername(username)){
+        if( !userService.judgeUsername(username)){
+            //不存在
             return Response.buildSuccess();
         }else {
-            return Response.buildFailure("用户名已存在");
+            //用户存在
+            return Response.buildFailure(USER_EXIST);
         }
     }
 }

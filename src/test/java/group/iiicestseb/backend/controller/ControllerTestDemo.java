@@ -40,7 +40,7 @@ public class ControllerTestDemo {
 //        String param = JSON.toJSONString(u);  //其中u是VO对象
 
 //        指定url和方式
-        mvc.perform(MockMvcRequestBuilders.get("/user/register")
+       mvc.perform(MockMvcRequestBuilders.get("/user/register")
                         //get 参数  ，其实是RequestParam
                         .param("rows", "1")
 //                向post传入参数 ，其实是RequestBody
@@ -55,7 +55,7 @@ public class ControllerTestDemo {
 //                期望返回的状态码
 //                .andExpect(MockMvcResultMatchers.status().isOk())
 //                判断json数据
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.total").value(1))
+//                .andExpect(Moc kMvcResultMatchers.jsonPath("$.total").value(1))
 //数据json
 //                .andDo(MockMvcResultHandlers.print());
     }
