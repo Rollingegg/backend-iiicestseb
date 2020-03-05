@@ -45,6 +45,7 @@ public class SearchControllerTest {
     private Paper paper2;
     private  Conference c;
     private Publisher p;
+    private Affiliation a;
 
     private void createPaper(Paper paper,String paper_title,String doi,String abstarct,String authorname,String affiliationname){
         paper = new Paper();
@@ -53,10 +54,10 @@ public class SearchControllerTest {
         paper.setDoi(doi);
         Author author = new Author();
         author.setName(authorname);
-        Affiliation affiliation = new Affiliation();
-        affiliation.setName(affiliationname);
-        affiliationMapper.insert(affiliation);
-        author.setAffiliationId(affiliation.getId());
+        a = new Affiliation();
+        a.setName(affiliationname);
+        affiliationMapper.insert(a);
+        author.setAffiliationId(a.getId());
         authorMapper.insert(author);
         paper.setPublisherId(p.getId());
         paper.setConferenceId(c.getId());
@@ -86,18 +87,20 @@ public class SearchControllerTest {
     @Test
     public void simpleSearchPaper() throws Exception{
         mvc.perform(MockMvcRequestBuilders.get("/search/simple")
-                .param("type", "paper_tile")
+                .param("type", "doi")
+                .param("keyword", "100")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
     }
 
     @Test
     public void advancedSearchPaper() throws Exception{
         AdvancedSearchForm advancedSearchForm = new AdvancedSearchForm();
-        advancedSearchForm.setAuthorKeyword("hxd");
+        advancedSearchForm.setAuthorKeyword("nju");
+        advancedSearchForm.setDoiKeyword("10");
         String param = JSON.toJSONString(advancedSearchForm);  //其中u是VO对象
         mvc.perform(MockMvcRequestBuilders.get("/search/advanced")
                 .content(param).contentType(MediaType.APPLICATION_JSON)
@@ -105,7 +108,7 @@ public class SearchControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
 
     }
 }

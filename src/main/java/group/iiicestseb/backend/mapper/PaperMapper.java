@@ -276,10 +276,13 @@ public interface PaperMapper {
             "where paper.id = publish.paper_id and " +
             "publish.author_id = author.id and " +
             "author.affiliation_id = affiliation.id and " +
-            "(paper.paper_title like #{paperTitleKeyword}  OR #{paperTitleKeyword} IS NULL) and" +
-            "(paper.paper_abstract like #{paperAbstractKeyword}  OR #{paperAbstractKeyword} IS NULL) and " +
-            "(paper.DOI like #{doiKeyword}  OR #{doiKeyword} IS NULL) and " +
-            "(paper.paper_abstract like #{paperAbstractKeyword}  OR #{paperAbstractKeyword} IS NULL)" +
+            "(" +
+            "(paper.paper_title like '%${paperTitleKeyword}%'  OR #{paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
+            "(paper.paper_abstract like '%${paperAbstractKeyword}%'  OR #{paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +
+            "(paper.DOI like '%${doiKeyword}%'  OR #{doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
+            "(author.name like '%${authorKeyword}%'  OR #{authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
+            "(affiliation.name like '%${affiliationKeyword}%'  OR #{affiliationKeyword,jdbcType=VARCHAR} IS NULL)" +
+            ")" +
             "order by citation_count desc")
     @ResultMap("PaperResultMap")
     CopyOnWriteArrayList<Paper> advancedSearch(AdvancedSearchForm advancedSearchForm);

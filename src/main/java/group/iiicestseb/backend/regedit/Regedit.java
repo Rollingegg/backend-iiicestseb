@@ -134,7 +134,10 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
             CopyOnWriteArrayList<String> authorList = authorService.getAuthorByPaperId(x.getId());
             CopyOnWriteArrayList<AuthorInfoVO> temp = new CopyOnWriteArrayList<AuthorInfoVO>();
             for (String y:authorList){
-                temp.add(authorService.getAuthorInfo(y));
+                AuthorInfoVO authorInfoVO = authorService.getAuthorInfo(y);
+                String affiliationName = affiliationService.selectAffiliationById(authorInfoVO.getAffiliationId()).getName();
+                authorInfoVO.setAffiliationName(affiliationName);
+                temp.add(authorInfoVO);
             }
             x.setAuthorInfoList(temp);
         }

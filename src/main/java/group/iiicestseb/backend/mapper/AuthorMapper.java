@@ -78,6 +78,7 @@ public interface AuthorMapper {
     @Select("select author.name " +
             "from author,paper,publish " +
             "where paper.id = publish.paper_id and " +
-            "publish.author_id = author.id")
+            "publish.author_id = author.id and " +
+            "paper.id = #{id,jdbcType=INTEGER}")
     CopyOnWriteArrayList<String> getAuthorByPaperId(int id);
 }
