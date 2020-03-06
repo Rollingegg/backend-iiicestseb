@@ -87,8 +87,8 @@ public class SearchControllerTest {
     @Test
     public void simpleSearchPaper() throws Exception{
         mvc.perform(MockMvcRequestBuilders.get("/search/simple")
-                .param("type", "doi")
-                .param("keyword", "100")
+                .param("type", "paper_title")
+                .param("keyword", "123324")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())

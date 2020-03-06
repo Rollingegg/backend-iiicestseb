@@ -1,5 +1,6 @@
 package group.iiicestseb.backend.controller;
 
+import group.iiicestseb.backend.exception.paper.NoPaperFoundException;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.service.SearchService;
 import group.iiicestseb.backend.vo.Response;
@@ -29,8 +30,11 @@ public class SearchController {
     public Response simpleSearchPaper(@RequestParam(name = "type") String  type, @RequestParam(name = "keyword") String keyword){
         try{
             return Response.buildSuccess(searchService.simpleSearchPaper(type,keyword));
-        }catch (Exception e){
+        }
+        catch (Exception e){
             return Response.buildFailure("搜索出现故障，请稍后重试");
+        }catch (NoPaperFoundException e){
+            Response.buildSuccess();
         }
     }
 
@@ -43,7 +47,10 @@ public class SearchController {
     public Response advancedSearchPaper(@RequestBody AdvancedSearchForm advancedSearchForm){
         try{
             return Response.buildSuccess(searchService.advancedSearchPaper(advancedSearchForm));
-        }catch (Exception e){
+        }catch (NoPaperFoundException e){
+            Response.buildSuccess();
+        }
+        catch (Exception e){
             return Response.buildFailure("搜索出现故障，请稍后重试");
         }
     }

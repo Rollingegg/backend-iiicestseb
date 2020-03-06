@@ -2,6 +2,7 @@ package group.iiicestseb.backend.regedit;
 
 import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.entity.Record;
+import group.iiicestseb.backend.exception.paper.NoPaperFoundException;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.PaperForm;
 import group.iiicestseb.backend.form.UserForm;
@@ -51,6 +52,10 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
     @Override
     public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String type, String keyword) {
         CopyOnWriteArrayList<PaperInfoVO> searchResultVOS= searchService.simpleSearchPaper(type,keyword);
+        if (searchResultVOS.size()==0){
+            throw new NoPaperFoundException();
+        }
+
         return addAuthorInfoInfoPaper(searchResultVOS);
 
     }
@@ -58,6 +63,9 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
     @Override
     public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
         CopyOnWriteArrayList<PaperInfoVO> searchResultVOS= searchService.advancedSearchPaper(advancedSearchForm);
+        if (searchResultVOS.size()==0){
+            throw new NoPaperFoundException();
+        }
         return addAuthorInfoInfoPaper(searchResultVOS);
     }
 
