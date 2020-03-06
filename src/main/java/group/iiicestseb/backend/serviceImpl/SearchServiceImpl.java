@@ -28,7 +28,7 @@ public class SearchServiceImpl implements SearchService {
     private PaperMapper paperMapper;
     @Override
     public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String  type, String keyword){
-        CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList;
+        CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList = new CopyOnWriteArrayList<>();
         if (ALL.equals(type)){
             //all类型的全模糊查询
             paperCopyOnWriteArrayList = paperMapper.simpleSearchPaperAll(keyword);
@@ -44,8 +44,10 @@ public class SearchServiceImpl implements SearchService {
             paperCopyOnWriteArrayList = paperMapper.simpleSearchPaperByType(type,keyword);
         }
         CopyOnWriteArrayList<PaperInfoVO> resultList = new  CopyOnWriteArrayList<>();
-        for (Paper x: paperCopyOnWriteArrayList) {
-            resultList.add(new PaperInfoVO(x));
+        if (paperCopyOnWriteArrayList!=null){
+            for (Paper x: paperCopyOnWriteArrayList) {
+                resultList.add(new PaperInfoVO(x));
+            }
         }
         return resultList;
     }
@@ -54,8 +56,10 @@ public class SearchServiceImpl implements SearchService {
     public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
         CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList = paperMapper.advancedSearch(advancedSearchForm);
         CopyOnWriteArrayList<PaperInfoVO> resultList = new  CopyOnWriteArrayList<>();
-        for (Paper x: paperCopyOnWriteArrayList) {
-            resultList.add(new PaperInfoVO(x));
+        if (paperCopyOnWriteArrayList!=null){
+            for (Paper x: paperCopyOnWriteArrayList) {
+                resultList.add(new PaperInfoVO(x));
+            }
         }
         return resultList;
     }

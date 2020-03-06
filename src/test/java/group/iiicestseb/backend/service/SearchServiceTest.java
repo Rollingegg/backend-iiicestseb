@@ -29,19 +29,21 @@ public class SearchServiceTest extends EasyMockSupport {
     @Test
     public void simpleSearchPaper() {
 
-        CopyOnWriteArrayList<Paper> paperList = new CopyOnWriteArrayList<>();
-        Paper paperA = new Paper();
-        paperA.setPaperTitle("hxd");
-        paperA.setId(1);
-        paperA.setCitationCount(10);
-        paperA.setPublicationYear(DateUtil.parseYear("2000"));
-        paperList.add(paperA);
-        EasyMock.expect(paperMapper.simpleSearchPaperAll("hxd")).andReturn(paperList);
-        EasyMock.expect(paperMapper.simpleSearchPaperByType("paper_abstract","hxd")).andReturn(paperList);
-        replayAll();
-        assertEquals(searchService.simpleSearchPaper("all","hxd").get(0).getPaperTitle(),"hxd");
-        assertEquals(searchService.simpleSearchPaper("paper_abstract","hxd").get(0).getPaperTitle(),"hxd");
-        verifyAll();
+//        CopyOnWriteArrayList<Paper> paperList = new CopyOnWriteArrayList<>();
+//        Paper paperA = new Paper();
+//        paperA.setPaperTitle("hxd");
+//        paperA.setId(1);
+//        paperA.setCitationCount(10);
+//        paperA.setPublicationYear(DateUtil.parseYear("2000"));
+//        paperList.add(paperA);
+//        EasyMock.expect(paperMapper.simpleSearchPaperAll("hxd")).andReturn(paperList);
+//        EasyMock.expect(paperMapper.simpleSearchPaperByType("paper_abstract","hxd")).andReturn(paperList);
+//        replayAll();
+//        assertEquals(searchService.simpleSearchPaper("all","hxd").get(0).getPaperTitle(),"hxd");
+//        assertEquals(searchService.simpleSearchPaper("paper_abstract","hxd").get(0).getPaperTitle(),"hxd");
+//        verifyAll();
+        System.out.println(searchService.simpleSearchPaper("paper_title","aaaaa"));
+        System.out.println(searchService.simpleSearchPaper("paper_title","a"));
     }
 
     @Test

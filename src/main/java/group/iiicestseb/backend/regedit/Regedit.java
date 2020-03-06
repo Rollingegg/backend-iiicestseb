@@ -52,7 +52,7 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
     @Override
     public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String type, String keyword) {
         CopyOnWriteArrayList<PaperInfoVO> searchResultVOS= searchService.simpleSearchPaper(type,keyword);
-        if (searchResultVOS.size()==0){
+        if (searchResultVOS==null){
             throw new NoPaperFoundException();
         }
 
@@ -63,7 +63,7 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
     @Override
     public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
         CopyOnWriteArrayList<PaperInfoVO> searchResultVOS= searchService.advancedSearchPaper(advancedSearchForm);
-        if (searchResultVOS.size()==0){
+        if (searchResultVOS==null){
             throw new NoPaperFoundException();
         }
         return addAuthorInfoInfoPaper(searchResultVOS);
@@ -139,7 +139,10 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
      */
     private CopyOnWriteArrayList<PaperInfoVO> addAuthorInfoInfoPaper(CopyOnWriteArrayList<PaperInfoVO> searchResultVOS){
         for (PaperInfoVO x:searchResultVOS) {
-            x = paperManageService.getPaperInfoVO(x.getPaperTitle());
+            PaperInfoVO z = paperManageService.getPaperInfoVO(x.getPaperTitle());
+            //不能直接x=y
+            x.setConferenceName(z.getConferenceName());
+            x.setPublisherName(z.getPublisherName());
             CopyOnWriteArrayList<String> authorList = authorService.getAuthorByPaperId(x.getId());
             CopyOnWriteArrayList<AuthorInfoVO> temp = new CopyOnWriteArrayList<AuthorInfoVO>();
             for (String y:authorList){

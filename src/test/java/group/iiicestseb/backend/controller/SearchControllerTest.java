@@ -3,6 +3,7 @@ package group.iiicestseb.backend.controller;
 import com.alibaba.fastjson.JSON;
 import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
+import group.iiicestseb.backend.form.PaperForm;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.mapper.PaperMapper;
@@ -88,7 +89,17 @@ public class SearchControllerTest {
     public void simpleSearchPaper() throws Exception{
         mvc.perform(MockMvcRequestBuilders.get("/search/simple")
                 .param("type", "paper_title")
-                .param("keyword", "123324")
+                .param("keyword", "a")
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists())
+        ;
+
+        mvc.perform(MockMvcRequestBuilders.get("/search/simple")
+                .param("type", "affiliation_name")
+                .param("keyword", "aaaaaaaa")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
@@ -104,6 +115,16 @@ public class SearchControllerTest {
         String param = JSON.toJSONString(advancedSearchForm);  //其中u是VO对象
         mvc.perform(MockMvcRequestBuilders.get("/search/advanced")
                 .content(param).contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+
+        advancedSearchForm.setDoiKeyword("a");
+        String param2 = JSON.toJSONString(advancedSearchForm);  //其中u是VO对象
+        mvc.perform(MockMvcRequestBuilders.get("/search/advanced")
+                .content(param2).contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())

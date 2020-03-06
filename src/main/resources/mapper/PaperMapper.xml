@@ -19,6 +19,28 @@
                 jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap id="PaperInfoVOResultMap" type="group.iiicestseb.backend.vo.PaperInfoVO">
+        <id property="id" column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="publicationTitle" column="publication_title" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="publisherId" column="publisher_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="conferenceId" column="conference_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="pdfLink" column="pdf_link" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="doi" column="DOI" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="paperTitle" column="paper_title" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="paperAbstract" column="paper_abstract" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="referenceCount" column="reference_count" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="citationCount" column="citation_count" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="publicationYear" column="publication_year" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP"/>
+        <result property="startPage" column="start_page" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="endPage" column="end_page" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="documentIdentifier" column="document_identifier" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="publisherName" column="publisher_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="conferenceName" column="conference_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+
     <resultMap id="ConferenceResultMap" type="group.iiicestseb.backend.entity.Conference">
         <id property="id" column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
         <result property="name" column="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
