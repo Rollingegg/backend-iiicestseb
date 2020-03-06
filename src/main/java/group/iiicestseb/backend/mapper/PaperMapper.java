@@ -237,10 +237,10 @@ public interface PaperMapper {
      * @param keywords 搜索关键字
      * @return 文献列表
      */
-    @Select("select * from " +
-            "(select distinct paper.* from paper,publish,author,affiliation " +
+    @Select("select * from paper p1 where p1.id in " +
+            "(select distinct p2.id from paper p2,publish,author,affiliation " +
             "where ${type} like '%${keywords}%' and " +
-            "paper.id = publish.paper_id and " +
+            "p2.id = publish.paper_id and " +
             "publish.author_id = author.id and " +
             "author.affiliation_id = affiliation.id) limit 20")
     @ResultMap("PaperResultMap")
@@ -253,16 +253,16 @@ public interface PaperMapper {
      * @param keywords 关键字
      * @return 文献列表
      */
-    @Select("select * from " +
-            "(select distinct paper.* from paper,publish,author,affiliation " +
-            "where paper.id = publish.paper_id and " +
+    @Select("select * from paper p1 where p1.id in " +
+            "(select p2.id from paper p2,publish,author,affiliation " +
+            "where p2.id = publish.paper_id and " +
             "publish.author_id = author.id and " +
             "author.affiliation_id = affiliation.id and " +
             "(author.name like '%${keywords}%' or " +
             "affiliation.name like '%${keywords}%' or " +
-            "paper.DOI like '%${keywords}%' or " +
-            "paper.paper_abstract like '%${keywords}%' or " +
-            "paper.paper_title like '%${keywords}%')" +
+            "p2.DOI like '%${keywords}%' or " +
+            "p2.paper_abstract like '%${keywords}%' or " +
+            "p2.paper_title like '%${keywords}%')" +
             "order by citation_count DESC ) limit 20")
     @ResultMap("PaperResultMap")
     CopyOnWriteArrayList<Paper> simpleSearchPaperAll(String keywords);
@@ -274,17 +274,17 @@ public interface PaperMapper {
      * @param advancedSearchForm 高级检索表单
      * @return 论文列表
      */
-    @Select("select * from " +
-            "(select distinct paper.* from paper,publish,author,affiliation " +
-            "where paper.id = publish.paper_id and " +
+    @Select("select * from paper p1 where p1.id in " +
+            "(select p2.id from paper p2,publish,author,affiliation " +
+            "where p2.id = publish.paper_id and " +
             "publish.author_id = author.id and " +
             "author.affiliation_id = affiliation.id and " +
             "(" +
-            "(paper.paper_title like '%${paperTitleKeyword}%'  OR #{paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
-            "(paper.paper_abstract like '%${paperAbstractKeyword}%'  OR #{paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +
-            "(paper.DOI like '%${doiKeyword}%'  OR #{doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
+            "(p2.paper_title like '%${paperTitleKeyword}%'  OR #{paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
+            "(p2.paper_abstract like '%${paperAbstractKeyword}%'  OR #{paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +
+            "(p2.DOI like '%${doiKeyword}%'  OR #{doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
             "(author.name like '%${authorKeyword}%'  OR #{authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
-            "(affiliation.name like '%${affiliationKeyword}%'  OR #{affiliationKeyword,jdbcType=VARCHAR} IS NULL)" +
+            "(affiliation.name like '%${affiliationKeyword}%'  OR #{affiliationKeyword,jdbcType=VARCHAR} IS NULL) " +
             ")" +
             "order by citation_count desc) limit 20")
     @ResultMap("PaperResultMap")
