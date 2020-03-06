@@ -237,11 +237,12 @@ public interface PaperMapper {
      * @param keywords 搜索关键字
      * @return 文献列表
      */
-    @Select("select distinct paper.* from paper,publish,author,affiliation " +
+    @Select("select * from " +
+            "(select distinct paper.* from paper,publish,author,affiliation " +
             "where ${type} like '%${keywords}%' and " +
             "paper.id = publish.paper_id and " +
             "publish.author_id = author.id and " +
-            "author.affiliation_id = affiliation.id")
+            "author.affiliation_id = affiliation.id) limit 20")
     @ResultMap("PaperResultMap")
     CopyOnWriteArrayList<Paper> simpleSearchPaperByType(String type, String keywords);
 
@@ -252,7 +253,8 @@ public interface PaperMapper {
      * @param keywords 关键字
      * @return 文献列表
      */
-    @Select("select distinct paper.* from paper,publish,author,affiliation " +
+    @Select("select * from " +
+            "(select distinct paper.* from paper,publish,author,affiliation " +
             "where paper.id = publish.paper_id and " +
             "publish.author_id = author.id and " +
             "author.affiliation_id = affiliation.id and " +
@@ -261,7 +263,7 @@ public interface PaperMapper {
             "paper.DOI like '%${keywords}%' or " +
             "paper.paper_abstract like '%${keywords}%' or " +
             "paper.paper_title like '%${keywords}%')" +
-            "order by citation_count DESC ")
+            "order by citation_count DESC ) limit 20")
     @ResultMap("PaperResultMap")
     CopyOnWriteArrayList<Paper> simpleSearchPaperAll(String keywords);
 
@@ -272,7 +274,8 @@ public interface PaperMapper {
      * @param advancedSearchForm 高级检索表单
      * @return 论文列表
      */
-    @Select("select distinct paper.* from paper,publish,author,affiliation " +
+    @Select("select * from " +
+            "(select distinct paper.* from paper,publish,author,affiliation " +
             "where paper.id = publish.paper_id and " +
             "publish.author_id = author.id and " +
             "author.affiliation_id = affiliation.id and " +
@@ -283,7 +286,7 @@ public interface PaperMapper {
             "(author.name like '%${authorKeyword}%'  OR #{authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
             "(affiliation.name like '%${affiliationKeyword}%'  OR #{affiliationKeyword,jdbcType=VARCHAR} IS NULL)" +
             ")" +
-            "order by citation_count desc")
+            "order by citation_count desc) limit 20")
     @ResultMap("PaperResultMap")
     CopyOnWriteArrayList<Paper> advancedSearch(AdvancedSearchForm advancedSearchForm);
 
