@@ -1,6 +1,8 @@
 package group.iiicestseb.backend.mapper;
 
 import group.iiicestseb.backend.entity.Record;
+import group.iiicestseb.backend.utils.CSVUtil;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +19,11 @@ public class StatisticsMapperTest {
     @Resource
     private StatisticsMapper statisticsMapper;
 
+    @Before
+    public void setUp(){
+        CSVUtil.analyzeExistedCSV("Standard.csv");
+    }
+
     private Record record =  new Record("","");
     @Test
     public void insertUserRecord() {
@@ -26,9 +33,11 @@ public class StatisticsMapperTest {
 
     @Test
     public void selectTermsWithHotLimit() {
+        assertEquals(10, statisticsMapper.selectTermsWithHotLimit(10).size());
     }
 
     @Test
     public void selectMaxPublishAuthorLimit() {
+        assertEquals(10, statisticsMapper.selectTermsWithHotLimit(10).size());
     }
 }

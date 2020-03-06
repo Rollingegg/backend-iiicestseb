@@ -48,6 +48,7 @@ public class StatisticsControllerTest {
     public void setUp() {
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
         session = new MockHttpSession();
+        statisticsService.loadExistedCSV("Standard.csv");
     }
 
     @Test
@@ -155,7 +156,6 @@ public class StatisticsControllerTest {
     @Test
     public void getHotTermsSuccess() throws Exception {
         int param = 10;
-        statisticsService.loadExistedCSV("Standard.csv");
         mvc.perform(MockMvcRequestBuilders.get("/statistics/hotTerms")
                 .param("num", Integer.toString(param))
                 .accept(MediaType.APPLICATION_JSON)
@@ -166,9 +166,32 @@ public class StatisticsControllerTest {
     }
 
     @Test
+    public void getHotTermsParamTooLargeError() throws Exception {
+        int param = 10000;
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/hotTerms")
+                .param("num", Integer.toString(param))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(StatisticsController.PARAM_TOO_LARGE));
+    }
+
+    @Test
+    public void getHotTermsParamNegativeError() throws Exception {
+        int param = -2;
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/hotTerms")
+                .param("num", Integer.toString(param))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(StatisticsController.SHOULD_BE_POSITIVE));
+    }
+
+    @Test
     public void getMaxPublishAuthorSuccess() throws Exception {
         int param = 5;
-        statisticsService.loadExistedCSV("Standard.csv");
         mvc.perform(MockMvcRequestBuilders.get("/statistics/maxPublishAuthor")
                 .param("num", Integer.toString(param))
                 .accept(MediaType.APPLICATION_JSON)
