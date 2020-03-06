@@ -114,3 +114,4 @@ CREATE TABLE user (
                       foreign key (record_id) references record(id)
 )ENGINE=InnoDB comment '用户表';
 create index username_hash using hash on user(username);
+insert into user value (1, null, 'root', 'password', '管理员');

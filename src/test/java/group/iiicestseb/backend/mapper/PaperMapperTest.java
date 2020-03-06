@@ -58,8 +58,6 @@ public class PaperMapperTest {
         paperMapper.insert(paper1);
         assertEquals(1,paperMapper.deleteByPrimaryKey(paper1.getId()));
         assertEquals(0,paperMapper.deleteByPrimaryKey(paper1.getId()));
-
-        
     }
 
     @Test
@@ -104,9 +102,9 @@ public class PaperMapperTest {
     @Test
     public void updateByName() {
         paperMapper.insert(paper1);
-        paper1.setPaperTitle("test");
-        paperMapper.updateByPrimaryKey(paper1);
-        assertEquals(paperMapper.selectByPrimaryKey(paper1.getId()),paper1);
+        paper1.setDoi("abcde");
+        paperMapper.updateByName(paper1);
+        assertEquals(paperMapper.selectByPrimaryKey(paper1.getId()).getDoi(), paper1.getDoi());
     }
 
     @Test
@@ -120,7 +118,6 @@ public class PaperMapperTest {
         paperMapper.insert(paper1);
         assertEquals(paperMapper.selectByNameAndYear("a",DateUtil.parseYear("2000")),paper1);
     }
-
 
     @Test
     public void insertPublisherList() {
@@ -147,9 +144,6 @@ public class PaperMapperTest {
         assertEquals(paperMapper.selectConferenceById(conference2.getId()),conference2);
 
     }
-
-
-
 
     @Test
     public void insertPaperTermList() {
@@ -201,9 +195,6 @@ public class PaperMapperTest {
         advancedSearchForm.setAffiliationKeyword("nju");
         advancedSearchForm.setAuthorKeyword("hxd");
         assertEquals(paperMapper.advancedSearch(advancedSearchForm).get(0),paper1);
-
-
-
     }
 
     @Test

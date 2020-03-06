@@ -58,7 +58,5 @@ public class SearchServiceTest extends EasyMockSupport {
         replayAll();
         assertEquals(searchService.advancedSearchPaper(form).get(0).getPaperTitle(),"jh");
         verifyAll();
-
-
     }
 }

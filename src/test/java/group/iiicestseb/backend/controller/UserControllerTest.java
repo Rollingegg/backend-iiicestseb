@@ -50,7 +50,7 @@ public class UserControllerTest {
 
 
     @Test
-    public void signInAndRigisterAndJudge() throws Exception {
+    public void signInAndRegisterAndJudge() throws Exception {
         //没用账号用户登录
         String param = JSON.toJSONString(userForm);  //其中u是VO对象
 
