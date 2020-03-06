@@ -10,6 +10,14 @@ spring:
   jackson:
     time-zone: GMT+8
 
+  servlet:
+    multipart:
+      max-file-size:
+        104857600
+      max-request-size:
+        104857600
+
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 
@@ -17,6 +25,7 @@ server:
   tomcat:
     uri-encoding: utf-8
   port: 4000
+
 
 ---
 spring:
