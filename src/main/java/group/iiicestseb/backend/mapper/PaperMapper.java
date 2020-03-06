@@ -3,6 +3,7 @@ package group.iiicestseb.backend.mapper;
 
 import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
+import group.iiicestseb.backend.vo.PaperInfoVO;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
@@ -237,14 +238,18 @@ public interface PaperMapper {
      * @param keywords 搜索关键字
      * @return 文献列表
      */
-    @Select("select * from paper p1 where p1.id in " +
-            "(select distinct p2.id from paper p2,publish,author,affiliation " +
-            "where ${type} like '%${keywords}%' and " +
-            "p2.id = publish.paper_id and " +
-            "publish.author_id = author.id and " +
-            "author.affiliation_id = affiliation.id) limit 20")
-    @ResultMap("PaperResultMap")
-    CopyOnWriteArrayList<Paper> simpleSearchPaperByType(String type, String keywords);
+    @Select("select " +
+            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
+            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
+            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name," +
+            "au1.id author_id, af1.id affiliation_id, au1.name author_name, af1.name affiliation_name "+
+            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
+            "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
+            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
+            "and (${type} like '%${keywords}%'or ${type} like '%${keywords}%')" +
+            "order by citation_count,id desc limit 20")
+    @ResultMap("PaperInfoVOResultMap")
+    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperByType(String type, String keywords);
 
 
     /**
@@ -253,19 +258,22 @@ public interface PaperMapper {
      * @param keywords 关键字
      * @return 文献列表
      */
-    @Select("select * from paper p1 where p1.id in " +
-            "(select p2.id from paper p2,publish,author,affiliation " +
-            "where p2.id = publish.paper_id and " +
-            "publish.author_id = author.id and " +
-            "author.affiliation_id = affiliation.id and " +
-            "(author.name like '%${keywords}%' or " +
-            "affiliation.name like '%${keywords}%' or " +
-            "p2.DOI like '%${keywords}%' or " +
-            "p2.paper_abstract like '%${keywords}%' or " +
-            "p2.paper_title like '%${keywords}%')" +
-            "order by citation_count DESC ) limit 20")
-    @ResultMap("PaperResultMap")
-    CopyOnWriteArrayList<Paper> simpleSearchPaperAll(String keywords);
+    @Select("select " +
+            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
+            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
+            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name," +
+            "au1.id author_id, af1.id affiliation_id, au1.name author_name, af1.name affiliation_name "+
+            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
+            "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
+            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id and " +
+            "(au1.name like '%${keywords}%' or " +
+            "af1.name like '%${keywords}%' or " +
+            "p1.DOI like '%${keywords}%' or " +
+            "p1.paper_abstract like '%${keywords}%' or " +
+            "p1.paper_title like '%${keywords}%')" +
+            "order by citation_count DESC limit 20")
+    @ResultMap("PaperInfoVOResultMap")
+    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperAll(String keywords);
 
 
     /**
@@ -274,20 +282,21 @@ public interface PaperMapper {
      * @param advancedSearchForm 高级检索表单
      * @return 论文列表
      */
-    @Select("select * from paper p1 where p1.id in " +
-            "(select p2.id from paper p2,publish,author,affiliation " +
-            "where p2.id = publish.paper_id and " +
-            "publish.author_id = author.id and " +
-            "author.affiliation_id = affiliation.id and " +
-            "(" +
-            "(p2.paper_title like '%${paperTitleKeyword}%'  OR #{paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
-            "(p2.paper_abstract like '%${paperAbstractKeyword}%'  OR #{paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +
-            "(p2.DOI like '%${doiKeyword}%'  OR #{doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
-            "(author.name like '%${authorKeyword}%'  OR #{authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
-            "(affiliation.name like '%${affiliationKeyword}%'  OR #{affiliationKeyword,jdbcType=VARCHAR} IS NULL) " +
-            ")" +
-            "order by citation_count desc) limit 20")
-    @ResultMap("PaperResultMap")
-    CopyOnWriteArrayList<Paper> advancedSearch(AdvancedSearchForm advancedSearchForm);
+    @Select("select " +
+            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
+            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
+            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name," +
+            "au1.id author_id, af1.id affiliation_id, au1.name author_name, af1.name affiliation_name "+
+            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
+            "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
+            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id and " +
+            "(p1.paper_title like '%${paperTitleKeyword}%'  OR #{paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
+            "(p1.paper_abstract like '%${paperAbstractKeyword}%'  OR #{paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +
+            "(p1.DOI like '%${doiKeyword}%'  OR #{doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
+            "(au1.name like '%${authorKeyword}%'  OR #{authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
+            "(af1.name like '%${affiliationKeyword}%'  OR #{affiliationKeyword,jdbcType=VARCHAR} IS NULL) " +
+            "order by citation_count desc limit 20")
+    @ResultMap("PaperInfoVOResultMap")
+    CopyOnWriteArrayList<PaperInfoVO> advancedSearch(AdvancedSearchForm advancedSearchForm);
 
 }

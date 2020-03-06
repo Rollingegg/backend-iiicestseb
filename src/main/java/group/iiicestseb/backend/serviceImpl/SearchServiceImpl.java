@@ -28,39 +28,24 @@ public class SearchServiceImpl implements SearchService {
     private PaperMapper paperMapper;
     @Override
     public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String  type, String keyword){
-        CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList = new CopyOnWriteArrayList<>();
+
         if (ALL.equals(type)){
             //all类型的全模糊查询
-            paperCopyOnWriteArrayList = paperMapper.simpleSearchPaperAll(keyword);
+            return paperMapper.simpleSearchPaperAll(keyword);
         }
         else {
             //单一类型的模糊查询
-            if (AUTHOR.equals(type)){
-                type = type.replace('_','.');
+            if (AUTHOR.equals(type)) {
+                type = "au1.name";
+            } else if (AFFILIATION.equals(type)) {
+                type = "af1.name";
             }
-            else if(AFFILIATION.equals(type)){
-                type = type.replace('_','.');
-            }
-            paperCopyOnWriteArrayList = paperMapper.simpleSearchPaperByType(type,keyword);
+            return paperMapper.simpleSearchPaperByType(type, keyword);
         }
-        CopyOnWriteArrayList<PaperInfoVO> resultList = new  CopyOnWriteArrayList<>();
-        if (paperCopyOnWriteArrayList!=null){
-            for (Paper x: paperCopyOnWriteArrayList) {
-                resultList.add(new PaperInfoVO(x));
-            }
-        }
-        return resultList;
     }
 
     @Override
     public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
-        CopyOnWriteArrayList<Paper> paperCopyOnWriteArrayList = paperMapper.advancedSearch(advancedSearchForm);
-        CopyOnWriteArrayList<PaperInfoVO> resultList = new  CopyOnWriteArrayList<>();
-        if (paperCopyOnWriteArrayList!=null){
-            for (Paper x: paperCopyOnWriteArrayList) {
-                resultList.add(new PaperInfoVO(x));
-            }
-        }
-        return resultList;
+        return paperMapper.advancedSearch(advancedSearchForm);
     }
 }

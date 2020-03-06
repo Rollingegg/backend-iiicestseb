@@ -4,6 +4,8 @@ import group.iiicestseb.backend.entity.*;
 
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.utils.DateUtil;
+import group.iiicestseb.backend.vo.AuthorInfoVO;
+import group.iiicestseb.backend.vo.PaperInfoVO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -199,11 +201,25 @@ public class PaperMapperTest {
 
     @Test
     public void simpleSearchPaperByType() {
-
+        List<PaperInfoVO> paperInfoVOS = new ArrayList<>();
+        paperInfoVOS = paperMapper.simpleSearchPaperByType("af1.name","aaaaaaa");
+        for (PaperInfoVO x:paperInfoVOS){
+            System.out.println("test");
+            System.out.println(x);
+            System.out.println("testend");
+        }
     }
 
     @Test
     public void simpleSearchPaperAll() {
+
+        List<PaperInfoVO> paperInfoVOS = new ArrayList<>();
+        paperInfoVOS = paperMapper.simpleSearchPaperAll("However");
+        for (PaperInfoVO x:paperInfoVOS){
+            System.out.println("test");
+            System.out.println(x);
+            System.out.println("testend");
+        }
     }
 
     @Test

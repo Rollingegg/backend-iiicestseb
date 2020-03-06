@@ -98,7 +98,7 @@ public class SearchControllerTest {
         ;
 
         mvc.perform(MockMvcRequestBuilders.get("/search/simple")
-                .param("type", "affiliation_name")
+                .param("type", "author_name")
                 .param("keyword", "aaaaaaaa")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)

@@ -51,24 +51,15 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
 
     @Override
     public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String type, String keyword) {
-        CopyOnWriteArrayList<PaperInfoVO> searchResultVOS= searchService.simpleSearchPaper(type,keyword);
-        if (searchResultVOS==null){
-            throw new NoPaperFoundException();
-        }
 
-        return addAuthorInfoInfoPaper(searchResultVOS);
+        return searchService.simpleSearchPaper(type,keyword);
 
     }
 
     @Override
     public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
-        CopyOnWriteArrayList<PaperInfoVO> searchResultVOS= searchService.advancedSearchPaper(advancedSearchForm);
-        if (searchResultVOS==null){
-            throw new NoPaperFoundException();
-        }
-        return addAuthorInfoInfoPaper(searchResultVOS);
+        return searchService.advancedSearchPaper(advancedSearchForm);
     }
-
     @Override
     public void deletePaperById(int id) {
         paperManageService.deletePaperById(id);
@@ -132,29 +123,6 @@ public class Regedit implements AffiliationService,AuthorService,UserService,Pap
 
     //————————————————————————————公共方法
 
-    /**
-     * 给文献加上所有作者新信息
-     * @param searchResultVOS 搜索结果列表（目前内缺作者信息）
-     * @return 搜索结果列表（信息完整）
-     */
-    private CopyOnWriteArrayList<PaperInfoVO> addAuthorInfoInfoPaper(CopyOnWriteArrayList<PaperInfoVO> searchResultVOS){
-        for (PaperInfoVO x:searchResultVOS) {
-            PaperInfoVO z = paperManageService.getPaperInfoVO(x.getPaperTitle());
-            //不能直接x=y
-            x.setConferenceName(z.getConferenceName());
-            x.setPublisherName(z.getPublisherName());
-            CopyOnWriteArrayList<String> authorList = authorService.getAuthorByPaperId(x.getId());
-            CopyOnWriteArrayList<AuthorInfoVO> temp = new CopyOnWriteArrayList<AuthorInfoVO>();
-            for (String y:authorList){
-                AuthorInfoVO authorInfoVO = authorService.getAuthorInfo(y);
-                String affiliationName = affiliationService.selectAffiliationById(authorInfoVO.getAffiliationId()).getName();
-                authorInfoVO.setAffiliationName(affiliationName);
-                temp.add(authorInfoVO);
-            }
-            x.setAuthorInfoList(temp);
-        }
-        return searchResultVOS;
-    }
 
 
 }
