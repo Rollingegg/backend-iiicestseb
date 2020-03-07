@@ -7,6 +7,9 @@ import group.iiicestseb.backend.form.PaperForm;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.mapper.PaperMapper;
+import group.iiicestseb.backend.mapper.StatisticsMapper;
+import group.iiicestseb.backend.service.StatisticsService;
+import org.apache.ibatis.annotations.ResultMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +38,8 @@ public class SearchControllerTest {
     private WebApplicationContext wac;
     private MockMvc mvc;
     private MockHttpSession session;
-
+    @Resource
+    StatisticsService statisticsService;
     @Resource
     PaperMapper paperMapper;
     @Resource
@@ -49,24 +53,27 @@ public class SearchControllerTest {
     private Affiliation a;
 
     private void createPaper(Paper paper,String paper_title,String doi,String abstarct,String authorname,String affiliationname){
-        paper = new Paper();
-        paper.setPaperTitle(paper_title);
-        paper.setPaperAbstract(doi);
-        paper.setDoi(doi);
-        Author author = new Author();
-        author.setName(authorname);
-        a = new Affiliation();
-        a.setName(affiliationname);
-        affiliationMapper.insert(a);
-        author.setAffiliationId(a.getId());
-        authorMapper.insert(author);
-        paper.setPublisherId(p.getId());
-        paper.setConferenceId(c.getId());
-        paperMapper.insert(paper);
-        Publish publish = new Publish(paper,author);
-        List<Publish> publishes = new ArrayList<>();
-        publishes.add(publish);
-        paperMapper.insertPublishList(publishes);
+//        paper = new Paper();
+//        paper.setPaperTitle(paper_title);
+//        paper.setPaperAbstract(doi);
+//        paper.setDoi(doi);
+//        Author author = new Author();
+//        author.setName(authorname);
+//        a = new Affiliation();
+//        a.setName(affiliationname);
+//        affiliationMapper.insert(a);
+//        author.setAffiliationId(a.getId());
+//        authorMapper.insert(author);
+//        paper.setPublisherId(p.getId());
+//        paper.setConferenceId(c.getId());
+//        paperMapper.insert(paper);
+//        Publish publish = new Publish(paper,author);
+//        List<Publish> publishes = new ArrayList<>();
+//        publishes.add(publish);
+//        paperMapper.insertPublishList(publishes);
+
+
+
     }
 
 
@@ -82,14 +89,19 @@ public class SearchControllerTest {
         publisherList.add(p);
         paperMapper.insertConferenceList(conferenceList);
         paperMapper.insertPublisherList(publisherList);
+        statisticsService.loadExistedCSV("Standard.csv");
+
+
+
+
         createPaper(paper1,"a","100","test1","hxd","nju");
         createPaper(paper2,"b","1010","test2","jh","nju");
     }
     @Test
     public void simpleSearchPaper() throws Exception{
         mvc.perform(MockMvcRequestBuilders.get("/search/simple")
-                .param("type", "paper_title")
-                .param("keyword", "a")
+                .param("type", "author_name")
+                .param("keyword", "an")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
@@ -104,32 +116,38 @@ public class SearchControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
     }
 
     @Test
     public void advancedSearchPaper() throws Exception{
-        AdvancedSearchForm advancedSearchForm = new AdvancedSearchForm();
-        advancedSearchForm.setAuthorKeyword("nju");
-        advancedSearchForm.setDoiKeyword("10");
-        String param = JSON.toJSONString(advancedSearchForm);  //其中u是VO对象
+
+
+
         mvc.perform(MockMvcRequestBuilders.get("/search/advanced")
-                .content(param).contentType(MediaType.APPLICATION_JSON)
+                .param("paper_title","a")
+                .param("paper_abstract","a")
+                .param("doi","a")
+                .param("author_name","a")
+                .param("affiliation_name","a")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
 
-        advancedSearchForm.setDoiKeyword("a");
-        String param2 = JSON.toJSONString(advancedSearchForm);  //其中u是VO对象
+
         mvc.perform(MockMvcRequestBuilders.get("/search/advanced")
-                .content(param2).contentType(MediaType.APPLICATION_JSON)
+                .param("paper_title","aaaaaaaaaa")
+                .param("paper_abstract","a")
+                .param("doi","a")
+                .param("author_name","a")
+                .param("affiliation_name","a")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
 
     }
 }
