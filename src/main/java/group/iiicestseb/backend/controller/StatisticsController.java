@@ -5,11 +5,19 @@ import group.iiicestseb.backend.service.StatisticsService;
 import group.iiicestseb.backend.vo.AuthorWithPublish;
 import group.iiicestseb.backend.vo.Response;
 import group.iiicestseb.backend.vo.TermWithHotVO;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -65,6 +73,24 @@ public class StatisticsController {
             e.printStackTrace();
             return Response.buildFailure(e.getMessage());
         }
+    }
+
+    @GetMapping("/StandardCSV")
+    public Response getStandardCSV(HttpServletResponse response){
+        response.setHeader("content-type", "application/octet-stream; charset=utf-8");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=Standard.csv";
+        response.setHeader(headerKey, headerValue);
+        response.setContentType("application/octet-stream");
+        ClassPathResource file = new ClassPathResource("csv/Standard.csv");
+        try {
+            response.getOutputStream().write(file.getInputStream().readAllBytes());
+            response.setContentLength(Math.toIntExact(file.contentLength()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            Response.buildFailure("未知错误，可能是文件不存在或文件过大");
+        }
+        return Response.buildSuccess();
     }
 
 
