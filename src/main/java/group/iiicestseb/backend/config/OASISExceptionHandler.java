@@ -34,6 +34,4 @@ public class OASISExceptionHandler {
     public Response assertErrorException(IllegalArgumentException ex) {
         return Response.buildFailure(ex.getMessage());
     }
-
-
 }
