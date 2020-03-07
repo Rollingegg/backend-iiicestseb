@@ -247,7 +247,7 @@ public interface PaperMapper {
             "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
             "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
             "and (${type} like '%${keywords}%'or ${type} like '%${keywords}%')" +
-            "order by citation_count,id desc limit 20")
+            "order by citation_count DESC limit 20")
     @ResultMap("PaperInfoVOResultMap")
     CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperByType(String type, String keywords);
 
@@ -295,7 +295,7 @@ public interface PaperMapper {
             "(p1.DOI like '%${doiKeyword}%'  OR #{doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
             "(au1.name like '%${authorKeyword}%'  OR #{authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
             "(af1.name like '%${affiliationKeyword}%'  OR #{affiliationKeyword,jdbcType=VARCHAR} IS NULL) " +
-            "order by citation_count desc limit 20")
+            "order by citation_count DESC limit 20")
     @ResultMap("PaperInfoVOResultMap")
     CopyOnWriteArrayList<PaperInfoVO> advancedSearch(AdvancedSearchForm advancedSearchForm);
 

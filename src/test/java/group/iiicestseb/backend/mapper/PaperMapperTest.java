@@ -202,7 +202,7 @@ public class PaperMapperTest {
     @Test
     public void simpleSearchPaperByType() {
         List<PaperInfoVO> paperInfoVOS = new ArrayList<>();
-        paperInfoVOS = paperMapper.simpleSearchPaperByType("af1.name","aaaaaaa");
+        paperInfoVOS = paperMapper.simpleSearchPaperByType("paper_abstract","ta");
         for (PaperInfoVO x:paperInfoVOS){
             System.out.println("test");
             System.out.println(x);
@@ -214,7 +214,7 @@ public class PaperMapperTest {
     public void simpleSearchPaperAll() {
 
         List<PaperInfoVO> paperInfoVOS = new ArrayList<>();
-        paperInfoVOS = paperMapper.simpleSearchPaperAll("However");
+        paperInfoVOS = paperMapper.simpleSearchPaperAll("ta");
         for (PaperInfoVO x:paperInfoVOS){
             System.out.println("test");
             System.out.println(x);
