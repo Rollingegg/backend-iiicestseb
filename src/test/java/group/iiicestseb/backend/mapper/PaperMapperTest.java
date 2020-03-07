@@ -201,8 +201,10 @@ public class PaperMapperTest {
 
     @Test
     public void simpleSearchPaperByType() {
-        List<PaperInfoVO> paperInfoVOS = new ArrayList<>();
-        paperInfoVOS = paperMapper.simpleSearchPaperByType("paper_abstract","ta");
+        List<PaperInfoVO> paperInfoVOS;
+        paperInfoVOS = paperMapper.simpleSearchPaperByType("paper_title","auto");
+        System.out.println(paperInfoVOS.size());
+
         for (PaperInfoVO x:paperInfoVOS){
             System.out.println("test");
             System.out.println(x);

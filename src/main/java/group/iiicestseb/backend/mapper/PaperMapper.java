@@ -3,6 +3,7 @@ package group.iiicestseb.backend.mapper;
 
 import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
+import group.iiicestseb.backend.vo.AuthorInfoVO;
 import group.iiicestseb.backend.vo.PaperInfoVO;
 import org.apache.ibatis.annotations.*;
 
@@ -242,14 +243,19 @@ public interface PaperMapper {
             "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
             "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
             "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name," +
-            "au1.id author_id, af1.id affiliation_id, au1.name author_name, af1.name affiliation_name "+
+            "p1.id paper_id "+
             "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
             "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
             "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
-            "and (${type} like '%${keywords}%'or ${type} like '%${keywords}%')" +
-            "order by citation_count DESC limit 20")
+            "and ${type} like '%${keywords}%'" +
+            "group by p1.id " +
+            "order by citation_count desc limit 20")
     @ResultMap("PaperInfoVOResultMap")
     CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperByType(String type, String keywords);
+
+    List<AuthorInfoVO> selectAuthorInfoById(Integer paperId);
+
+
 
 
     /**
@@ -262,7 +268,7 @@ public interface PaperMapper {
             "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
             "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
             "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name," +
-            "au1.id author_id, af1.id affiliation_id, au1.name author_name, af1.name affiliation_name "+
+            "p1.id paper_id "+
             "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
             "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
             "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id and " +
@@ -271,7 +277,8 @@ public interface PaperMapper {
             "p1.DOI like '%${keywords}%' or " +
             "p1.paper_abstract like '%${keywords}%' or " +
             "p1.paper_title like '%${keywords}%')" +
-            "order by citation_count DESC limit 20")
+            "group by p1.id " +
+            "order by citation_count desc limit 20")
     @ResultMap("PaperInfoVOResultMap")
     CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperAll(String keywords);
 
@@ -286,7 +293,7 @@ public interface PaperMapper {
             "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
             "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
             "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name," +
-            "au1.id author_id, af1.id affiliation_id, au1.name author_name, af1.name affiliation_name "+
+            "p1.id paper_id "+
             "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
             "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
             "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id and " +
@@ -295,7 +302,8 @@ public interface PaperMapper {
             "(p1.DOI like '%${doiKeyword}%'  OR #{doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
             "(au1.name like '%${authorKeyword}%'  OR #{authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
             "(af1.name like '%${affiliationKeyword}%'  OR #{affiliationKeyword,jdbcType=VARCHAR} IS NULL) " +
-            "order by citation_count DESC limit 20")
+            "group by p1.id " +
+            "order by citation_count desc limit 20")
     @ResultMap("PaperInfoVOResultMap")
     CopyOnWriteArrayList<PaperInfoVO> advancedSearch(AdvancedSearchForm advancedSearchForm);
 

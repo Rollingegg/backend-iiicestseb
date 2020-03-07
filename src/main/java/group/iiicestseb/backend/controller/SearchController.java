@@ -30,8 +30,6 @@ public class SearchController {
     public Response simpleSearchPaper(@RequestParam(name = "type") String  type, @RequestParam(name = "keyword") String keyword){
         try{
             return Response.buildSuccess(searchService.simpleSearchPaper(type,keyword));
-        }catch (NoPaperFoundException e){
-            return Response.buildSuccess();
         }
         catch (Exception e){
             return Response.buildFailure("搜索出现故障，请稍后重试");
@@ -50,8 +48,6 @@ public class SearchController {
     public Response advancedSearchPaper(@RequestBody AdvancedSearchForm advancedSearchForm){
         try{
             return Response.buildSuccess(searchService.advancedSearchPaper(advancedSearchForm));
-        }catch (NoPaperFoundException e){
-            return Response.buildSuccess();
         }
         catch (Exception e){
             return Response.buildFailure("搜索出现故障，请稍后重试");

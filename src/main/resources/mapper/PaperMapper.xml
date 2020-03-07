@@ -37,12 +37,21 @@
                 jdbcType="VARCHAR"/>
         <result property="publisherName" column="publisher_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="conferenceName" column="conference_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
-        <collection property="authorInfoList" ofType="group.iiicestseb.backend.vo.AuthorInfoVO">
-            <id property="id" column="author_id"/>
-            <result property="affiliationId" column="affiliation_id"/>
-            <result property="name" column="author_name"/>
-            <result property="affiliationName" column="affiliation_name"/>
-        </collection>
+        <collection property="authorInfoList" column="id" ofType="group.iiicestseb.backend.vo.AuthorInfoVO" select="selectAuthorInfoById" />
+
+    </resultMap>
+
+    <select id="selectAuthorInfoById" resultMap="AuthorResultMap">
+        select author.id,affiliation.id affiliation_id,author.name, affiliation.name affiliation_name
+        from publish,author,affiliation
+        where #{paperId} = publish.paper_id and publish.author_id = author.id and author.affiliation_id = affiliation.id
+    </select>
+    
+    <resultMap id="AuthorResultMap" type="group.iiicestseb.backend.vo.AuthorInfoVO">
+        <id property="id" column="id"/>
+        <result property="affiliationId" column="affiliation_id"/>
+        <result property="name" column="name"/>
+        <result property="affiliationName" column="affiliation_name"/>
     </resultMap>
 
 
