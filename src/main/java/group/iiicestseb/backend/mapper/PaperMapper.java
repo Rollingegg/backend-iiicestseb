@@ -278,7 +278,7 @@ public interface PaperMapper {
             "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
             ",paper_term pt1,term t1 " +
             "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
-            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id and " +
+            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
             "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
             "(au1.name like '%${keywords}%' or " +
             "af1.name like '%${keywords}%' or " +
@@ -307,7 +307,7 @@ public interface PaperMapper {
             "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
             ",paper_term pt1,term t1 " +
             "where (p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
-            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id and " +
+            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
             "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
             "(p1.paper_title like '%${advancedSearchForm.paperTitleKeyword}%' OR #{advancedSearchForm.paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
             "(p1.paper_abstract like '%${advancedSearchForm.paperAbstractKeyword}%'  OR #{advancedSearchForm.paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +

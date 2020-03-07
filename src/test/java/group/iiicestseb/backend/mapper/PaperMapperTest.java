@@ -89,7 +89,6 @@ public class PaperMapperTest {
     public void updateByPrimaryKey() {
         paperMapper.insert(paper1);
         paper1.setPaperTitle("test");
-
         paperMapper.updateByPrimaryKey(paper1);
         assertEquals(paperMapper.selectByPrimaryKey(paper1.getId()),paper1);
     }
@@ -212,13 +211,13 @@ public class PaperMapperTest {
     @Test
     public void simpleSearchPaperAll() {
 
-//        List<PaperInfoVO> paperInfoVOS = new ArrayList<>();
-//        paperInfoVOS = paperMapper.simpleSearchPaperAll("ta",50);
-//        for (PaperInfoVO x:paperInfoVOS){
-//            System.out.println("test");
-//            System.out.println(x);
-//            System.out.println("testend");
-//        }
+        List<PaperInfoVO> paperInfoVOS = new ArrayList<>();
+        paperInfoVOS = paperMapper.simpleSearchPaperAll("ta",50);
+        for (PaperInfoVO x:paperInfoVOS){
+            System.out.println("test");
+            System.out.println(x);
+            System.out.println("testend");
+        }
     }
 
     @Test
