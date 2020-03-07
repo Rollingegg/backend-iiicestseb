@@ -1,12 +1,16 @@
 package group.iiicestseb.backend.controller;
 
+import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.exception.paper.NoPaperFoundException;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.service.SearchService;
+import group.iiicestseb.backend.vo.AuthorInfoVO;
+import group.iiicestseb.backend.vo.PaperInfoVO;
 import group.iiicestseb.backend.vo.Response;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author jh
@@ -29,7 +33,11 @@ public class SearchController {
     @GetMapping("/simple")
     public Response simpleSearchPaper(@RequestParam(name = "type") String  type, @RequestParam(name = "keyword") String keyword){
         try{
-            return Response.buildSuccess(searchService.simpleSearchPaper(type,keyword));
+            List<PaperInfoVO> searchResult= searchService.simpleSearchPaper(type,keyword);
+            if (searchResult==null){
+                Response.buildSuccess();
+            }
+            return Response.buildSuccess(searchResult);
         }
         catch (Exception e){
             return Response.buildFailure("搜索出现故障，请稍后重试");
@@ -47,7 +55,11 @@ public class SearchController {
     @GetMapping("/advanced")
     public Response advancedSearchPaper(@RequestBody AdvancedSearchForm advancedSearchForm){
         try{
-            return Response.buildSuccess(searchService.advancedSearchPaper(advancedSearchForm));
+            List<PaperInfoVO> searchResult= searchService.advancedSearchPaper(advancedSearchForm);
+            if (searchResult==null){
+                Response.buildSuccess();
+            }
+            return Response.buildSuccess(searchResult);
         }
         catch (Exception e){
             return Response.buildFailure("搜索出现故障，请稍后重试");
