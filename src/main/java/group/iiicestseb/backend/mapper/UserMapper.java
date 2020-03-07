@@ -39,6 +39,7 @@ public interface UserMapper {
      * @return 用户实体
      */
     @Select("select * from user where id = #{id,jdbcType=INTEGER}")
+    @ResultMap("UserResultMap")
     User selectByPrimaryKey(Integer id);
 
     /**
@@ -48,6 +49,7 @@ public interface UserMapper {
      * @return 用户实体
      */
     @Select("select * from user where username = #{username,jdbcType = VARCHAR}")
+    @ResultMap("UserResultMap")
     User selectByUsername(String username);
 
 
