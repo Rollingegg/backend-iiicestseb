@@ -26,8 +26,6 @@ public class UserVO {
      */
     private String username;
 
-
-
     /**
      * 权限等级
      */

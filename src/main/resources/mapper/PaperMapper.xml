@@ -38,8 +38,15 @@
         <result property="publisherName" column="publisher_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="conferenceName" column="conference_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <collection property="authorInfoList" column="id" ofType="group.iiicestseb.backend.vo.AuthorInfoVO" select="selectAuthorInfoById" />
-
+        <collection property="termList" column="id" ofType="group.iiicestseb.backend.entity.Term" select="selectTermById" />
     </resultMap>
+
+    <select id="selectTermById" parameterType="Integer" resultMap="TermResultMap">
+        select term.*
+        from paper_term,term
+        where paper_term.term_id = term.id and paper_term.paper_id = #{paperId}
+    </select>
+
 
     <select id="selectAuthorInfoById" resultMap="AuthorResultMap">
         select author.id,affiliation.id affiliation_id,author.name, affiliation.name affiliation_name

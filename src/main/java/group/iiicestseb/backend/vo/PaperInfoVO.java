@@ -1,9 +1,11 @@
 package group.iiicestseb.backend.vo;
 
 import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.entity.Term;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -102,6 +104,10 @@ public class PaperInfoVO {
      */
     private CopyOnWriteArrayList<AuthorInfoVO> authorInfoList;
 
+    /**
+     * 术语列表
+     */
+    private List<Term> termList;
 
 
 
