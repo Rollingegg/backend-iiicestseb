@@ -50,15 +50,15 @@ public class RegeditImpl implements Regedit{
     }
 
     @Override
-    public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String type, String keyword) {
+    public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String type, String keyword,Integer limit) {
 
-        return searchService.simpleSearchPaper(type,keyword);
+        return searchService.simpleSearchPaper(type,keyword,limit);
 
     }
 
     @Override
-    public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
-        return searchService.advancedSearchPaper(advancedSearchForm);
+    public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm,Integer limit) {
+        return searchService.advancedSearchPaper(advancedSearchForm,limit);
     }
     @Override
     public void deletePaperById(int id) {

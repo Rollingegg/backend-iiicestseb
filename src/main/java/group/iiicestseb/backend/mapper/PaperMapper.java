@@ -246,13 +246,15 @@ public interface PaperMapper {
             "p1.id paper_id, " +
             "p1.id paper_id "+
             "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
+            ",paper_term pt1,term t1 " +
             "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
             "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
-            "and ${type} like '%${keywords}%'" +
+            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
+            " ${type} like '%${keywords}%'" +
             "group by p1.id " +
-            "order by citation_count desc limit 200")
+            "order by citation_count desc limit #{limit}")
     @ResultMap("PaperInfoVOResultMap")
-    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperByType(String type, String keywords);
+    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperByType(String type, String keywords,Integer limit);
 
     List<AuthorInfoVO> selectAuthorInfoById(Integer paperId);
 
@@ -274,17 +276,20 @@ public interface PaperMapper {
             "p1.id paper_id, "+
             "p1.id paper_id "+
             "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
+            ",paper_term pt1,term t1 " +
             "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
             "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id and " +
+            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
             "(au1.name like '%${keywords}%' or " +
             "af1.name like '%${keywords}%' or " +
             "p1.DOI like '%${keywords}%' or " +
             "p1.paper_abstract like '%${keywords}%' or " +
-            "p1.paper_title like '%${keywords}%')" +
+            "p1.paper_title like '%${keywords}%' or " +
+            "t1.word like '%${keywords}%')" +
             "group by p1.id " +
-            "order by citation_count desc limit 200")
+            "order by citation_count desc limit #{limit}")
     @ResultMap("PaperInfoVOResultMap")
-    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperAll(String keywords);
+    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperAll(String keywords,Integer limit);
 
 
     /**
@@ -300,16 +305,20 @@ public interface PaperMapper {
             "p1.id paper_id, "+
             "p1.id paper_id "+
             "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
-            "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
+            ",paper_term pt1,term t1 " +
+            "where (p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
             "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id and " +
-            "(p1.paper_title like '%${paperTitleKeyword}%'  OR #{paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
-            "(p1.paper_abstract like '%${paperAbstractKeyword}%'  OR #{paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +
-            "(p1.DOI like '%${doiKeyword}%'  OR #{doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
-            "(au1.name like '%${authorKeyword}%'  OR #{authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
-            "(af1.name like '%${affiliationKeyword}%'  OR #{affiliationKeyword,jdbcType=VARCHAR} IS NULL) " +
+            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
+            "(p1.paper_title like '%${advancedSearchForm.paperTitleKeyword}%' OR #{advancedSearchForm.paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
+            "(p1.paper_abstract like '%${advancedSearchForm.paperAbstractKeyword}%'  OR #{advancedSearchForm.paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +
+            "(p1.DOI like '%${advancedSearchForm.doiKeyword}%'  OR #{advancedSearchForm.doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
+            "(au1.name like '%${advancedSearchForm.authorKeyword}%'  OR #{advancedSearchForm.authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
+            "(af1.name like '%${advancedSearchForm.affiliationKeyword}%'  OR #{advancedSearchForm.affiliationKeyword,jdbcType=VARCHAR} IS NULL) and" +
+            "(t1.word like '%${advancedSearchForm.termKeyword}%'  OR #{advancedSearchForm.termKeyword,jdbcType=VARCHAR} IS NULL))  "+
             "group by p1.id " +
-            "order by citation_count desc limit 200")
+            "order by citation_count desc limit #{limit,jdbcType=INTEGER}")
     @ResultMap("PaperInfoVOResultMap")
-    CopyOnWriteArrayList<PaperInfoVO> advancedSearch(AdvancedSearchForm advancedSearchForm);
+    CopyOnWriteArrayList<PaperInfoVO> advancedSearch(AdvancedSearchForm advancedSearchForm,
+                                                     Integer limit);
 
 }

@@ -191,7 +191,7 @@ public class PaperMapperTest {
         //搜索测试
         //assertEquals(paperMapper.simpleSearchPaperByType("paper_title","a").get(0).getId(),paper1.getId());
         //assertEquals(paperMapper.simpleSearchPaperByType("author.name","hxd").get(0).getId(),paper1.getId());
-        assertEquals(paperMapper.simpleSearchPaperAll("doi").size(), 0);
+        assertEquals(paperMapper.simpleSearchPaperAll("doi",50).size(), 0);
 
         AdvancedSearchForm advancedSearchForm = new AdvancedSearchForm();
         advancedSearchForm.setAffiliationKeyword("nju");
@@ -199,23 +199,21 @@ public class PaperMapperTest {
     }
     @Test
     public void simpleSearchPaperByType() {
-//        List<PaperInfoVO> paperInfoVOS;
-//
-//        paperInfoVOS = paperMapper.simpleSearchPaperByType("paper_title","a");
-//        System.out.println(paperInfoVOS.size());
-//
-//        for (PaperInfoVO x:paperInfoVOS){
-//            System.out.println("test");
-//            System.out.println(x);
-//            System.out.println("testend");
-//        }
+        List<PaperInfoVO> paperInfoVOS;
+        paperInfoVOS = paperMapper.simpleSearchPaperByType("t1.word","program diagnostics",1);
+        System.out.println(paperInfoVOS.size());
+        for (PaperInfoVO x:paperInfoVOS){
+            System.out.println("test");
+            System.out.println(x);
+            System.out.println("testend");
+        }
     }
 
     @Test
     public void simpleSearchPaperAll() {
 
 //        List<PaperInfoVO> paperInfoVOS = new ArrayList<>();
-//        paperInfoVOS = paperMapper.simpleSearchPaperAll("ta");
+//        paperInfoVOS = paperMapper.simpleSearchPaperAll("ta",50);
 //        for (PaperInfoVO x:paperInfoVOS){
 //            System.out.println("test");
 //            System.out.println(x);
@@ -225,5 +223,22 @@ public class PaperMapperTest {
 
     @Test
     public void advancedSearch() {
+        List<PaperInfoVO> paperInfoVOS = new ArrayList<>();
+
+        AdvancedSearchForm advancedSearchForm = new AdvancedSearchForm();
+        advancedSearchForm.setDoiKeyword("a");
+        advancedSearchForm.setAuthorKeyword("a");
+        advancedSearchForm.setAffiliationKeyword("a");
+        advancedSearchForm.setPaperTitleKeyword("a");
+        advancedSearchForm.setPaperAbstractKeyword("pr");
+        advancedSearchForm.setTermKeyword("g");
+        paperInfoVOS = paperMapper.advancedSearch(advancedSearchForm,50);
+        for (PaperInfoVO x:paperInfoVOS){
+            System.out.println("test");
+            System.out.println(x);
+            System.out.println("testend");
+        }
+
+
     }
 }

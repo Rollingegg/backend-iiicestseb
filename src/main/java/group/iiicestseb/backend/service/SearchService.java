@@ -20,12 +20,14 @@ public interface SearchService {
      * @param keyword 搜索关键字
      * @return 论文列表
      */
-    public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String  type, String keyword);
+    public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String  type, String keyword,Integer limit);
 
     /**
      * 论文高级检索
      * @param advancedSearchForm 所有搜索关键词表单
      * @return 论文列表
      */
-    public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm);
+    public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm,Integer limit);
+
+
 }

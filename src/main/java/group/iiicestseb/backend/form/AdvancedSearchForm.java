@@ -33,4 +33,9 @@ public class AdvancedSearchForm {
      * 机构关键字
      */
     private String affiliationKeyword;
+
+    /**
+     * 术语
+     */
+    private String termKeyword;
 }

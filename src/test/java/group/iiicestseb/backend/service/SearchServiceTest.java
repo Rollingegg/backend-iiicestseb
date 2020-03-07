@@ -42,8 +42,8 @@ public class SearchServiceTest extends EasyMockSupport {
 //        assertEquals(searchService.simpleSearchPaper("all","hxd").get(0).getPaperTitle(),"hxd");
 //        assertEquals(searchService.simpleSearchPaper("paper_abstract","hxd").get(0).getPaperTitle(),"hxd");
 //        verifyAll();
-        System.out.println(searchService.simpleSearchPaper("paper_title","aaaaa"));
-        System.out.println(searchService.simpleSearchPaper("paper_title","a"));
+        //System.out.println(searchService.simpleSearchPaper("paper_title","aaaaa",50));
+        //System.out.println(searchService.simpleSearchPaper("paper_title","a",50));
     }
 
     @Test

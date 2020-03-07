@@ -27,14 +27,16 @@ public class SearchController {
 
     /**
      * 论文低级检索
-     * @param type 类型 有 全部/标题/作者/摘要/DOI/机构名 "all" "paper_tile" "author_name" "paper_abstract" "DOI" "affiliation_name"
+     * @param type 类型 有 全部/标题/作者/摘要/DOI/机构名 "all" "paper_tile" "author_name" "paper_abstract" "DOI" "affiliation_name" ,"term"
      * @param keyword 搜索关键字
      * @return 文献搜索结果列表
      */
     @GetMapping("/simple")
-    public Response simpleSearchPaper(@RequestParam(name = "type") String  type, @RequestParam(name = "keyword") String keyword){
+    public Response simpleSearchPaper(@RequestParam(name = "type") String  type,
+                                      @RequestParam(name = "keyword") String keyword,
+                                      @RequestParam(name = "limit",defaultValue = "50")Integer limit){
         try{
-            List<PaperInfoVO> searchResult= searchService.simpleSearchPaper(type,keyword);
+            List<PaperInfoVO> searchResult= searchService.simpleSearchPaper(type,keyword,limit);
             if (searchResult.size()==0){
                 return Response.buildSuccess();
             }
@@ -50,7 +52,7 @@ public class SearchController {
 
     /**
      * 论文高即检索
-     * @param advancedSearchForm 高级检索表单
+     * @param
      * @return 论文列表
      */
     @GetMapping("/advanced")
@@ -58,13 +60,16 @@ public class SearchController {
                                         @RequestParam(name = "paper_abstract")String paper_abstract,
                                         @RequestParam(name = "doi")String doi,
                                         @RequestParam(name = "author_name")String author_name,
-                                        @RequestParam(name = "affiliation_name")String affiliation_name){
+                                        @RequestParam(name = "affiliation_name")String affiliation_name,
+                                        @RequestParam(name = "term")String term,
+                                        @RequestParam(name = "limit",defaultValue = "50")Integer limit){
         try{
             Assert.isTrue(!(papar_title == null &&
                     paper_abstract == null &&
                     doi == null &&
                     author_name == null &&
-                    affiliation_name == null),PAPERFORM_EMPTY);
+                    affiliation_name == null &&
+                    term == null  ),PAPERFORM_EMPTY);
 
             AdvancedSearchForm advancedSearchForm = new AdvancedSearchForm();
             advancedSearchForm.setDoiKeyword(doi);
@@ -72,8 +77,8 @@ public class SearchController {
             advancedSearchForm.setAffiliationKeyword(affiliation_name);
             advancedSearchForm.setPaperTitleKeyword(papar_title);
             advancedSearchForm.setPaperAbstractKeyword(paper_abstract);
-
-            List<PaperInfoVO> searchResult= searchService.advancedSearchPaper(advancedSearchForm);
+            advancedSearchForm.setTermKeyword(term);
+            List<PaperInfoVO> searchResult= searchService.advancedSearchPaper(advancedSearchForm,limit);
             if (searchResult.size()==0){
                 return Response.buildSuccess();
             }
