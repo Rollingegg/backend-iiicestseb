@@ -114,7 +114,7 @@ public class StatisticsControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
     }
 
     @Test

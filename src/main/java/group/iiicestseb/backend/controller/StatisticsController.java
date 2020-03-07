@@ -38,8 +38,7 @@ public class StatisticsController {
     @PostMapping("/uploadCSV")
     public Response uploadCSV(@RequestParam("file") MultipartFile file) {
         Assert.notNull(file, PARAMETER_ERROR);
-        statisticsService.analyzeUploadedCSV(file);
-        return Response.buildSuccess();
+        return Response.buildSuccess(statisticsService.analyzeUploadedCSV(file));
     }
 
     @GetMapping("hotTerms")

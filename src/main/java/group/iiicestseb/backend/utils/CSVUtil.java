@@ -99,7 +99,7 @@ public class CSVUtil {
      *
      * @param file 刚上传的csv
      */
-    public static void analyzeUploadedCSV(MultipartFile file) {
+    public static Map<String, List<Object>> analyzeUploadedCSV(MultipartFile file) {
         String filename = file.getOriginalFilename();
         BufferedReader reader;
         try {
@@ -116,7 +116,7 @@ public class CSVUtil {
             LOGGER.warn(FILE_CLOSE_ERROR);
             throw new CSVException(FILE_CLOSE_ERROR);
         }
-        analyzeCSVContent(filename, lines);
+        return analyzeCSVContent(filename, lines);
     }
 
     /**
@@ -165,7 +165,9 @@ public class CSVUtil {
      * @param filename 文件名
      * @param lines    解析完的文件内容
      */
-    private static void analyzeCSVContent(String filename, List<String[]> lines) {
+    private static Map<String, List<Object>> analyzeCSVContent(String filename, List<String[]> lines) {
+        Map<String, List<Object>> results = new TreeMap<>();
+
         // 初始化待解析的数据
         List<List<Affiliation>> affiliationList = new LinkedList<>();
         List<List<Author>> authorsList = new LinkedList<>();
@@ -196,6 +198,9 @@ public class CSVUtil {
 
         analyzePublish(paperList, authorsList, publishList);
         analyzePaperTerm(paperList, termsList, paperTermList);
+
+        results.put("papers", Collections.singletonList(paperList));
+        return results;
 
     }
 

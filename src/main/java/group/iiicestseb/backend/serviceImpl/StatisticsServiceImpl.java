@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -51,8 +52,8 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public void analyzeUploadedCSV(MultipartFile file) {
-        CSVUtil.analyzeUploadedCSV(file);
+    public Map<String, List<Object>> analyzeUploadedCSV(MultipartFile file) {
+        return CSVUtil.analyzeUploadedCSV(file);
     }
 
     @Override

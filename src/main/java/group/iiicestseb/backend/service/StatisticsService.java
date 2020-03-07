@@ -8,6 +8,7 @@ import group.iiicestseb.backend.vo.TermWithHotVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jh
@@ -33,8 +34,9 @@ public interface StatisticsService {
      * 解析上传的csv文件
      *
      * @param file 文件
+     * @return 解析后的数据
      */
-    public void analyzeUploadedCSV(MultipartFile file);
+    public Map<String, List<Object>> analyzeUploadedCSV(MultipartFile file);
 
     /**
      * 计算并返回最热门的num个术语
