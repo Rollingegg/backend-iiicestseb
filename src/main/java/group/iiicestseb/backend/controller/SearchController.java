@@ -34,8 +34,8 @@ public class SearchController {
     public Response simpleSearchPaper(@RequestParam(name = "type") String  type, @RequestParam(name = "keyword") String keyword){
         try{
             List<PaperInfoVO> searchResult= searchService.simpleSearchPaper(type,keyword);
-            if (searchResult==null){
-                Response.buildSuccess();
+            if (searchResult.size()==0){
+                return Response.buildSuccess();
             }
             return Response.buildSuccess(searchResult);
         }
@@ -56,8 +56,8 @@ public class SearchController {
     public Response advancedSearchPaper(@RequestBody AdvancedSearchForm advancedSearchForm){
         try{
             List<PaperInfoVO> searchResult= searchService.advancedSearchPaper(advancedSearchForm);
-            if (searchResult==null){
-                Response.buildSuccess();
+            if (searchResult.size()==0){
+                return Response.buildSuccess();
             }
             return Response.buildSuccess(searchResult);
         }
