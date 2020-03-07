@@ -242,9 +242,7 @@ public interface PaperMapper {
     @Select("select " +
             "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
             "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
-            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name," +
-            "p1.id paper_id, " +
-            "p1.id paper_id "+
+            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
             "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
             ",paper_term pt1,term t1 " +
             "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
@@ -271,9 +269,7 @@ public interface PaperMapper {
     @Select("select " +
             "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
             "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
-            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name," +
-            "p1.id paper_id, "+
-            "p1.id paper_id "+
+            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
             "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
             ",paper_term pt1,term t1 " +
             "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
@@ -299,9 +295,7 @@ public interface PaperMapper {
     @Select("select " +
             "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
             "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
-            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name," +
-            "p1.id paper_id, "+
-            "p1.id paper_id "+
+            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
             "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
             ",paper_term pt1,term t1 " +
             "where (p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
