@@ -1,99 +1,117 @@
-DROP DATABASE IF EXISTS oasisdb;
-CREATE DATABASE oasisdb DEFAULT CHARACTER SET utf8;
-USE oasisdb;
+DROP DATABASE IF EXISTS IIICEStseB;
+CREATE DATABASE IIICEStseB DEFAULT CHARACTER SET utf8;
+USE IIICEStseB;
+
+CREATE USER if not exists 'iii'@'Localhost' IDENTIFIED BY 'iii';
+grant all on IIICEStseB.* to 'iii'@'Localhost';
+flush privileges;
 
 ##创建机构表
-CREATE TABLE t_affiliation (
-    affiliation_id   INT AUTO_INCREMENT PRIMARY KEY,
-    affiliation VARCHAR(30)
-)ENGINE=InnoDB;
+CREATE TABLE affiliation (
+                             id   INT AUTO_INCREMENT PRIMARY KEY comment '机构id',
+                             name varchar(200) comment '机构名'
+)ENGINE=InnoDB comment '机构表';
+create index affiliation_name_hash using hash on affiliation(name);
 
 ##创建作者表
-CREATE TABLE t_author (
-    author_id   INT AUTO_INCREMENT PRIMARY KEY,
-    author_name VARCHAR(30),
-    author_organization_id int,
-    foreign key (author_organization_id) references  t_affiliation(affiliation_id)
-)ENGINE=InnoDB;
+CREATE TABLE author (
+                        id   INT AUTO_INCREMENT PRIMARY KEY comment '作者id',
+                        name VARCHAR(40) comment '作者姓名',
+                        affiliation_id int    comment '作者所属机构id',
+                        foreign key (affiliation_id) references  affiliation(id)
+)ENGINE=InnoDB comment '作者表';
+create index author_name_hash using hash on author(name);
 
 ##创建发行机构表
-CREATE TABLE t_publisher (
-    publisher_id   INT AUTO_INCREMENT PRIMARY KEY,
-    publisher_name VARCHAR(30)
-)ENGINE=InnoDB;
+CREATE TABLE publisher (
+                           id   INT AUTO_INCREMENT PRIMARY KEY comment '出版社id',
+                           name varchar(200) comment '出版社名称'
+)ENGINE=InnoDB comment '出版社表';
+create index publisher_name_hash using hash on publisher(name);
 
 ##创建会议表
-CREATE TABLE t_conference (
-    conference_id   INT AUTO_INCREMENT PRIMARY KEY,
-    conference_name VARCHAR(30)
-)ENGINE=InnoDB;
+CREATE TABLE conference (
+                            id   INT AUTO_INCREMENT PRIMARY KEY comment '会议id',
+                            name VARCHAR(100) comment '会议名称'
+)ENGINE=InnoDB comment '会议表';
+create index conference_name_hash using hash on conference(name);
 
 ##创建文献表
-CREATE TABLE t_paper (
-                         paper_id   INT AUTO_INCREMENT PRIMARY KEY,
-                         paper_publisher_id int,
-                         paper_conference_id int,
-                         pdf_url varchar(200),
-                         DOI varchar(30),
-                         paper_title varchar(200),
-                         abstract varchar(2000),
-                         reference_count int,
-                         article_citation_count int,
-                         publication_title varchar(100),
-                         publication_year int,
-                         start_page varchar(12),
-                         end_page varchar(12),
-                         author_word varchar(100),
-                         foreign key (paper_conference_id) references t_conference(conference_id),
-                         foreign key (paper_publisher_id) references  t_publisher(publisher_id)
-)ENGINE=InnoDB;
+CREATE TABLE paper (
+                       id   INT AUTO_INCREMENT PRIMARY KEY comment '文献id',
+                       publication_title varchar(100) comment '文献所属出版刊物名称',
+                       publisher_id int comment '刊物所属出版社id',
+                       conference_id int  comment  '文献所属会议id',
+                       pdf_link text comment '文献pdf连接',
+                       DOI varchar(40) comment  'DOI',
+                       paper_title varchar(200) comment '文献标题',
+                       paper_abstract text comment  '摘要',
+                       reference_count int comment  '参考资料数',
+                       citation_count int comment '文献被引次数',
+                       publication_year datetime default null comment '出版年份',
+                       start_page varchar(15) comment '起始页',
+                       end_page varchar(15) comment '终止页',
+#                          author_keywords varchar(100) comment '文章关键词',
+                       document_identifier varchar(30) comment 'document_identifier',
+                       foreign key (conference_id) references conference(id),
+                       foreign key (publisher_id) references  publisher(id)
+)ENGINE=InnoDB comment '文献表';
+create index paper_title_hash using hash on paper(paper_title);
 
 ##创建发表文献关系表
-CREATE TABLE t_publish (
-            publish_id   INT AUTO_INCREMENT PRIMARY KEY,
-            publish_author_id int,
-            publish_paper_id int,
-            foreign key (publish_author_id) references t_author(author_id),
-            foreign key (publish_paper_id) references t_paper(paper_id)
-)ENGINE=InnoDB;
+CREATE TABLE publish (
+                         id   INT AUTO_INCREMENT PRIMARY KEY comment '作者发表文献_关系id',
+                         author_id int comment '作者id',
+                         paper_id int comment '文献id',
+                         foreign key (author_id) references author(id),
+                         foreign key (paper_id) references paper(id),
+                         unique (author_id, paper_id)
+)ENGINE=InnoDB comment '作者发表文献_关系表';
 
-##创建术语机构种类表
-CREATE TABLE t_organization (
-                      organization_id   INT AUTO_INCREMENT PRIMARY KEY,
-                      organization_name varchar(23)
-)ENGINE=InnoDB;
+# ##创建术语分类标准表
+# CREATE TABLE term_standard (
+#                             id   INT AUTO_INCREMENT PRIMARY KEY comment '术语标准id',
+#                             name varchar(30) comment '术语标准名'
+# )ENGINE=InnoDB comment '术语标准表';
+# create index term_standard_name_hash using hash on term_standard(name);
+# use sec;
+# insert into term_standard (id, name) VALUES (1, 'IEEE Terms'), (2, 'INSPEC Controlled Terms'), (3, 'INSPEC Non-Controlled Terms'), (4, 'Mesh Terms');
 
 ##创建术语表
-CREATE TABLE t_term (
-                      term_id   INT AUTO_INCREMENT PRIMARY KEY,
-                      term_organization int,
-                      term_word varchar(20),
-                    foreign key (term_organization) references t_organization(organization_id)
-)ENGINE=InnoDB;
+CREATE TABLE term (
+                      id   INT AUTO_INCREMENT PRIMARY KEY comment '术语id',
+#                       standard_id int comment '术语标准来源id',
+                      word varchar(80) comment '术语'
+#                       foreign key (standard_id) references term_standard(id)
+)ENGINE=InnoDB comment '术语表';
+create index term_word_hash using hash on term(word);
 
-##创建文献术语联系表
-CREATE TABLE t_paper_term (
-                        paper_term_id   INT AUTO_INCREMENT PRIMARY KEY,
-                        paper_term_paper_id int,
-                        paper_term_term_id int,
-                        foreign key (paper_term_term_id) references t_term(term_id)
-)ENGINE=InnoDB;
+##创建文献术语关系表
+CREATE TABLE paper_term (
+                            id   INT AUTO_INCREMENT PRIMARY KEY comment '文献术语_关系id',
+                            paper_id int comment '文献id',
+                            term_id int comment '术语id',
+                            foreign key (term_id) references term(id),
+                            foreign key (paper_id) references paper(id),
+                            unique (term_id, paper_id)
+)ENGINE=InnoDB comment '文献术语_关系表';
 
 ##创建浏览记录表
-CREATE TABLE t_browse_record (
-                                 browse_record_id   INT AUTO_INCREMENT PRIMARY KEY,
-                                search_word varchar(100),
-                                browse_context varchar(200)
-
-)ENGINE=InnoDB;
+CREATE TABLE record (
+                        id   INT AUTO_INCREMENT PRIMARY KEY comment '历史记录id',
+                        search_record text comment '搜索记录字段',
+                        browse_record text comment '历史浏览记录'
+)ENGINE=InnoDB comment '历史记录';
 
 
 ##创建用户表
-CREATE TABLE t_user (
-                        user_id   INT AUTO_INCREMENT PRIMARY KEY,
-                        user_browse_record int,
-                        username varchar(32),
-                        password varchar(32),
-                        privilege_level int,
-                        foreign key (user_browse_record) references t_browse_record(browse_record_id)
-)ENGINE=InnoDB;
+CREATE TABLE user (
+                      id   INT AUTO_INCREMENT PRIMARY KEY comment '用户id',
+                      record_id int comment '用户浏览记录id',
+                      username varchar(32) comment '用户名' unique ,
+                      password varchar(32) comment '密码',
+                      privilege_level varchar(20) comment '权限等级',
+                      foreign key (record_id) references record(id)
+)ENGINE=InnoDB comment '用户表';
+create index username_hash using hash on user(username);
+insert into user value (1, null, 'root', 'password', '管理员');

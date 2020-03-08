@@ -10,6 +10,14 @@ spring:
   jackson:
     time-zone: GMT+8
 
+  servlet:
+    multipart:
+      max-file-size:
+        104857600
+      max-request-size:
+        104857600
+
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 
@@ -18,13 +26,12 @@ server:
     uri-encoding: utf-8
   port: 4000
 
+
 ---
 spring:
   profiles: prod
   devtools:
     add-properties: false
-  datasource:
-    password: root
 logging:
   level:
     root: info
@@ -37,7 +44,23 @@ spring:
     add-properties: true
   datasource:
     username: root
-    password: root
+logging:
+  level:
+    group.iiicestseb.backend: DEBUG
+server:
+  port: 4001
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+---
+spring:
+  profiles: test
+  devtools:
+    add-properties: true
+  datasource:
+    username: root
 logging:
   level:
     group.iiicestseb.backend: DEBUG
@@ -89,31 +112,17 @@ logging:
     group:
       iiicestseb:
         backend: DEBUG
-
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 ---
 spring:
   profiles: jh
-  datasource:
-    password: root
-    url: jdbc:mysql://localhost:3306/sec?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    hikari:
-      max-lifetime: 3600000
-  devtools:
-    add-properties: true
-server:
-  servlet:
-    session:
-      timeout: 7200
-logging:
-  level:
-    group:
-      iiicestseb:
-        backend:
-          DEBUG
-
----
-spring:
-  profiles: wph
   datasource:
     password: root
     url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
@@ -131,6 +140,46 @@ logging:
       iiicestseb:
         backend:
           DEBUG
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+---
+spring:
+  profiles: wph
+  datasource:
+    password: shengdasogood
+    url: jdbc:mysql://localhost:3306/iiicestseb?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    hikari:
+      max-lifetime: 3600000
+    username: root
+    driver-class-name: com.mysql.jdbc.Driver
+  devtools:
+    add-properties: true
+
+server:
+  servlet:
+    session:
+      timeout: 7200
+logging:
+  level:
+    group:
+      iiicestseb:
+        backend:
+          DEBUG
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 ---
 spring:
@@ -153,5 +202,37 @@ logging:
       iiicestseb:
         backend:
           DEBUG
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+---
+spring:
+  profiles: local
+  devtools:
+    add-properties: true
+  datasource:
+    type: com.mysql.cj.jdbc.MysqlDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: iii
+    password: iii
+  jackson:
+    time-zone: GMT+8
+logging:
+  level:
+    group.iiicestseb.backend: DEBUG
+server:
+  port: 4002
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 ---
