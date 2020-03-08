@@ -80,7 +80,7 @@ spring:
     add-properties: true
   datasource:
     username: root
-    password: root
+    password: IIICEStseB
 logging:
   level:
     group.iiicestseb.backend: DEBUG
