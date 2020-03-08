@@ -95,8 +95,8 @@ public class StatisticsControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(CSVUtil.COL_FORMAT_ERROR + 5));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
     }
 
     @Test
@@ -149,8 +149,9 @@ public class StatisticsControllerTest {
                 .header("Content-type", "multipart/form-data")
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(CSVUtil.COL_FORMAT_ERROR + 5));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.errors[0].msg").value(CSVUtil.COL_FORMAT_ERROR + 5))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.errors[0].row").value( 5));
     }
 
     @Test

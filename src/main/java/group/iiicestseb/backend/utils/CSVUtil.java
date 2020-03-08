@@ -99,7 +99,7 @@ public class CSVUtil {
      *
      * @param file 刚上传的csv
      */
-    public static Map<String, List<Object>> analyzeUploadedCSV(MultipartFile file) {
+    public static Map<String, Object> analyzeUploadedCSV(MultipartFile file) {
         String filename = file.getOriginalFilename();
         BufferedReader reader;
         try {
@@ -109,23 +109,30 @@ public class CSVUtil {
             throw new CSVException(FILE_OPEN_ERROR);
         }
         List<String[]> lines = new LinkedList<>();
-        splitCSVLines(reader, lines);
+        List<Map<String, Object>> errors = new LinkedList<>();
+        splitCSVLines(reader, lines, errors);
         try {
             reader.close();
         } catch (IOException e) {
             LOGGER.warn(FILE_CLOSE_ERROR);
             throw new CSVException(FILE_CLOSE_ERROR);
         }
-        return analyzeCSVContent(filename, lines);
+        Map<String, Object> result = analyzeCSVContent(filename, lines);
+        result.put("errors", errors);
+        return result;
     }
 
+
+    private static void splitCSVLines(BufferedReader reader, List<String[]> lines){
+        splitCSVLines(reader, lines, new LinkedList<>());
+    }
     /**
      * 将文件流中的数据读入并按分隔符\",\"符切割
      *
      * @param reader 流阅读器
      * @param lines  接收文件内容的可变二维矩阵
      */
-    private static void splitCSVLines(BufferedReader reader, List<String[]> lines) {
+    private static void splitCSVLines(BufferedReader reader, List<String[]> lines, List<Map<String, Object>> errors) {
         String line;
         try {
             line = reader.readLine();
@@ -154,10 +161,15 @@ public class CSVUtil {
                 throw new CSVException(COL_READ_ERROR + i);
             } catch (AssertionError e) {
                 LOGGER.warn(COL_FORMAT_ERROR + i);
-                throw new CSVException(COL_FORMAT_ERROR + i);
+                Map<String, Object> error = new HashMap<>();
+                error.put("row", i);
+                error.put("msg", COL_FORMAT_ERROR + i);
+                errors.add(error);
             }
         }
     }
+
+
 
     /**
      * 解析csv内容并写入数据库
@@ -165,8 +177,8 @@ public class CSVUtil {
      * @param filename 文件名
      * @param lines    解析完的文件内容
      */
-    private static Map<String, List<Object>> analyzeCSVContent(String filename, List<String[]> lines) {
-        Map<String, List<Object>> results = new TreeMap<>();
+    private static Map<String, Object> analyzeCSVContent(String filename, List<String[]> lines) {
+        Map<String, Object> results = new TreeMap<>();
 
         // 初始化待解析的数据
         List<List<Affiliation>> affiliationList = new LinkedList<>();
@@ -199,7 +211,7 @@ public class CSVUtil {
         analyzePublish(paperList, authorsList, publishList);
         analyzePaperTerm(paperList, termsList, paperTermList);
 
-        results.put("papers", Collections.singletonList(paperList));
+        results.put("papers", paperList);
         return results;
 
     }

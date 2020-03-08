@@ -52,7 +52,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public Map<String, List<Object>> analyzeUploadedCSV(MultipartFile file) {
+    public Map<String, Object> analyzeUploadedCSV(MultipartFile file) {
         return CSVUtil.analyzeUploadedCSV(file);
     }
 

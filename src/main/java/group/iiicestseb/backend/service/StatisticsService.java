@@ -36,7 +36,7 @@ public interface StatisticsService {
      * @param file 文件
      * @return 解析后的数据
      */
-    public Map<String, List<Object>> analyzeUploadedCSV(MultipartFile file);
+    public Map<String, Object> analyzeUploadedCSV(MultipartFile file);
 
     /**
      * 计算并返回最热门的num个术语

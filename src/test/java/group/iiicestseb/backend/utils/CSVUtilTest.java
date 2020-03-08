@@ -20,6 +20,8 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.fail;
 
@@ -78,14 +80,9 @@ public class CSVUtilTest {
     }
 
     @Test
-    public void analyzeExistedCSVLineContentError() {
+    public void analyzeExistedCSVLineContentWarn() {
         String filename = "LineErrorAt5.csv";
-        try {
-            CSVUtil.analyzeExistedCSV(filename);
-            fail();
-        } catch (CSVUtil.CSVException e) {
-            Assert.assertEquals(CSVUtil.COL_FORMAT_ERROR + 5, e.getMessage());
-        }
+        CSVUtil.analyzeExistedCSV(filename);
     }
 
     @Test
@@ -127,17 +124,15 @@ public class CSVUtilTest {
     }
 
     @Test
-    public void uploadedCSVLineContentError() throws IOException {
+    public void uploadedCSVLineContentWarn() throws IOException {
         String path = this.getClass().getResource("/").getPath();
         String filename = path + "csv/LineErrorAt5.csv";
         File file = new File(filename);
         FileInputStream fileInput = new FileInputStream(file);
         MultipartFile multipartFile = new MockMultipartFile(file.getName(), "LineErrorAt5.csv", "text/plain", fileInput);
-        try {
-            CSVUtil.analyzeUploadedCSV(multipartFile);
-            fail();
-        } catch (CSVUtil.CSVException e) {
-            Assert.assertEquals(CSVUtil.COL_FORMAT_ERROR + 5, e.getMessage());
-        }
+        Map<String, Object> result =  CSVUtil.analyzeUploadedCSV(multipartFile);
+        List<Map<String, Object>> errors = (List<Map<String, Object>>) result.get("errors");
+        Assert.assertEquals(CSVUtil.COL_FORMAT_ERROR+5, errors.get(0).get("msg"));
+        Assert.assertEquals(5, errors.get(0).get("row"));
     }
 }
