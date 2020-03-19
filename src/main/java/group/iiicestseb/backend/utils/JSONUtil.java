@@ -171,17 +171,17 @@ public class JSONUtil {
 
     private static void analyze(List<JSONObject> jsonObjects, JSONObject errors) {
         JSONObject ExistedMaps = new JSONObject();
-        ExistedMaps.put("existedConference", new HashMap<String, ConferenceEntity>());
-        ExistedMaps.put("existedTerm", new HashMap<String, ConferenceEntity>());
-        ExistedMaps.put("existedAffiliation", new HashMap<String, AffiliationEntity>());
-        ExistedMaps.put("existedAuthor", new HashMap<String, AuthorEntity>());
-        ExistedMaps.put("existedPaper", new HashMap<String, PaperEntity>());
+        ExistedMaps.put("existedConference", new HashMap<String, Conference>());
+        ExistedMaps.put("existedTerm", new HashMap<String, Term>());
+        ExistedMaps.put("existedAffiliation", new HashMap<String, Affiliation>());
+        ExistedMaps.put("existedAuthor", new HashMap<String, Author>());
+        ExistedMaps.put("existedPaper", new HashMap<String, Paper>());
 
         for (JSONObject jo : jsonObjects) {
             // 会议
-            ConferenceEntity conference = analyzeConference(jo);
+            Conference conference = analyzeConference(jo);
             // 关键词
-            List<TermEntity> termList = analyzeTerms(jo);
+            List<Term> termList = analyzeTerms(jo);
             // 机构
             // 作者
             // 文献
@@ -190,11 +190,11 @@ public class JSONUtil {
         }
     }
 
-    private static ConferenceEntity analyzeConference(JSONObject jo) {
+    private static Conference analyzeConference(JSONObject jo) {
         return null;
     }
 
-    private static List<TermEntity> analyzeTerms(JSONObject jo) {
+    private static List<Term> analyzeTerms(JSONObject jo) {
         return null;
     }
 

@@ -6,13 +6,13 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "affiliation", schema = "iiicestseb", catalog = "")
-public class AffiliationEntity {
+public class Affiliation {
     private int id;
     private String name;
-    private Collection<AuthorEntity> authorsById;
+    private Collection<Author> authorsById;
 
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public int getId() {
         return id;
     }
@@ -22,7 +22,7 @@ public class AffiliationEntity {
     }
 
     @Basic
-    @Column(name = "name", nullable = true, length = 200)
+    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -35,7 +35,7 @@ public class AffiliationEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AffiliationEntity that = (AffiliationEntity) o;
+        Affiliation that = (Affiliation) o;
         return id == that.id &&
                 Objects.equals(name, that.name);
     }
@@ -46,11 +46,11 @@ public class AffiliationEntity {
     }
 
     @OneToMany(mappedBy = "affiliationByAffiliationId")
-    public Collection<AuthorEntity> getAuthorsById() {
+    public Collection<Author> getAuthorsById() {
         return authorsById;
     }
 
-    public void setAuthorsById(Collection<AuthorEntity> authorsById) {
+    public void setAuthorsById(Collection<Author> authorsById) {
         this.authorsById = authorsById;
     }
 }

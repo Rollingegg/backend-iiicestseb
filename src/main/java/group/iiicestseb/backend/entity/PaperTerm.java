@@ -5,15 +5,15 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "paper_term", schema = "iiicestseb", catalog = "")
-@IdClass(PaperTermEntityPK.class)
-public class PaperTermEntity {
+@IdClass(PaperTermPK.class)
+public class PaperTerm {
     private int paperId;
     private int termId;
-    private PaperEntity paperByPaperId;
-    private TermEntity termByTermId;
+    private Paper paperByPaperId;
+    private Term termByTermId;
 
     @Id
-    @Column(name = "paper_id", nullable = false)
+    @Column(name = "paper_id")
     public int getPaperId() {
         return paperId;
     }
@@ -23,7 +23,7 @@ public class PaperTermEntity {
     }
 
     @Id
-    @Column(name = "term_id", nullable = false)
+    @Column(name = "term_id")
     public int getTermId() {
         return termId;
     }
@@ -36,7 +36,7 @@ public class PaperTermEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PaperTermEntity that = (PaperTermEntity) o;
+        PaperTerm that = (PaperTerm) o;
         return paperId == that.paperId &&
                 termId == that.termId;
     }
@@ -48,21 +48,21 @@ public class PaperTermEntity {
 
     @ManyToOne
     @JoinColumn(name = "paper_id", referencedColumnName = "id", nullable = false)
-    public PaperEntity getPaperByPaperId() {
+    public Paper getPaperByPaperId() {
         return paperByPaperId;
     }
 
-    public void setPaperByPaperId(PaperEntity paperByPaperId) {
+    public void setPaperByPaperId(Paper paperByPaperId) {
         this.paperByPaperId = paperByPaperId;
     }
 
     @ManyToOne
     @JoinColumn(name = "term_id", referencedColumnName = "id", nullable = false)
-    public TermEntity getTermByTermId() {
+    public Term getTermByTermId() {
         return termByTermId;
     }
 
-    public void setTermByTermId(TermEntity termByTermId) {
+    public void setTermByTermId(Term termByTermId) {
         this.termByTermId = termByTermId;
     }
 }

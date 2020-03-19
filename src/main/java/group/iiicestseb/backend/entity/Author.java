@@ -5,15 +5,16 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "author", schema = "iiicestseb", catalog = "")
-public class AuthorEntity {
+public class Author {
     private int id;
     private String name;
     private String fisrtName;
     private String lastName;
-    private AffiliationEntity affiliationByAffiliationId;
+    private Integer affiliationId;
+    private Affiliation affiliationByAffiliationId;
 
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public int getId() {
         return id;
     }
@@ -23,7 +24,7 @@ public class AuthorEntity {
     }
 
     @Basic
-    @Column(name = "name", nullable = true, length = 40)
+    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -33,7 +34,7 @@ public class AuthorEntity {
     }
 
     @Basic
-    @Column(name = "fisrt_name", nullable = true, length = 20)
+    @Column(name = "fisrt_name")
     public String getFisrtName() {
         return fisrtName;
     }
@@ -43,7 +44,7 @@ public class AuthorEntity {
     }
 
     @Basic
-    @Column(name = "last_name", nullable = true, length = 20)
+    @Column(name = "last_name")
     public String getLastName() {
         return lastName;
     }
@@ -52,29 +53,40 @@ public class AuthorEntity {
         this.lastName = lastName;
     }
 
+    @Basic
+    @Column(name = "affiliation_id")
+    public Integer getAffiliationId() {
+        return affiliationId;
+    }
+
+    public void setAffiliationId(Integer affiliationId) {
+        this.affiliationId = affiliationId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AuthorEntity that = (AuthorEntity) o;
+        Author that = (Author) o;
         return id == that.id &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(fisrtName, that.fisrtName) &&
-                Objects.equals(lastName, that.lastName);
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(affiliationId, that.affiliationId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, fisrtName, lastName);
+        return Objects.hash(id, name, fisrtName, lastName, affiliationId);
     }
 
     @ManyToOne
     @JoinColumn(name = "affiliation_id", referencedColumnName = "id")
-    public AffiliationEntity getAffiliationByAffiliationId() {
+    public Affiliation getAffiliationByAffiliationId() {
         return affiliationByAffiliationId;
     }
 
-    public void setAffiliationByAffiliationId(AffiliationEntity affiliationByAffiliationId) {
+    public void setAffiliationByAffiliationId(Affiliation affiliationByAffiliationId) {
         this.affiliationByAffiliationId = affiliationByAffiliationId;
     }
 }

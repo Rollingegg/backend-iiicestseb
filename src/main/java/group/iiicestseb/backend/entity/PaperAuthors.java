@@ -5,14 +5,14 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "paper_authors", schema = "iiicestseb", catalog = "")
-@IdClass(PaperAuthorsEntityPK.class)
-public class PaperAuthorsEntity {
+@IdClass(PaperAuthorsPK.class)
+public class PaperAuthors {
     private int authorId;
     private int paperId;
     private Integer authorOrder;
 
     @Id
-    @Column(name = "author_id", nullable = false)
+    @Column(name = "author_id")
     public int getAuthorId() {
         return authorId;
     }
@@ -22,7 +22,7 @@ public class PaperAuthorsEntity {
     }
 
     @Id
-    @Column(name = "paper_id", nullable = false)
+    @Column(name = "paper_id")
     public int getPaperId() {
         return paperId;
     }
@@ -32,7 +32,7 @@ public class PaperAuthorsEntity {
     }
 
     @Basic
-    @Column(name = "author_order", nullable = true)
+    @Column(name = "author_order")
     public Integer getAuthorOrder() {
         return authorOrder;
     }
@@ -45,7 +45,7 @@ public class PaperAuthorsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PaperAuthorsEntity that = (PaperAuthorsEntity) o;
+        PaperAuthors that = (PaperAuthors) o;
         return authorId == that.authorId &&
                 paperId == that.paperId &&
                 Objects.equals(authorOrder, that.authorOrder);

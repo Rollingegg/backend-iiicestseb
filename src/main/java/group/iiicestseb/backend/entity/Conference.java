@@ -6,13 +6,13 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "conference", schema = "iiicestseb", catalog = "")
-public class ConferenceEntity {
+public class Conference {
     private int id;
     private String name;
-    private Collection<PaperEntity> papersById;
+    private Collection<Paper> papersById;
 
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public int getId() {
         return id;
     }
@@ -22,7 +22,7 @@ public class ConferenceEntity {
     }
 
     @Basic
-    @Column(name = "name", nullable = true, length = 100)
+    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -35,7 +35,7 @@ public class ConferenceEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ConferenceEntity that = (ConferenceEntity) o;
+        Conference that = (Conference) o;
         return id == that.id &&
                 Objects.equals(name, that.name);
     }
@@ -46,11 +46,11 @@ public class ConferenceEntity {
     }
 
     @OneToMany(mappedBy = "conferenceByConferenceId")
-    public Collection<PaperEntity> getPapersById() {
+    public Collection<Paper> getPapersById() {
         return papersById;
     }
 
-    public void setPapersById(Collection<PaperEntity> papersById) {
+    public void setPapersById(Collection<Paper> papersById) {
         this.papersById = papersById;
     }
 }

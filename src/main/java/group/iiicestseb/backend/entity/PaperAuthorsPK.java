@@ -5,11 +5,11 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class PaperAuthorsEntityPK implements Serializable {
+public class PaperAuthorsPK implements Serializable {
     private int authorId;
     private int paperId;
 
-    @Column(name = "author_id", nullable = false)
+    @Column(name = "author_id")
     @Id
     public int getAuthorId() {
         return authorId;
@@ -19,7 +19,7 @@ public class PaperAuthorsEntityPK implements Serializable {
         this.authorId = authorId;
     }
 
-    @Column(name = "paper_id", nullable = false)
+    @Column(name = "paper_id")
     @Id
     public int getPaperId() {
         return paperId;
@@ -33,7 +33,7 @@ public class PaperAuthorsEntityPK implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PaperAuthorsEntityPK that = (PaperAuthorsEntityPK) o;
+        PaperAuthorsPK that = (PaperAuthorsPK) o;
         return authorId == that.authorId &&
                 paperId == that.paperId;
     }

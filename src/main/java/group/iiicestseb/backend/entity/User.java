@@ -6,15 +6,15 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "user", schema = "iiicestseb", catalog = "")
-public class UserEntity {
+public class User {
     private int id;
     private String username;
     private String password;
     private String privilegeLevel;
-    private Collection<RecordEntity> recordsById;
+    private Collection<Record> recordsById;
 
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public int getId() {
         return id;
     }
@@ -24,7 +24,7 @@ public class UserEntity {
     }
 
     @Basic
-    @Column(name = "username", nullable = true, length = 32)
+    @Column(name = "username")
     public String getUsername() {
         return username;
     }
@@ -34,7 +34,7 @@ public class UserEntity {
     }
 
     @Basic
-    @Column(name = "password", nullable = true, length = 32)
+    @Column(name = "password")
     public String getPassword() {
         return password;
     }
@@ -44,7 +44,7 @@ public class UserEntity {
     }
 
     @Basic
-    @Column(name = "privilege_level", nullable = true, length = 20)
+    @Column(name = "privilege_level")
     public String getPrivilegeLevel() {
         return privilegeLevel;
     }
@@ -57,7 +57,7 @@ public class UserEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserEntity that = (UserEntity) o;
+        User that = (User) o;
         return id == that.id &&
                 Objects.equals(username, that.username) &&
                 Objects.equals(password, that.password) &&
@@ -70,11 +70,11 @@ public class UserEntity {
     }
 
     @OneToMany(mappedBy = "userByUserId")
-    public Collection<RecordEntity> getRecordsById() {
+    public Collection<Record> getRecordsById() {
         return recordsById;
     }
 
-    public void setRecordsById(Collection<RecordEntity> recordsById) {
+    public void setRecordsById(Collection<Record> recordsById) {
         this.recordsById = recordsById;
     }
 }

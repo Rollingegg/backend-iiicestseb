@@ -18,51 +18,51 @@ import javax.annotation.Resource;
 @Service("User")
 @Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
-    @Resource
-    private UserMapper userMapper;
-
-    @Override
-    public UserVO signIn(UserForm userForm) {
-        User user;
-        //检查用户是否存在
-        try {
-            user = userMapper.selectByUsername(userForm.getUsername());
-        }catch (Exception e){
-            throw new WrongLoginInfoException();
-        }
-        //检验用户密码是否正确
-        if (user != null && user.getPassword().equals(userForm.getPassword())) {
-            return new UserVO(user);
-        } else {
-            throw new WrongLoginInfoException();
-        }
-    }
-
-    @Override
-    public void register(UserForm userForm) {
-        User newUser = new User();
-        //检查用户是否已注册
-        try {
-
-            newUser.setUsername(userForm.getUsername());
-            newUser.setPassword(userForm.getPassword());
-            newUser.setRecordId(userForm.getRecordId());
-            newUser.setPrivilegeLevel("用户");
-            userMapper.insert(newUser);
-            //若注册成功，也该更新历史记录
-        }catch (Exception e){
-            throw new UserAlreadyRegisterException();
-        }
-    }
-
-    @Override
-    public boolean judgeUsername(String username) {
-            if(null ==userMapper.selectByUsername(username)) {
-                //不存在返回false
-                return false;
-            }
-            else{
-                return true;
-            }
-    }
+//    @Resource
+//    private UserMapper userMapper;
+//
+//    @Override
+//    public UserVO signIn(UserForm userForm) {
+//        User user;
+//        //检查用户是否存在
+//        try {
+//            user = userMapper.selectByUsername(userForm.getUsername());
+//        }catch (Exception e){
+//            throw new WrongLoginInfoException();
+//        }
+//        //检验用户密码是否正确
+//        if (user != null && user.getPassword().equals(userForm.getPassword())) {
+//            return new UserVO(user);
+//        } else {
+//            throw new WrongLoginInfoException();
+//        }
+//    }
+//
+//    @Override
+//    public void register(UserForm userForm) {
+//        User newUser = new User();
+//        //检查用户是否已注册
+//        try {
+//
+//            newUser.setUsername(userForm.getUsername());
+//            newUser.setPassword(userForm.getPassword());
+//            newUser.setRecordId(userForm.getRecordId());
+//            newUser.setPrivilegeLevel("用户");
+//            userMapper.insert(newUser);
+//            //若注册成功，也该更新历史记录
+//        }catch (Exception e){
+//            throw new UserAlreadyRegisterException();
+//        }
+//    }
+//
+//    @Override
+//    public boolean judgeUsername(String username) {
+//            if(null ==userMapper.selectByUsername(username)) {
+//                //不存在返回false
+//                return false;
+//            }
+//            else{
+//                return true;
+//            }
+//    }
 }

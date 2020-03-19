@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "paper", schema = "iiicestseb", catalog = "")
-public class PaperEntity {
+public class Paper {
     private int id;
     private String pdfUrl;
     private String authorKeywords;
@@ -26,12 +26,13 @@ public class PaperEntity {
     private String confLoc;
     private Date chronDate;
     private Integer articleId;
-    private ConferenceEntity conferenceByConferenceId;
-    private Collection<PaperTermEntity> paperTermsById;
-    private ReferenceEntity referenceByArticleId;
+    private Integer conferenceId;
+    private Conference conferenceByConferenceId;
+    private Collection<PaperTerm> paperTermsById;
+    private Reference referenceByArticleId;
 
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public int getId() {
         return id;
     }
@@ -41,7 +42,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "pdf_url", nullable = true, length = -1)
+    @Column(name = "pdf_url")
     public String getPdfUrl() {
         return pdfUrl;
     }
@@ -51,7 +52,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "author_keywords", nullable = true, length = -1)
+    @Column(name = "author_keywords")
     public String getAuthorKeywords() {
         return authorKeywords;
     }
@@ -61,7 +62,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "title", nullable = true, length = 200)
+    @Column(name = "title")
     public String getTitle() {
         return title;
     }
@@ -71,7 +72,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "paper_abstract", nullable = true, length = -1)
+    @Column(name = "paper_abstract")
     public String getPaperAbstract() {
         return paperAbstract;
     }
@@ -81,7 +82,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "doi", nullable = true, length = 40)
+    @Column(name = "doi")
     public String getDoi() {
         return doi;
     }
@@ -91,7 +92,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "publication_title", nullable = true, length = 100)
+    @Column(name = "publication_title")
     public String getPublicationTitle() {
         return publicationTitle;
     }
@@ -101,7 +102,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "citation_count_paper", nullable = true)
+    @Column(name = "citation_count_paper")
     public Integer getCitationCountPaper() {
         return citationCountPaper;
     }
@@ -111,7 +112,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "citation_count_patent", nullable = true)
+    @Column(name = "citation_count_patent")
     public Integer getCitationCountPatent() {
         return citationCountPatent;
     }
@@ -121,7 +122,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "total_downloads", nullable = true)
+    @Column(name = "total_downloads")
     public Integer getTotalDownloads() {
         return totalDownloads;
     }
@@ -131,7 +132,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "start_page", nullable = true, length = 15)
+    @Column(name = "start_page")
     public String getStartPage() {
         return startPage;
     }
@@ -141,7 +142,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "end_page", nullable = true, length = 15)
+    @Column(name = "end_page")
     public String getEndPage() {
         return endPage;
     }
@@ -151,7 +152,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "pub_link", nullable = true, length = -1)
+    @Column(name = "pub_link")
     public String getPubLink() {
         return pubLink;
     }
@@ -161,7 +162,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "issue_link", nullable = true, length = -1)
+    @Column(name = "issue_link")
     public String getIssueLink() {
         return issueLink;
     }
@@ -171,7 +172,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "publisher", nullable = true)
+    @Column(name = "publisher")
     public Integer getPublisher() {
         return publisher;
     }
@@ -181,7 +182,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "conf_loc", nullable = true, length = 50)
+    @Column(name = "conf_loc")
     public String getConfLoc() {
         return confLoc;
     }
@@ -191,7 +192,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "chron_date", nullable = true)
+    @Column(name = "chron_date")
     public Date getChronDate() {
         return chronDate;
     }
@@ -201,7 +202,7 @@ public class PaperEntity {
     }
 
     @Basic
-    @Column(name = "article_id", nullable = true)
+    @Column(name = "article_id")
     public Integer getArticleId() {
         return articleId;
     }
@@ -210,11 +211,21 @@ public class PaperEntity {
         this.articleId = articleId;
     }
 
+    @Basic
+    @Column(name = "conference_id")
+    public Integer getConferenceId() {
+        return conferenceId;
+    }
+
+    public void setConferenceId(Integer conferenceId) {
+        this.conferenceId = conferenceId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PaperEntity that = (PaperEntity) o;
+        Paper that = (Paper) o;
         return id == that.id &&
                 Objects.equals(pdfUrl, that.pdfUrl) &&
                 Objects.equals(authorKeywords, that.authorKeywords) &&
@@ -232,40 +243,41 @@ public class PaperEntity {
                 Objects.equals(publisher, that.publisher) &&
                 Objects.equals(confLoc, that.confLoc) &&
                 Objects.equals(chronDate, that.chronDate) &&
-                Objects.equals(articleId, that.articleId);
+                Objects.equals(articleId, that.articleId) &&
+                Objects.equals(conferenceId, that.conferenceId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, pdfUrl, authorKeywords, title, paperAbstract, doi, publicationTitle, citationCountPaper, citationCountPatent, totalDownloads, startPage, endPage, pubLink, issueLink, publisher, confLoc, chronDate, articleId);
+        return Objects.hash(id, pdfUrl, authorKeywords, title, paperAbstract, doi, publicationTitle, citationCountPaper, citationCountPatent, totalDownloads, startPage, endPage, pubLink, issueLink, publisher, confLoc, chronDate, articleId, conferenceId);
     }
 
     @ManyToOne
     @JoinColumn(name = "conference_id", referencedColumnName = "id")
-    public ConferenceEntity getConferenceByConferenceId() {
+    public Conference getConferenceByConferenceId() {
         return conferenceByConferenceId;
     }
 
-    public void setConferenceByConferenceId(ConferenceEntity conferenceByConferenceId) {
+    public void setConferenceByConferenceId(Conference conferenceByConferenceId) {
         this.conferenceByConferenceId = conferenceByConferenceId;
     }
 
     @OneToMany(mappedBy = "paperByPaperId")
-    public Collection<PaperTermEntity> getPaperTermsById() {
+    public Collection<PaperTerm> getPaperTermsById() {
         return paperTermsById;
     }
 
-    public void setPaperTermsById(Collection<PaperTermEntity> paperTermsById) {
+    public void setPaperTermsById(Collection<PaperTerm> paperTermsById) {
         this.paperTermsById = paperTermsById;
     }
 
     @ManyToOne
     @JoinColumn(name = "article_id", referencedColumnName = "article_id")
-    public ReferenceEntity getReferenceByArticleId() {
+    public Reference getReferenceByArticleId() {
         return referenceByArticleId;
     }
 
-    public void setReferenceByArticleId(ReferenceEntity referenceByArticleId) {
+    public void setReferenceByArticleId(Reference referenceByArticleId) {
         this.referenceByArticleId = referenceByArticleId;
     }
 }
