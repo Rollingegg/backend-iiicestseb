@@ -2,7 +2,6 @@ package group.iiicestseb.backend.service;
 
 
 
-import group.iiicestseb.backend.entity.Record;
 import group.iiicestseb.backend.vo.AuthorWithPublish;
 import group.iiicestseb.backend.vo.TermWithHotVO;
 import org.springframework.web.multipart.MultipartFile;

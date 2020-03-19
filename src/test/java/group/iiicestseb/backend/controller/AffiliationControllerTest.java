@@ -1,9 +1,6 @@
 package group.iiicestseb.backend.controller;
 
-import group.iiicestseb.backend.entity.Affiliation;
-import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
-import group.iiicestseb.backend.mapper.AuthorMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +18,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.Resource;
 
-import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional

@@ -1,6 +1,5 @@
 package group.iiicestseb.backend.mapper;
 
-import group.iiicestseb.backend.entity.Record;
 import group.iiicestseb.backend.utils.CSVUtil;
 import org.junit.Before;
 import org.junit.Test;

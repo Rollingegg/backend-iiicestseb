@@ -1,13 +1,11 @@
 package group.iiicestseb.backend.serviceImpl;
 
-import group.iiicestseb.backend.entity.Record;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.mapper.StatisticsMapper;
 import group.iiicestseb.backend.service.StatisticsService;
 import group.iiicestseb.backend.utils.CSVUtil;
-import group.iiicestseb.backend.vo.AuthorInfoVO;
 import group.iiicestseb.backend.vo.AuthorWithPublish;
 import group.iiicestseb.backend.vo.TermWithHotVO;
 import org.springframework.stereotype.Service;

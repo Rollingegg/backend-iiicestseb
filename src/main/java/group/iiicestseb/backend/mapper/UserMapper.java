@@ -1,6 +1,5 @@
 package group.iiicestseb.backend.mapper;
 
-import group.iiicestseb.backend.entity.User;
 import org.apache.ibatis.annotations.*;
 
 /**

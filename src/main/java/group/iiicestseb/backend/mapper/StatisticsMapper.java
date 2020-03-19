@@ -1,8 +1,6 @@
 package group.iiicestseb.backend.mapper;
 
 
-import group.iiicestseb.backend.entity.Record;
-
 import group.iiicestseb.backend.vo.AuthorWithPublish;
 import group.iiicestseb.backend.vo.TermWithHotVO;
 import org.apache.ibatis.annotations.*;

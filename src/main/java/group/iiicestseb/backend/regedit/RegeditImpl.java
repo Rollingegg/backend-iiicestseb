@@ -1,18 +1,13 @@
 package group.iiicestseb.backend.regedit;
 
-import group.iiicestseb.backend.entity.Paper;
-import group.iiicestseb.backend.entity.Record;
-import group.iiicestseb.backend.exception.paper.NoPaperFoundException;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.PaperForm;
 import group.iiicestseb.backend.form.UserForm;
-import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.service.*;
 import group.iiicestseb.backend.vo.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**

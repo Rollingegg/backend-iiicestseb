@@ -1,17 +1,10 @@
 package group.iiicestseb.backend.service;
-import group.iiicestseb.backend.utils.DateUtil;
-import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.serviceImpl.SearchServiceImpl;
 import org.easymock.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.transaction.annotation.Transactional;
-import group.iiicestseb.backend.form.AdvancedSearchForm;
-import java.time.LocalDateTime;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static org.junit.Assert.*;
 
 
 @Transactional

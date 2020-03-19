@@ -1,6 +1,5 @@
 package group.iiicestseb.backend.service;
 
-import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.vo.AffiliationInfoVO;
 
 /**

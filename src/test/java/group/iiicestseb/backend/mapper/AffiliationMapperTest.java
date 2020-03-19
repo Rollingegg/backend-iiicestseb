@@ -1,6 +1,5 @@
 package group.iiicestseb.backend.mapper;
 
-import group.iiicestseb.backend.entity.Affiliation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

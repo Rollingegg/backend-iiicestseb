@@ -1,8 +1,5 @@
 package group.iiicestseb.backend.service;
 
-import group.iiicestseb.backend.entity.Conference;
-import group.iiicestseb.backend.entity.Paper;
-import group.iiicestseb.backend.entity.Publisher;
 import group.iiicestseb.backend.form.PaperForm;
 import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.serviceImpl.PaperManageServiceImpl;

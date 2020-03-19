@@ -1,11 +1,8 @@
 package group.iiicestseb.backend.service;
 
-import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.vo.PaperInfoVO;
-import group.iiicestseb.backend.vo.SearchResultVO;
 
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**

@@ -1,7 +1,6 @@
 package group.iiicestseb.backend.vo;
 
 
-import group.iiicestseb.backend.entity.Paper;
 import lombok.Data;
 
 import java.time.LocalDateTime;

@@ -1,7 +1,6 @@
 package group.iiicestseb.backend.serviceImpl;
 
 import group.iiicestseb.backend.form.UserForm;
-import group.iiicestseb.backend.entity.User;
 import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
 import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
 import group.iiicestseb.backend.mapper.UserMapper;

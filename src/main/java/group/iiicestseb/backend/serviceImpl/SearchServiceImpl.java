@@ -1,12 +1,9 @@
 package group.iiicestseb.backend.serviceImpl;
 
-import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.service.SearchService;
-import group.iiicestseb.backend.vo.AuthorInfoVO;
 import group.iiicestseb.backend.vo.PaperInfoVO;
-import group.iiicestseb.backend.vo.SearchResultVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

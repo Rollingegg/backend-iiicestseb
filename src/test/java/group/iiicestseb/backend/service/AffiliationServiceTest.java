@@ -1,17 +1,11 @@
 package group.iiicestseb.backend.service;
 
-import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.serviceImpl.AffiliationServiceImpl;
 import group.iiicestseb.backend.vo.AffiliationInfoVO;
 import org.easymock.*;
 import org.junit.*;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import static org.junit.Assert.*;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 
 import static org.easymock.EasyMock.*;
 

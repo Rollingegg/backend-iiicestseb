@@ -1,16 +1,13 @@
 package group.iiicestseb.backend.service;
 
-import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.serviceImpl.AuthorServiceImpl;
 import group.iiicestseb.backend.vo.AuthorInfoVO;
 import org.easymock.*;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.junit.Assert.*;

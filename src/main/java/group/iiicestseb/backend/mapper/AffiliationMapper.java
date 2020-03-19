@@ -1,7 +1,5 @@
 package group.iiicestseb.backend.mapper;
 
-import group.iiicestseb.backend.entity.Affiliation;
-
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
