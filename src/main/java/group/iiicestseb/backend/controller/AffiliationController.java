@@ -15,22 +15,22 @@ import javax.annotation.Resource;
 @CrossOrigin
 @RequestMapping("/affiliation")
 public class AffiliationController {
-    @Resource(name = "Regedit")
-    private AffiliationService affiliationService;
-
-    /**
-     * 机构详细信息页面 获取机构详细信息
-     * @param name 机构名称
-     * @return 机构详细信息
-     */
-    @GetMapping("/info")
-    public Response getAffiliationInfo(@RequestParam("name")String name){
-        try{
-            return  Response.buildSuccess(affiliationService.getAffiliationInfo(name));
-        }catch (Exception e){
-            return Response.buildFailure("机构查询错误，请重试");
-        }
-    }
+//    @Resource(name = "Regedit")
+//    private AffiliationService affiliationService;
+//
+//    /**
+//     * 机构详细信息页面 获取机构详细信息
+//     * @param name 机构名称
+//     * @return 机构详细信息
+//     */
+//    @GetMapping("/info")
+//    public Response getAffiliationInfo(@RequestParam("name")String name){
+//        try{
+//            return  Response.buildSuccess(affiliationService.getAffiliationInfo(name));
+//        }catch (Exception e){
+//            return Response.buildFailure("机构查询错误，请重试");
+//        }
+//    }
 
 
 }
