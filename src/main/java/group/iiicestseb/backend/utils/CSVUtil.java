@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.awt.print.Paper;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -47,7 +48,7 @@ public class CSVUtil {
     private PaperMapper papMapper;
     private static PaperMapper paperMapper;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Test.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CSVUtil.class);
 
     /**
      * 不知道有没有更好的方法解决静态注入问题
