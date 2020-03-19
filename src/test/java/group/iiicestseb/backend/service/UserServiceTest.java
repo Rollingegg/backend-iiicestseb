@@ -1,6 +1,5 @@
 package group.iiicestseb.backend.service;
 
-import group.iiicestseb.backend.entity.User;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.mapper.UserMapper;
 import group.iiicestseb.backend.serviceImpl.UserServiceImpl;

@@ -1,6 +1,5 @@
 package group.iiicestseb.backend.vo;
 
-import group.iiicestseb.backend.entity.User;
 import lombok.Data;
 
 /**

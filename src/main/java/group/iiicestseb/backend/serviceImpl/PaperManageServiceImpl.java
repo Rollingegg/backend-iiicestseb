@@ -1,7 +1,6 @@
 package group.iiicestseb.backend.serviceImpl;
 
 import group.iiicestseb.backend.form.PaperForm;
-import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.service.PaperManageService;
 import group.iiicestseb.backend.vo.PaperInfoVO;

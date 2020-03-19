@@ -1,6 +1,5 @@
 package group.iiicestseb.backend.serviceImpl;
 
-import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.service.AuthorService;
 import group.iiicestseb.backend.vo.AuthorInfoVO;

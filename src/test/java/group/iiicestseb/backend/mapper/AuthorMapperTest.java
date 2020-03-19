@@ -1,10 +1,5 @@
 package group.iiicestseb.backend.mapper;
 
-import group.iiicestseb.backend.entity.Affiliation;
-import group.iiicestseb.backend.entity.Author;
-import group.iiicestseb.backend.entity.Paper;
-import group.iiicestseb.backend.entity.Publish;
-import group.iiicestseb.backend.service.AuthorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

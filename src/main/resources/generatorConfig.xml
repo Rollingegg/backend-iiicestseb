@@ -51,10 +51,10 @@
         </javaModelGenerator>
 
         <!--在resources目录下的mapper文件，生成数据库的表对应的xml文件 -->
-        <sqlMapGenerator targetPackage="mapper"
-                         targetProject="src/main/resources">
-            <property name="enableSubPackages" value="false"/>
-        </sqlMapGenerator>
+<!--        <sqlMapGenerator targetPackage="mapper"-->
+<!--                         targetProject="src/main/resources">-->
+<!--            <property name="enableSubPackages" value="false"/>-->
+<!--        </sqlMapGenerator>-->
 
         <!-- 生成dao层的java代码
                 type="ANNOTATEDMAPPER",生成Java Model 和基于注解的Mapper对象

@@ -1,10 +1,7 @@
 package group.iiicestseb.backend.controller;
 
-import group.iiicestseb.backend.entity.Paper;
-import group.iiicestseb.backend.exception.paper.NoPaperFoundException;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.service.SearchService;
-import group.iiicestseb.backend.vo.AuthorInfoVO;
 import group.iiicestseb.backend.vo.PaperInfoVO;
 import group.iiicestseb.backend.vo.Response;
 import org.springframework.web.bind.annotation.*;
