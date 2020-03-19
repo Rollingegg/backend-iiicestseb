@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "reference", schema = "iiicestseb", catalog = "")
+@Table(name = "reference", schema = "iiicestseb")
 public class Reference {
     private int id;
     private Integer referenceOrder;

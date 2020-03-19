@@ -3,6 +3,7 @@ package group.iiicestseb.backend.mapper;
 import group.iiicestseb.backend.entity.Affiliation;
 import org.apache.ibatis.annotations.*;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ import java.util.List;
  */
 public interface AffiliationMapper extends JpaRepository<Affiliation,Integer> {
 
+    @Query(value = "select * from affiliation",nativeQuery = true)
+    public List<Affiliation> test();
 //    /**
 //     * 通过id删除机构
 //     *

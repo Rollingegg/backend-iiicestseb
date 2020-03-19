@@ -25,10 +25,10 @@ public class OASISExceptionHandler {
         return Response.buildFailure(errorMessage);
     }
 
-    @ExceptionHandler(CSVUtil.CSVException.class)
-    public Response CSVErrorException(CSVUtil.CSVException ex){
-        return Response.buildFailure(ex.getMessage());
-    }
+//    @ExceptionHandler(CSVUtil.CSVException.class)
+//    public Response CSVErrorException(CSVUtil.CSVException ex){
+//        return Response.buildFailure(ex.getMessage());
+//    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public Response assertErrorException(IllegalArgumentException ex) {
