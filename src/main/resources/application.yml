@@ -11,10 +11,15 @@ spring:
     time-zone: GMT+8
 
   jpa:
+    database: mysql
+    show-sql: true
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQLDialect
-    show-sql: true
+      naming:
+        strategy: org.hibernate.cfg.DefaultComponentSafeNamingStrategy
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL5Dialect
 
   servlet:
     multipart:
