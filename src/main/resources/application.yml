@@ -71,7 +71,29 @@ management:
     web:
       exposure:
         include: "*"
+
 ---
+
+spring:
+  profiles: test
+  devtools:
+    add-properties: true
+  datasource:
+    username: root
+    password: IIICEStseB
+logging:
+  level:
+    group.iiicestseb.backend: DEBUG
+server:
+  port: 4001
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+---
+
 spring:
   profiles: dwh
   datasource:
