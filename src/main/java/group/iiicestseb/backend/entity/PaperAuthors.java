@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "paper_authors", schema = "iiicestseb", catalog = "")
+@Table(name = "paper_authors", schema = "iiicestseb")
 @IdClass(PaperAuthorsPK.class)
 public class PaperAuthors {
     private int authorId;
