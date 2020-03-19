@@ -100,7 +100,7 @@ reference_order     int comment '被引次序',
 text                text comment '被引内容',
 title               varchar(200) comment '被引文章标题',
 google_scholar_link text comment '被引文献url',
-ref_type            varchar(20) comment '被引文章类型',
+ref_type            varchar(20) comment '引用类型',
 article_id          int comment '引用文章的ieee id',
 foreign key (article_id) references paper(article_id)
 );
@@ -114,7 +114,7 @@ password        varchar(32) comment '密码',
 privilege_level varchar(20) comment '权限等级'
 ) ENGINE = InnoDB comment '用户表';
 create index username_hash using hash on user (username);
-insert into user value (1, 'root', 'password', '管理员');
+insert into user value (1, 'root', '123456', '管理员');
 
 ##创建浏览记录表
 CREATE TABLE record

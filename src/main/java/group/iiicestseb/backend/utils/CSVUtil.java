@@ -59,16 +59,6 @@ public class CSVUtil {
         CSVUtil.paperMapper = this.papMapper;
     }
 
-
-//    private static final Map<String, Integer> STANDARDS = new HashMap<String, Integer>() {
-//        {
-//            put("IEEE Terms", 1);
-//            put("INSPEC Controlled Terms", 2);
-//            put("INSPEC Non-Controlled Terms", 3);
-//            put("Mesh Terms", 4);
-//        }
-//    };
-
     /**
      * 解析已经存在的csv文件，该文件应在目录下能找到
      *
@@ -121,7 +111,6 @@ public class CSVUtil {
         result.put("errors", errors);
         return result;
     }
-
 
     private static void splitCSVLines(BufferedReader reader, List<String[]> lines){
         splitCSVLines(reader, lines, new LinkedList<>());

@@ -1,14 +1,8 @@
 package group.iiicestseb.backend.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author jh
@@ -114,25 +108,35 @@ public class JSONUtil {
     }
 
     public static void main(String[] args) {
-        analyzeJson("E:\\codes\\backend\\src\\main\\resources\\json\\Standard.json");
+        analyzeExistedJson("E:\\codes\\backend\\src\\main\\resources\\json\\Standard.json");
     }
 
-    public static void analyzeJson(String filename) {
+    public static void analyzeExistedJson(String filename) {
+        List<String> lines = new LinkedList<>();
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
-            String s = br.readLine();
-            JSONObject o1 = (JSONObject) JSON.parse(s);
-            s = br.readLine();
-            JSONObject o2 = (JSONObject) JSON.parse(s);
-            s = br.readLine();
-            JSONObject o3 = (JSONObject) JSON.parse(s);
-            s = br.readLine();
-            JSONObject o4 = (JSONObject) JSON.parse(s);
-            String a = KEY.Abstract.value;
-            a = KEY.ArticleId.value;
-            System.out.println();
-        } catch (Exception e) {
+            ReadLines(lines, br);
+            br.close();
+        } catch (IOException e) {
             e.printStackTrace();
+            return;
+        }
+        System.out.println();
+    }
+
+    private static void ReadLines(List<String> lines, BufferedReader br) {
+        String line;
+        while (true) {
+            try {
+                line = br.readLine();
+            } catch (IOException e) {
+                System.out.println();
+                continue;
+            }
+            if (line == null || line.isEmpty()) {
+                break;
+            }
+            lines.add(line);
         }
     }
 
