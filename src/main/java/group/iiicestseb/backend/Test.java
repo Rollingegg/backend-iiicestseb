@@ -1,7 +1,6 @@
 
 package group.iiicestseb.backend;
 
-import group.iiicestseb.backend.config.OASISExceptionHandler;
 import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.utils.DateUtil;
 import group.iiicestseb.backend.utils.NumberUtil;

@@ -1,45 +1,41 @@
 package group.iiicestseb.backend.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "paper_authors", schema = "iiicestseb")
 @IdClass(PaperAuthorsPK.class)
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaperAuthors {
-    private int authorId;
-    private int paperId;
-    private Integer authorOrder;
-
     @Id
     @Column(name = "author_id")
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
-    }
+    private int authorId;
 
     @Id
     @Column(name = "paper_id")
-    public int getPaperId() {
-        return paperId;
-    }
-
-    public void setPaperId(int paperId) {
-        this.paperId = paperId;
-    }
+    private int paperId;
 
     @Basic
     @Column(name = "author_order")
-    public Integer getAuthorOrder() {
-        return authorOrder;
-    }
+    private Integer authorOrder;
 
-    public void setAuthorOrder(Integer authorOrder) {
-        this.authorOrder = authorOrder;
-    }
+//    @ManyToOne
+//    @JoinColumn(name = "paper_id", referencedColumnName = "id", nullable = false)
+//    private Paper paperByPaperId;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
+//    private Author authorByAuthorId;
+
 
     @Override
     public boolean equals(Object o) {

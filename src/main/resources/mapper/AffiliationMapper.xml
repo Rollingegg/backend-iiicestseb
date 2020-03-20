@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="group.iiicestseb.backend.mapper.AffiliationMapper">
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+<!--<mapper namespace="group.iiicestseb.backend.mapper.AffiliationMapper">-->
 
-  <resultMap id="AffiliationResultMap" type="group.iiicestseb.backend.entity.Affiliation">
-    <id property="id"  column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-    <result property="name" column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
-  </resultMap>
+<!--  <resultMap id="AffiliationResultMap" type="group.iiicestseb.backend.entity.Affiliation">-->
+<!--    <id property="id"  column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />-->
+<!--    <result property="name" column="name" javaType="java.lang.String" jdbcType="VARCHAR" />-->
+<!--  </resultMap>-->
 
-  <insert id="insertAffiliationList" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="group.iiicestseb.backend.entity.Affiliation">
-    insert into
-    affiliation(name)
-    values
-    <foreach collection="affiliationList" item="aff" separator=",">
-      (#{aff.name,jdbcType=CHAR})
-    </foreach>
-  </insert>
+<!--  <insert id="insertAffiliationList" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="group.iiicestseb.backend.entity.Affiliation">-->
+<!--    insert into-->
+<!--    affiliation(name)-->
+<!--    values-->
+<!--    <foreach collection="affiliationList" item="aff" separator=",">-->
+<!--      (#{aff.name,jdbcType=CHAR})-->
+<!--    </foreach>-->
+<!--  </insert>-->
 
-</mapper>
+<!--</mapper>-->

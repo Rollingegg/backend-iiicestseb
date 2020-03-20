@@ -1,33 +1,30 @@
 package group.iiicestseb.backend.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaperAuthorsPK implements Serializable {
-    private int authorId;
-    private int paperId;
 
     @Column(name = "author_id")
     @Id
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
-    }
+    private int authorId;
 
     @Column(name = "paper_id")
     @Id
-    public int getPaperId() {
-        return paperId;
-    }
+    private int paperId;
 
-    public void setPaperId(int paperId) {
-        this.paperId = paperId;
-    }
+
 
     @Override
     public boolean equals(Object o) {

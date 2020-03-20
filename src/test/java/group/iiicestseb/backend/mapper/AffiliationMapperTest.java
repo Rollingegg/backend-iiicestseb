@@ -1,32 +1,41 @@
-//package group.iiicestseb.backend.mapper;
-//
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.test.context.junit4.SpringRunner;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import javax.annotation.Resource;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import static org.junit.Assert.*;
-//
-///**
-// * @author wph
-// */
-//@SpringBootTest
-//@RunWith(SpringRunner.class)
-//@Transactional
-//public class AffiliationMapperTest {
-//    @Resource
-//    private AffiliationMapper affiliationMapper;
-//
-//    private Affiliation affiliation = new Affiliation("unit");
-//
-//    private Affiliation affiliation2 = new Affiliation("test");
-//    @Test
+package group.iiicestseb.backend.mapper;
+
+import group.iiicestseb.backend.entity.Affiliation;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+/**
+ * @author wph
+ */
+@SpringBootTest
+@RunWith(SpringRunner.class)
+@Transactional
+public class AffiliationMapperTest {
+    @Autowired
+    private AffiliationMapper affiliationMapper;
+
+    @Test
+    public void name() {
+        Affiliation affiliation = new Affiliation();
+        affiliation.setName("test");
+        affiliationMapper.save(affiliation);
+        affiliationMapper.save(affiliation);
+        affiliationMapper.save(affiliation);
+        affiliationMapper.save(affiliation);
+    }
+
+    //    @Test
 //    public void deleteByPrimaryKey() {
 //        affiliationMapper.insert(affiliation);
 //        assertEquals(1,affiliationMapper.deleteByPrimaryKey(affiliation.getId()));
@@ -71,4 +80,4 @@
 //        affiliationMapper.insert(affiliation);
 //        assertEquals(affiliation,affiliationMapper.selectByName(affiliation.getName()));
 //    }
-//}
+}

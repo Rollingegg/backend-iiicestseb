@@ -1,36 +1,37 @@
 package group.iiicestseb.backend.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "paper_term", schema = "iiicestseb")
 @IdClass(PaperTermPK.class)
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaperTerm {
-    private int paperId;
-    private int termId;
-    private Paper paperByPaperId;
-    private Term termByTermId;
-
     @Id
     @Column(name = "paper_id")
-    public int getPaperId() {
-        return paperId;
-    }
-
-    public void setPaperId(int paperId) {
-        this.paperId = paperId;
-    }
+    private int paperId;
 
     @Id
     @Column(name = "term_id")
-    public int getTermId() {
-        return termId;
-    }
+    private int termId;
 
-    public void setTermId(int termId) {
-        this.termId = termId;
-    }
+//    @ManyToOne
+//    @JoinColumn(name = "paper_id", referencedColumnName = "id", nullable = false)
+//    private Paper paperByPaperId;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "term_id", referencedColumnName = "id", nullable = false)
+//    private Term termByTermId;
+
 
     @Override
     public boolean equals(Object o) {
@@ -46,23 +47,4 @@ public class PaperTerm {
         return Objects.hash(paperId, termId);
     }
 
-    @ManyToOne
-    @JoinColumn(name = "paper_id", referencedColumnName = "id", nullable = false)
-    public Paper getPaperByPaperId() {
-        return paperByPaperId;
-    }
-
-    public void setPaperByPaperId(Paper paperByPaperId) {
-        this.paperByPaperId = paperByPaperId;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "term_id", referencedColumnName = "id", nullable = false)
-    public Term getTermByTermId() {
-        return termByTermId;
-    }
-
-    public void setTermByTermId(Term termByTermId) {
-        this.termByTermId = termByTermId;
-    }
 }

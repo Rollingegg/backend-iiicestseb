@@ -69,6 +69,8 @@ CREATE TABLE paper_authors
 author_id    int comment '作者id',
 paper_id     int comment '文献id',
 author_order int comment '发表作者次序',
+foreign key (author_id) references author(id),
+foreign key (paper_id) references paper (id),
 primary key (author_id, paper_id)
 ) ENGINE = InnoDB comment '作者发表文献_关系表';
 create index idx_paper_id on paper_authors (paper_id);

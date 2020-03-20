@@ -1,45 +1,38 @@
 package group.iiicestseb.backend.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "record", schema = "iiicestseb")
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Record {
-    private int id;
-    private String searchRecord;
-    private Integer userId;
-    private User userByUserId;
 
     @Id
     @Column(name = "id")
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     @Basic
     @Column(name = "search_record")
-    public String getSearchRecord() {
-        return searchRecord;
-    }
-
-    public void setSearchRecord(String searchRecord) {
-        this.searchRecord = searchRecord;
-    }
+    private String searchRecord;
 
     @Basic
     @Column(name = "user_id")
-    public Integer getUserId() {
-        return userId;
-    }
+    private Integer userId;
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
+//    @ManyToOne
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    private User userByUserId;
+
 
     @Override
     public boolean equals(Object o) {
@@ -56,13 +49,4 @@ public class Record {
         return Objects.hash(id, searchRecord, userId);
     }
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    public User getUserByUserId() {
-        return userByUserId;
-    }
-
-    public void setUserByUserId(User userByUserId) {
-        this.userByUserId = userByUserId;
-    }
 }

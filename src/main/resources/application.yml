@@ -29,8 +29,8 @@ spring:
         104857600
 
 
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
 
 server:
   tomcat:

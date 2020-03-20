@@ -1,35 +1,35 @@
 package group.iiicestseb.backend.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
 
 @Entity
 @Table(name = "term", schema = "iiicestseb")
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Term {
-    private int id;
-    private String name;
-    private Collection<PaperTerm> paperTermsById;
 
     @Id
     @Column(name = "id")
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     @Basic
     @Column(name = "name")
-    public String getName() {
-        return name;
-    }
+    private String name;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+//    @OneToMany(mappedBy = "termByTermId")
+//    private Collection<PaperTerm> paperTermsById;
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -45,12 +45,5 @@ public class Term {
         return Objects.hash(id, name);
     }
 
-    @OneToMany(mappedBy = "termByTermId")
-    public Collection<PaperTerm> getPaperTermsById() {
-        return paperTermsById;
-    }
 
-    public void setPaperTermsById(Collection<PaperTerm> paperTermsById) {
-        this.paperTermsById = paperTermsById;
-    }
 }

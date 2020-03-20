@@ -1,57 +1,41 @@
 package group.iiicestseb.backend.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
 
 @Entity
 @Table(name = "user", schema = "iiicestseb")
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
-    private int id;
-    private String username;
-    private String password;
-    private String privilegeLevel;
-    private Collection<Record> recordsById;
-
     @Id
     @Column(name = "id")
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     @Basic
     @Column(name = "username")
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    private String username;
 
     @Basic
     @Column(name = "password")
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    private String password;
 
     @Basic
     @Column(name = "privilege_level")
-    public String getPrivilegeLevel() {
-        return privilegeLevel;
-    }
+    private String privilegeLevel;
 
-    public void setPrivilegeLevel(String privilegeLevel) {
-        this.privilegeLevel = privilegeLevel;
-    }
+//    @OneToMany(mappedBy = "userByUserId")
+//    private Collection<Record> recordsById;
+
 
     @Override
     public boolean equals(Object o) {
@@ -69,12 +53,5 @@ public class User {
         return Objects.hash(id, username, password, privilegeLevel);
     }
 
-    @OneToMany(mappedBy = "userByUserId")
-    public Collection<Record> getRecordsById() {
-        return recordsById;
-    }
 
-    public void setRecordsById(Collection<Record> recordsById) {
-        this.recordsById = recordsById;
-    }
 }

@@ -1,81 +1,53 @@
 package group.iiicestseb.backend.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "reference", schema = "iiicestseb")
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Reference {
-    private int id;
-    private Integer referenceOrder;
-    private String text;
-    private String title;
-    private String googleScholarLink;
-    private String refType;
-    private Integer articleId;
 
     @Id
     @Column(name = "id")
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     @Basic
     @Column(name = "reference_order")
-    public Integer getReferenceOrder() {
-        return referenceOrder;
-    }
-
-    public void setReferenceOrder(Integer referenceOrder) {
-        this.referenceOrder = referenceOrder;
-    }
+    private Integer referenceOrder;
 
     @Basic
     @Column(name = "text")
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
+    private String text;
 
     @Basic
     @Column(name = "title")
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    private String title;
 
     @Basic
     @Column(name = "google_scholar_link")
-    public String getGoogleScholarLink() {
-        return googleScholarLink;
-    }
-
-    public void setGoogleScholarLink(String googleScholarLink) {
-        this.googleScholarLink = googleScholarLink;
-    }
+    private String googleScholarLink;
 
     @Basic
     @Column(name = "ref_type")
-    public String getRefType() {
-        return refType;
-    }
-
-    public void setRefType(String refType) {
-        this.refType = refType;
-    }
+    private String refType;
 
     @Basic
     @Column(name = "article_id")
+    private Integer articleId;
+
+
+
+
     public Integer getArticleId() {
         return articleId;
     }

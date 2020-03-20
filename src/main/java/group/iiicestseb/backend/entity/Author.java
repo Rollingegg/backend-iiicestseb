@@ -1,67 +1,46 @@
 package group.iiicestseb.backend.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "author", schema = "iiicestseb")
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Author {
-    private int id;
-    private String name;
-    private String fisrtName;
-    private String lastName;
-    private Integer affiliationId;
-    private Affiliation affiliationByAffiliationId;
 
     @Id
     @Column(name = "id")
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     @Basic
     @Column(name = "name")
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    private String name;
 
     @Basic
     @Column(name = "fisrt_name")
-    public String getFisrtName() {
-        return fisrtName;
-    }
-
-    public void setFisrtName(String fisrtName) {
-        this.fisrtName = fisrtName;
-    }
+    private String fisrtName;
 
     @Basic
     @Column(name = "last_name")
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+    private String lastName;
 
     @Basic
     @Column(name = "affiliation_id")
-    public Integer getAffiliationId() {
-        return affiliationId;
-    }
+    private Integer affiliationId;
 
-    public void setAffiliationId(Integer affiliationId) {
-        this.affiliationId = affiliationId;
-    }
+//    @ManyToOne
+//    @JoinColumn(name = "affiliation_id", referencedColumnName = "id")
+//    private Affiliation affiliationByAffiliationId;
+
 
     @Override
     public boolean equals(Object o) {
@@ -80,13 +59,4 @@ public class Author {
         return Objects.hash(id, name, fisrtName, lastName, affiliationId);
     }
 
-    @ManyToOne
-    @JoinColumn(name = "affiliation_id", referencedColumnName = "id")
-    public Affiliation getAffiliationByAffiliationId() {
-        return affiliationByAffiliationId;
-    }
-
-    public void setAffiliationByAffiliationId(Affiliation affiliationByAffiliationId) {
-        this.affiliationByAffiliationId = affiliationByAffiliationId;
-    }
 }
