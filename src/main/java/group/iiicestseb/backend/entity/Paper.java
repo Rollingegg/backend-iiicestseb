@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -76,7 +77,7 @@ public class Paper {
 
     @Basic
     @Column(name = "publisher")
-    private Integer publisher;
+    private String publisher;
 
     @Basic
     @Column(name = "conf_loc")
@@ -84,7 +85,7 @@ public class Paper {
 
     @Basic
     @Column(name = "chron_date")
-    private Date chronDate;
+    private LocalDateTime chronDate;
 
     @Basic
     @Column(name = "article_id")
@@ -94,7 +95,7 @@ public class Paper {
     @Column(name = "conference_id")
     private Integer conferenceId;
 
-//    @ManyToOne
+//    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
 //    @JoinColumn(name = "conference_id", referencedColumnName = "id")
 //    private Conference conferenceByConferenceId;
 //

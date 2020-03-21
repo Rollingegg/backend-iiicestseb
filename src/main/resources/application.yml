@@ -12,15 +12,20 @@ spring:
 
   jpa:
     database: mysql
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
-      naming:
-        strategy: org.hibernate.cfg.DefaultComponentSafeNamingStrategy
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.MySQL5Dialect
-
+    properties:
+      hibernate:
+        generate_statistics: false
+        order_inserts: true
+        order_updates: true
+        order_deletes: true
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        jdbc:
+          batch_size: 100
+          batch_versioned_data: true
+          rewriteBatchedStatements: true
   servlet:
     multipart:
       max-file-size:
@@ -55,8 +60,15 @@ spring:
     add-properties: true
   datasource:
     username: root
+  jpa:
+    database: mysql
+    show-sql: true
 logging:
   level:
+    org.hibernate.SQL: debug
+    org.engine.QueryParameters: debug
+    org.hibernate.engine.query.HQLQueryPlan: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
     group.iiicestseb.backend: DEBUG
 server:
   port: 4001
@@ -66,25 +78,6 @@ management:
       exposure:
         include: "*"
 ---
-spring:
-  profiles: test
-  devtools:
-    add-properties: true
-  datasource:
-    username: root
-logging:
-  level:
-    group.iiicestseb.backend: DEBUG
-server:
-  port: 4001
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
----
-
 spring:
   profiles: test
   devtools:
@@ -92,8 +85,15 @@ spring:
   datasource:
     username: root
     password: IIICEStseB
+  jpa:
+    database: mysql
+    show-sql: true
 logging:
   level:
+    org.hibernate.SQL: debug
+    org.engine.QueryParameters: debug
+    org.hibernate.engine.query.HQLQueryPlan: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
     group.iiicestseb.backend: DEBUG
 server:
   port: 4001
@@ -139,6 +139,13 @@ spring:
     url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     hikari:
       max-lifetime: 3600000
+  jpa:
+    database: mysql
+    show-sql: false
+    properties:
+      hibernate:
+        generate_statistics: false
+
   devtools:
     add-properties: true
 server:
@@ -147,6 +154,10 @@ server:
       timeout: 7200
 logging:
   level:
+    org.hibernate.SQL: debug
+    org.engine.QueryParameters: debug
+    org.hibernate.engine.query.HQLQueryPlan: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
     group:
       iiicestseb:
         backend:
@@ -170,6 +181,21 @@ spring:
       max-lifetime: 3600000
     username: root
     driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    database: mysql
+    show-sql: true
+    properties:
+      hibernate:
+        generate_statistics: true
+        order_inserts: false
+        order_updates: false
+        order_deletes: false
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        jdbc:
+#          batch_size: 100
+          batch_versioned_data: false
+          rewriteBatchedStatements: false
+
   devtools:
     add-properties: true
 

@@ -7,6 +7,8 @@ import group.iiicestseb.backend.vo.AuthorInfoVO;
 import group.iiicestseb.backend.vo.PaperInfoVO;
 import org.apache.ibatis.annotations.*;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
@@ -18,7 +20,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author jh
  * @date 2020/2/22
  */
+@Repository("PaperMapper")
 public interface PaperMapper extends JpaRepository<Paper, Integer> {
+
+    /**
+     * 通过IEEE的ID查找论文
+     *
+     * @param articleId IEEE制定的id
+     * @return 文献
+     */
+    Paper findByArticleId(Integer articleId);
 
 //    /**
 //     * 通过id删除文献

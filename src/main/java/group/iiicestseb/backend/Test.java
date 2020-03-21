@@ -44,14 +44,15 @@ public class Test {
 
 
     public static void main(String[] args) throws Exception {
-        Super su = new Super();
-        Son son = new Son();
-        Annotation[] superAnn = Super.class.getAnnotations();
-        Annotation[] sonAnn = Son.class.getAnnotations();
-        Annotation[] superFunc = Super.class.getMethod("func").getAnnotations();
-        Annotation[] sonFunc = Son.class.getMethod("func").getAnnotations();
+        String s1 = "16-24 May 2015";
+        System.out.println(DateUtil.parseChron(s1));
+        String s2 = "25-31 May 2019";
+        System.out.println(DateUtil.parseChron(s2));
+        String s3 = "20-28 May 2017";
+        System.out.println(DateUtil.parseChron(s3));
+        String s4 = "May 27 2018-June 3 2018";
+        System.out.println(DateUtil.parseChron(s4));
         System.out.println();
-
     }
 
 }

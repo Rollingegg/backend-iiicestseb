@@ -12,10 +12,19 @@ import java.util.List;
  * @author wph
  * @date 2020/2/29
  */
+@Repository("AffiliationMapper")
 public interface AffiliationMapper extends JpaRepository<Affiliation,Integer> {
 
     @Query(value = "select * from affiliation",nativeQuery = true)
     public List<Affiliation> test();
+
+    /**
+     * 通过机构名查找机构
+     *
+     * @param name 机构名
+     * @return 机构
+     */
+    Affiliation findByName(String name);
 //    /**
 //     * 通过id删除机构
 //     *

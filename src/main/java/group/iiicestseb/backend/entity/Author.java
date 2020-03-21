@@ -1,17 +1,13 @@
 package group.iiicestseb.backend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "author", schema = "iiicestseb")
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Author {
@@ -37,7 +33,7 @@ public class Author {
     @Column(name = "affiliation_id")
     private Integer affiliationId;
 
-//    @ManyToOne
+//    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
 //    @JoinColumn(name = "affiliation_id", referencedColumnName = "id")
 //    private Affiliation affiliationByAffiliationId;
 
@@ -56,7 +52,7 @@ public class Author {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, fisrtName, lastName, affiliationId);
+        return Objects.hash(id, name, fisrtName, lastName/*, affiliationId*/);
     }
 
 }
