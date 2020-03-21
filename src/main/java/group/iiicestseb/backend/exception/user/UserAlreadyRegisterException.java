@@ -20,6 +20,6 @@ public class UserAlreadyRegisterException extends RuntimeException{
 
     public UserAlreadyRegisterException() {
         super("用户已注册");
-        this.code = 1;
+        this.code = 1001;
     }
 }

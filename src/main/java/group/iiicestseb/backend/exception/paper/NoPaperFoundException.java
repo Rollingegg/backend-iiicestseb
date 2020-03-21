@@ -10,7 +10,7 @@ public class NoPaperFoundException extends RuntimeException{
      */
     private Integer code;
     public NoPaperFoundException() {
-        super("搜索无结果");
-        this.code = 1;
+        super("无相关结果");
+        this.code = 2001;
     }
 }

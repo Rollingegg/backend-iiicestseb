@@ -36,8 +36,8 @@ public class Record {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()) {return false;}
         Record that = (Record) o;
         return id == that.id &&
                 Objects.equals(searchRecord, that.searchRecord) &&

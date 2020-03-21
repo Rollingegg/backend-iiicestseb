@@ -1,12 +1,20 @@
 package group.iiicestseb.backend.form;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 
 /**
  * 高级检索表单
  * @author wph
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AdvancedSearchForm {
 
     /**
@@ -38,4 +46,9 @@ public class AdvancedSearchForm {
      * 术语
      */
     private String termKeyword;
+
+    /**
+     *
+     */
+    private Integer limit = 50;
 }

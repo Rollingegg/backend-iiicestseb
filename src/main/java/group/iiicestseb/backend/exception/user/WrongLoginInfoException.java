@@ -19,6 +19,6 @@ public class WrongLoginInfoException extends RuntimeException{
 
     public WrongLoginInfoException() {
         super("用户名或密码错误");
-        this.code = 2;
+        this.code = 1002;
     }
 }

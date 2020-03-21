@@ -9,6 +9,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,9 @@ import static org.junit.Assert.*;
 public class AffiliationMapperTest {
     @Autowired
     private AffiliationMapper affiliationMapper;
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Test
     public void name() {

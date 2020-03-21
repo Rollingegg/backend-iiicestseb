@@ -28,10 +28,10 @@ import java.util.List;
 @RequestMapping("statistics")
 @CrossOrigin
 public class StatisticsController {
-//    public static final String CSV_ANALYZE_ERROR = "CSV解析错误，请查阅日志";
-//    public static final String SHOULD_BE_POSITIVE = "参数应该大于0";
-//    public static final String PARAM_TOO_LARGE = "参数太大";
-//    public static final String PARAMETER_ERROR = "参数无效或不合法";
+    public static final String CSV_ANALYZE_ERROR = "CSV解析错误，请查阅日志";
+    public static final String SHOULD_BE_POSITIVE = "参数应该大于0";
+    public static final String PARAM_TOO_LARGE = "参数太大";
+    public static final String PARAMETER_ERROR = "参数无效或不合法";
 //
 //    @Resource(name = "Statistics")
 //    private StatisticsService statisticsService;

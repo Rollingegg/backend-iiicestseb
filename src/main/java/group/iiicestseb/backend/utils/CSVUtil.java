@@ -1,23 +1,6 @@
 package group.iiicestseb.backend.utils;
 
-import group.iiicestseb.backend.Test;
-import group.iiicestseb.backend.entity.*;
-import group.iiicestseb.backend.mapper.AffiliationMapper;
-import group.iiicestseb.backend.mapper.AuthorMapper;
-import group.iiicestseb.backend.mapper.PaperMapper;
-import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import java.awt.print.Paper;
-import java.io.*;
-import java.time.LocalDateTime;
-import java.util.*;
 
 /**
  * @author jh

@@ -7,6 +7,7 @@ import group.iiicestseb.backend.vo.AuthorInfoVO;
 import group.iiicestseb.backend.vo.PaperInfoVO;
 import org.apache.ibatis.annotations.*;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
@@ -19,7 +20,72 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @date 2020/2/22
  */
 public interface PaperMapper extends JpaRepository<Paper, Integer> {
-
+//    /**
+//     * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询
+//     *
+//     * @param type     查询类型 适用于 DOI 标题 摘要 作者 机构
+//     * @param keywords 搜索关键字
+//     * @return 文献列表
+//     */
+//    @Query("select " +
+//            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
+//            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
+//            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
+//            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
+//            ",paper_term pt1,term t1 " +
+//            "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
+//            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
+//            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
+//            "${type} like '%${keywords}%'" +
+//            "group by p1.id " +
+//            "order by citation_count desc limit #{limit}")
+//    @ResultMap("PaperInfoVOResultMap")
+//    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperByType(String type, String keywords,Integer limit);
+//
+//    List<AuthorInfoVO> selectAuthorInfoById(Integer paperId);
+//
+//    List<AuthorInfoVO> selectTermById(Integer paperId);
+//
+//
+//
+//
+//    /**
+//     * 适用于模糊字段查找 全部 类型的简单查询
+//     *
+//     * @param keywords 关键字
+//     * @return 文献列表
+//     */
+//    @Query(value = "select new PaperInfoVO(Paper, ) " +
+//            "from Paper, Conference , Author ,",nativeQuery = true,)
+//    List<PaperInfoVO> simpleSearchPaperAll(String keywords,Integer limit);
+//
+//
+//    /**
+//     * 多字段高级检索
+//     *
+//     * @param advancedSearchForm 高级检索表单
+//     * @return 论文列表
+//     */
+//    @Select("select " +
+//            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
+//            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
+//            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
+//            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
+//            ",paper_term pt1,term t1 " +
+//            "where (p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
+//            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
+//            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
+//            "(p1.paper_title like '%${advancedSearchForm.paperTitleKeyword}%' OR #{advancedSearchForm.paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
+//            "(p1.paper_abstract like '%${advancedSearchForm.paperAbstractKeyword}%'  OR #{advancedSearchForm.paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +
+//            "(p1.DOI like '%${advancedSearchForm.doiKeyword}%'  OR #{advancedSearchForm.doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
+//            "(au1.name like '%${advancedSearchForm.authorKeyword}%'  OR #{advancedSearchForm.authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
+//            "(af1.name like '%${advancedSearchForm.affiliationKeyword}%'  OR #{advancedSearchForm.affiliationKeyword,jdbcType=VARCHAR} IS NULL) and" +
+//            "(t1.word like '%${advancedSearchForm.termKeyword}%'  OR #{advancedSearchForm.termKeyword,jdbcType=VARCHAR} IS NULL))  " +
+//            "group by p1.id " +
+//            "order by citation_count desc limit #{limit,jdbcType=INTEGER}")
+//    @ResultMap("PaperInfoVOResultMap")
+//    CopyOnWriteArrayList<PaperInfoVO> advancedSearch(AdvancedSearchForm advancedSearchForm,
+//                                                     Integer limit);
 //    /**
 //     * 通过id删除文献
 //     *
@@ -234,87 +300,6 @@ public interface PaperMapper extends JpaRepository<Paper, Integer> {
 //     */
 //    int insertPublishList(@Param("publishList") List<Publish> publishList);
 //
-//    /**
-//     * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询
-//     *
-//     * @param type     查询类型 适用于 DOI 标题 摘要 作者 机构
-//     * @param keywords 搜索关键字
-//     * @return 文献列表
-//     */
-//    @Select("select " +
-//            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
-//            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
-//            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
-//            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
-//            ",paper_term pt1,term t1 " +
-//            "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
-//            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
-//            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
-//            " ${type} like '%${keywords}%'" +
-//            "group by p1.id " +
-//            "order by citation_count desc limit #{limit}")
-//    @ResultMap("PaperInfoVOResultMap")
-//    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperByType(String type, String keywords,Integer limit);
-//
-//    List<AuthorInfoVO> selectAuthorInfoById(Integer paperId);
-//
-//    List<AuthorInfoVO> selectTermById(Integer paperId);
-//
-//
-//
-//
-//    /**
-//     * 适用于模糊字段查找 全部 类型的简单查询
-//     *
-//     * @param keywords 关键字
-//     * @return 文献列表
-//     */
-//    @Select("select " +
-//            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
-//            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
-//            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
-//            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
-//            ",paper_term pt1,term t1 " +
-//            "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
-//            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
-//            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
-//            "(au1.name like '%${keywords}%' or " +
-//            "af1.name like '%${keywords}%' or " +
-//            "p1.DOI like '%${keywords}%' or " +
-//            "p1.paper_abstract like '%${keywords}%' or " +
-//            "p1.paper_title like '%${keywords}%' or " +
-//            "t1.word like '%${keywords}%')" +
-//            "group by p1.id " +
-//            "order by citation_count desc limit #{limit}")
-//    @ResultMap("PaperInfoVOResultMap")
-//    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperAll(String keywords,Integer limit);
-//
-//
-//    /**
-//     * 多字段高级检索
-//     *
-//     * @param advancedSearchForm 高级检索表单
-//     * @return 论文列表
-//     */
-//    @Select("select " +
-//            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
-//            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
-//            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
-//            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
-//            ",paper_term pt1,term t1 " +
-//            "where (p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
-//            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
-//            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
-//            "(p1.paper_title like '%${advancedSearchForm.paperTitleKeyword}%' OR #{advancedSearchForm.paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
-//            "(p1.paper_abstract like '%${advancedSearchForm.paperAbstractKeyword}%'  OR #{advancedSearchForm.paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +
-//            "(p1.DOI like '%${advancedSearchForm.doiKeyword}%'  OR #{advancedSearchForm.doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
-//            "(au1.name like '%${advancedSearchForm.authorKeyword}%'  OR #{advancedSearchForm.authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
-//            "(af1.name like '%${advancedSearchForm.affiliationKeyword}%'  OR #{advancedSearchForm.affiliationKeyword,jdbcType=VARCHAR} IS NULL) and" +
-//            "(t1.word like '%${advancedSearchForm.termKeyword}%'  OR #{advancedSearchForm.termKeyword,jdbcType=VARCHAR} IS NULL))  " +
-//            "group by p1.id " +
-//            "order by citation_count desc limit #{limit,jdbcType=INTEGER}")
-//    @ResultMap("PaperInfoVOResultMap")
-//    CopyOnWriteArrayList<PaperInfoVO> advancedSearch(AdvancedSearchForm advancedSearchForm,
-//                                                     Integer limit);
+
 
 }
