@@ -11,6 +11,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public interface AuthorService {
 
+
+
 //    /**
 //     * 作者页面所需要的作者详细信息
 //     * @author wph

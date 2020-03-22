@@ -1,6 +1,10 @@
 package group.iiicestseb.backend.service;
 
+import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.vo.AffiliationInfoVO;
+import org.springframework.context.annotation.Lazy;
+
+import javax.annotation.Resource;
 
 /**
  * @author wph

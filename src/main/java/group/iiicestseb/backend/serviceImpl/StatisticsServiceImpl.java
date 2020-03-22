@@ -1,8 +1,12 @@
 package group.iiicestseb.backend.serviceImpl;
 
+import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.StatisticsService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -12,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class)
 @Service("Statistics")
 public class StatisticsServiceImpl implements StatisticsService {
+    @Lazy
+    @Resource(name = "Regedit")
+    private Regedit regedit;
 
 //    @Resource
 //    private AffiliationMapper affiliationMapper;

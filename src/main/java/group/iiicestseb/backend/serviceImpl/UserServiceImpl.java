@@ -7,8 +7,10 @@ import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
 import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
 import group.iiicestseb.backend.mapper.RecordMapper;
 import group.iiicestseb.backend.mapper.UserMapper;
+import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.UserService;
 import group.iiicestseb.backend.vo.UserVO;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,10 @@ import java.util.List;
 @Service("User")
 @Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
+    @Lazy
+    @Resource(name = "Regedit")
+    private Regedit regedit;
+
     @Resource
     private UserMapper userMapper;
 

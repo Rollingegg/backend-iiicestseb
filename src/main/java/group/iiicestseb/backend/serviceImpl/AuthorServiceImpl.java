@@ -1,8 +1,10 @@
 package group.iiicestseb.backend.serviceImpl;
 
 import group.iiicestseb.backend.mapper.AuthorMapper;
+import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AuthorService;
 import group.iiicestseb.backend.vo.AuthorInfoVO;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +18,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service("Author")
 @Transactional(rollbackFor = Exception.class)
 public class AuthorServiceImpl implements AuthorService {
-
+    @Lazy
+    @Resource(name = "Regedit")
+    private Regedit regedit;
 //    @Resource
 //    private AuthorMapper authorMapper;
 //
