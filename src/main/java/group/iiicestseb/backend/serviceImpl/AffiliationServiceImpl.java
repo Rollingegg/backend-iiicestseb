@@ -1,8 +1,10 @@
 package group.iiicestseb.backend.serviceImpl;
 
 import group.iiicestseb.backend.mapper.AffiliationMapper;
+import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AffiliationService;
 import group.iiicestseb.backend.vo.AffiliationInfoVO;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,9 @@ import javax.annotation.Resource;
 @Service("Affiliation")
 @Transactional(rollbackFor = Exception.class)
 public class AffiliationServiceImpl implements AffiliationService {
+    @Lazy
+    @Resource(name = "Regedit")
+    private Regedit regedit;
 //    @Resource
 //    private AffiliationMapper affiliationMapper;
 //

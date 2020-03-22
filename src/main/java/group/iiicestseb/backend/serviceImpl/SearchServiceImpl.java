@@ -2,8 +2,10 @@ package group.iiicestseb.backend.serviceImpl;
 
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.mapper.PaperMapper;
+import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.SearchService;
 import group.iiicestseb.backend.vo.PaperInfoVO;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,9 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 @Service("Search")
 public class SearchServiceImpl implements SearchService {
+    @Lazy
+    @Resource(name = "Regedit")
+    private Regedit regedit;
     public static final String ALL = "all";
     public static final String AFFILIATION ="affiliation_name";
     public static final String TITLE ="paper_title";
