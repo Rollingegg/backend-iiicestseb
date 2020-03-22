@@ -26,9 +26,6 @@ public interface AuthorMapper extends JpaRepository<Author, Integer> {
      */
     Author findByName(String name);
 
-
-    @Query("select new AuthorInfoVO() ")
-    AuthorInfoVO example(String name);
 //    /**
 //     * 通过id删除作者
 //     *
