@@ -53,6 +53,9 @@ public class StringUtil {
     };
 
     public static String stripAccents(String raw) {
+        if (raw == null) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder(raw);
         for (int i = 0; i < raw.length(); i++) {
             char c = raw.charAt(i);

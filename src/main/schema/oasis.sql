@@ -18,9 +18,9 @@ create index affiliation_name_hash using hash on affiliation (name);
 CREATE TABLE author
 (
 id             INT PRIMARY KEY comment '作者id',
-name           VARCHAR(40) comment '作者姓名',
-fisrt_name     varchar(20) comment '姓',
-last_name      varchar(20) comment '名',
+name           VARCHAR(80) comment '作者姓名',
+fisrt_name     varchar(40) comment '姓',
+last_name      varchar(40) comment '名',
 affiliation_id int comment '作者所属机构id',
 foreign key (affiliation_id) references affiliation (id)
 ) ENGINE = InnoDB comment '作者表';
