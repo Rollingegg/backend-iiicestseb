@@ -19,7 +19,7 @@ public class Term {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "JDBC",strategy = GenerationType.IDENTITY)
     private int id;
 
     @Basic

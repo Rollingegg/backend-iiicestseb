@@ -18,7 +18,7 @@ import java.util.Objects;
 public class User {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "JDBC",strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Basic

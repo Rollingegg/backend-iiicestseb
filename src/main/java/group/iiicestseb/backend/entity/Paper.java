@@ -17,7 +17,7 @@ import java.util.Objects;
 public class Paper {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "JDBC",strategy = GenerationType.IDENTITY)
     private int id;
 
     @Basic

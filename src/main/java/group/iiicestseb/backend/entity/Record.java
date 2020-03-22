@@ -18,7 +18,7 @@ public class Record {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "JDBC",strategy = GenerationType.IDENTITY)
     private int id;
 
     @Basic
