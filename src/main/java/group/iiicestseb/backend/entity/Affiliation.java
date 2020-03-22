@@ -1,9 +1,6 @@
 package group.iiicestseb.backend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -11,8 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "affiliation", schema = "iiicestseb")
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Affiliation {

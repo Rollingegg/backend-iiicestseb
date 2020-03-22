@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import org.springframework.stereotype.Repository;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +20,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author jh
  * @date 2020/2/22
  */
+@Repository("PaperMapper")
 public interface PaperMapper extends JpaRepository<Paper, Integer> {
+
 //    /**
 //     * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询
 //     *
@@ -86,6 +89,16 @@ public interface PaperMapper extends JpaRepository<Paper, Integer> {
 //    @ResultMap("PaperInfoVOResultMap")
 //    CopyOnWriteArrayList<PaperInfoVO> advancedSearch(AdvancedSearchForm advancedSearchForm,
 //                                                     Integer limit);
+
+
+    /**
+     * 通过IEEE的ID查找论文
+     *
+     * @param articleId IEEE制定的id
+     * @return 文献
+     */
+    Paper findByArticleId(Integer articleId);
+
 //    /**
 //     * 通过id删除文献
 //     *
