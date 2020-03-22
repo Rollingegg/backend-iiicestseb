@@ -2,9 +2,7 @@ package group.iiicestseb.backend.config;
 
 import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
 import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
-import group.iiicestseb.backend.utils.CSVUtil;
 import group.iiicestseb.backend.vo.Response;
-import org.springframework.data.repository.config.ResourceReaderRepositoryPopulatorBeanDefinitionParser;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

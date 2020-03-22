@@ -1,60 +1,44 @@
 package group.iiicestseb.backend.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
-@Table(name = "reference", schema = "iiicestseb")
+
+@TableName("reference")
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Reference {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(generator = "JDBC",strategy = GenerationType.IDENTITY)
+    @TableId("id")
     private int id;
 
-    @Basic
-    @Column(name = "reference_order")
+    @TableField("reference_order")
     private Integer referenceOrder;
 
-    @Basic
-    @Column(name = "text")
+    @TableField("text")
     private String text;
 
-    @Basic
-    @Column(name = "title")
+    @TableField("title")
     private String title;
 
-    @Basic
-    @Column(name = "google_scholar_link")
+    @TableField("google_scholar_link")
     private String googleScholarLink;
 
-    @Basic
-    @Column(name = "ref_type")
+    @TableField("ref_type")
     private String refType;
 
-    @Basic
-    @Column(name = "article_id")
+    @TableField("article_id")
     private Integer articleId;
 
-
-
-
-    public Integer getArticleId() {
-        return articleId;
-    }
-
-    public void setArticleId(Integer articleId) {
-        this.articleId = articleId;
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -1,25 +1,24 @@
 package group.iiicestseb.backend.entity;
 
-import lombok.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.Collection;
 import java.util.Objects;
 
-@Entity
-@Table(name = "affiliation", schema = "iiicestseb")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@TableName("affiliation")
 public class Affiliation {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(generator = "JDBC",strategy = GenerationType.IDENTITY)
+    @TableId("id")
     private int id;
 
-    @Basic
-    @Column(name = "name")
+    @TableField("name")
     private String name;
 
 //    @OneToMany(mappedBy = "affiliationByAffiliationId")

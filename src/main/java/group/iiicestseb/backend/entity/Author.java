@@ -1,36 +1,35 @@
 package group.iiicestseb.backend.entity;
 
-import lombok.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
-@Table(name = "author", schema = "iiicestseb")
+
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@TableName("author")
 public class Author {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(generator = "JDBC",strategy = GenerationType.IDENTITY)
+    @TableId("id")
     private int id;
 
-    @Basic
-    @Column(name = "name")
+    @TableField("name")
     private String name;
 
-    @Basic
-    @Column(name = "fisrt_name")
+    @TableField("firstname")
     private String fisrtName;
 
-    @Basic
-    @Column(name = "last_name")
+    @TableField("last_name")
     private String lastName;
 
-    @Basic
-    @Column(name = "affiliation_id")
+    @TableField("affiliation_id")
     private Integer affiliationId;
 
 //    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)

@@ -1,16 +1,14 @@
 package group.iiicestseb.backend.service;
 
-import group.iiicestseb.backend.regedit.Regedit;
-import group.iiicestseb.backend.vo.AffiliationInfoVO;
-import org.springframework.context.annotation.Lazy;
-
-import javax.annotation.Resource;
+import com.baomidou.mybatisplus.extension.service.IService;
+import group.iiicestseb.backend.entity.Affiliation;
 
 /**
  * @author wph
  * @date 2020/03/01
  */
-public interface AffiliationService {
+
+public interface AffiliationService extends IService<Affiliation> {
 
 //    /**
 //     * 获取机构页面的机构详细信息

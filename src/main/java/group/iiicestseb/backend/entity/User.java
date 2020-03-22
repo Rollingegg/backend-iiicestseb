@@ -1,40 +1,32 @@
 package group.iiicestseb.backend.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.util.Collection;
 import java.util.Objects;
 
-@Entity
-@Table(name = "user", schema = "iiicestseb")
+@TableName("user")
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(generator = "JDBC",strategy = GenerationType.IDENTITY)
+    @TableId("id")
     private Integer id;
 
-    @Basic
-    @Column(name = "username")
+    @TableField("username")
     private String username;
 
-    @Basic
-    @Column(name = "password")
+    @TableField("password")
     private String password;
 
-    @Basic
-    @Column(name = "privilege_level")
+    @TableField("privilege_level")
     private String privilegeLevel;
-
-//    @OneToMany(mappedBy = "userByUserId")
-//    private Collection<Record> recordsById;
 
 
     @Override

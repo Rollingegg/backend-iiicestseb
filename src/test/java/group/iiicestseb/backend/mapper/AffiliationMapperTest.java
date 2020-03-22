@@ -1,21 +1,16 @@
 package group.iiicestseb.backend.mapper;
 
 import group.iiicestseb.backend.entity.Affiliation;
+import group.iiicestseb.backend.service.AffiliationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * @author wph
@@ -24,65 +19,49 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @Transactional
 public class AffiliationMapperTest {
-    @Autowired
+
+    @Resource
     private AffiliationMapper affiliationMapper;
 
-    @PersistenceContext
-    EntityManager entityManager;
+    @Resource
+    private AffiliationService affiliationService;
 
     @Test
-    public void name() {
-        Affiliation affiliation = new Affiliation();
-        affiliation.setName("test");
-        affiliationMapper.save(affiliation);
-        affiliationMapper.save(affiliation);
-        affiliationMapper.save(affiliation);
-        affiliationMapper.save(affiliation);
+    public  void test(){
+        List<Affiliation> affiliations = new ArrayList<>();
+        for (int i = 0; i < 200000; i++) {
+            affiliations.add(new Affiliation(i,String.valueOf(i)));
+
+            //affiliationMapper.insert(new Affiliation(i,String.valueOf(i)));
+        }
+        affiliationService.saveBatch(affiliations);
     }
 
-    //    @Test
-//    public void deleteByPrimaryKey() {
-//        affiliationMapper.insert(affiliation);
-//        assertEquals(1,affiliationMapper.deleteByPrimaryKey(affiliation.getId()));
-//        assertEquals(0,affiliationMapper.deleteByPrimaryKey(affiliation.getId()));
-//
-//
-//    }
-//
-//    @Test
-//    public void insert() {
-//        affiliationMapper.insert(affiliation);
-//        assertEquals(affiliation,affiliationMapper.selectByPrimaryKey(affiliation.getId()));
-//    }
-//
-//    @Test
-//    public void insertAffiliationList() {
-//        List<Affiliation> test = new ArrayList<>();
-//        test.add(affiliation);
-//        test.add(affiliation2);
-//        assertEquals(2,affiliationMapper.insertAffiliationList(test));
-//        assertEquals(affiliation,affiliationMapper.selectByPrimaryKey(affiliation.getId()));
-//        assertEquals(affiliation2,affiliationMapper.selectByPrimaryKey(affiliation2.getId()));
-//    }
-//
-//    @Test
-//    public void selectByPrimaryKey() {
-//        affiliationMapper.insert(affiliation2);
-//        assertEquals(affiliation2,affiliationMapper.selectByPrimaryKey(affiliation2.getId()));
-//    }
-//
-//    @Test
-//    public void updateByPrimaryKey() {
-//        affiliationMapper.insert(affiliation);
-//        affiliation.setName("test_init");
-//        affiliationMapper.updateByPrimaryKey(affiliation);
-//        assertEquals(affiliation,affiliationMapper.selectByPrimaryKey(affiliation.getId()));
-//    }
-//
-//    @Test
-//    public void selectByName() {
-//        affiliation.setName("gogo");
-//        affiliationMapper.insert(affiliation);
-//        assertEquals(affiliation,affiliationMapper.selectByName(affiliation.getName()));
-//    }
+
+    @Test
+    public void test1() {
+        List<Affiliation> affiliations = new ArrayList<>();
+        for (int i = 0; i < 200000; i++) {
+            affiliations.add(new Affiliation(i,String.valueOf(i)));
+
+            //affiliationMapper.insert(new Affiliation(i,String.valueOf(i)));
+        }
+        long t1 = System.currentTimeMillis();
+        for (int i = 0; i < 200000; i++) {
+            //affiliationMapper.saveBatch(affiliations.get(0));
+            affiliationMapper.saveBatch(affiliations);
+        }
+        long t2 = System.currentTimeMillis();
+//        List<Affiliation> affiliations = new ArrayList<>();
+//        for (int i = 0; i < 200000; i++) {
+//            affiliations.add(new Affiliation(i,String.valueOf(i)));
+//        }
+//        long t1 = System.currentTimeMillis();
+//        affiliationMapper.findByName("test");
+//        long t2 = System.currentTimeMillis();
+
+
+        System.out.println("result");
+        System.out.println(t2-t1);
+    }
 }

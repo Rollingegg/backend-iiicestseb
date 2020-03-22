@@ -1,31 +1,28 @@
 package group.iiicestseb.backend.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
-@Table(name = "paper_authors", schema = "iiicestseb")
-@IdClass(PaperAuthorsPK.class)
+
+@TableName("paper_authors")
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaperAuthors {
-    @Id
-    @Column(name = "author_id")
+    @TableField("author_id")
     private int authorId;
 
-    @Id
-    @Column(name = "paper_id")
+    @TableField("paper_id")
     private int paperId;
 
-    @Basic
-    @Column(name = "author_order")
+    @TableField("author_order")
     private Integer authorOrder;
 
 //    @ManyToOne

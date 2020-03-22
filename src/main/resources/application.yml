@@ -34,8 +34,8 @@ spring:
         104857600
 
 
-#mybatis:
-#  mapper-locations: classpath:mapper/*.xml
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
 
 server:
   tomcat:
@@ -192,7 +192,7 @@ spring:
         order_deletes: true
         dialect: org.hibernate.dialect.MySQL5Dialect
         jdbc:
-          batch_size: 100
+          batch_size: 200
           batch_versioned_data: true
           rewriteBatchedStatements: true
 

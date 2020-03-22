@@ -1,550 +1,550 @@
-package group.iiicestseb.backend.utils;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import group.iiicestseb.backend.entity.*;
-import group.iiicestseb.backend.mapper.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.actuate.endpoint.web.Link;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import java.io.*;
-import java.util.*;
-
-/**
- * @author jh
- * @date 2020/3/18
- */
-@Component
-public class JSONUtil {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JSONUtil.class);
-
-    public static final String LINE_READ_ERROR = "文件内容读取错误，跳过该行，请检查格式，错误行号：";
-    public static final String LINE_PARSE_ERROR = "JSON内容转换失败，跳过该行，请检查格式，错误行号：";
-    public static final String JSON_PARSE_ERROR = "JSON内容解析失败，跳过该行，请检查格式，错误行号：";
-    public static final String INPUT_STREAM_CLOSE_ERROR_KEY = "Stream_Error";
-    public static final String INPUT_STREAM_CLOSE_ERROR = "文件流关闭失败，停止解析";
-    public static final String FILE_OPEN_ERROR = "文件流打开失败";
-    public static final String CONFERENCE_NOT_EXIST = "会议名不存在";
-
-    @Resource(name = "PaperMapper")
-    private PaperMapper papMapper;
-    private static PaperMapper paperMapper;
-    @Resource(name = "AuthorMapper")
-    private AuthorMapper autMapper;
-    private static AuthorMapper authorMapper;
-    @Resource(name = "AffiliationMapper")
-    private AffiliationMapper affMapper;
-    private static AffiliationMapper affiliationMapper;
-    @Resource(name = "ConferenceMapper")
-    private ConferenceMapper conferMapper;
-    private static ConferenceMapper conferenceMapper;
-    @Resource(name = "TermMapper")
-    private TermMapper tMapper;
-    private static TermMapper termMapper;
-    @Resource(name = "PaperTermMapper")
-    private PaperTermMapper ptMapper;
-    private static PaperTermMapper paperTermMapper;
-    @Resource(name = "PaperAuthorMapper")
-    private PaperAuthorMapper paMapper;
-    private static PaperAuthorMapper paperAuthorMapper;
-    @Resource(name = "ReferenceMapper")
-    private ReferenceMapper refMapper;
-    private static ReferenceMapper referenceMapper;
-
-    @PostConstruct
-    public void init() {
-        JSONUtil.paperMapper = this.papMapper;
-        JSONUtil.authorMapper = this.autMapper;
-        JSONUtil.affiliationMapper = this.affMapper;
-        JSONUtil.conferenceMapper = this.conferMapper;
-        JSONUtil.termMapper = this.tMapper;
-        JSONUtil.paperTermMapper = this.ptMapper;
-        JSONUtil.paperAuthorMapper = this.paMapper;
-        JSONUtil.referenceMapper = this.refMapper;
-    }
-
-    /**
-     * 这是JSON中规定的关键词
-     * ArticleId("articleId"),
-     * Abstract("abstract"),
-     * Title("title"),
-     * ConfLoc("confLoc"),
-     * IssueLink("issueLink"),
-     * PdfLink("pdfLink"),
-     * Ref("ref"),
-     * ChronDate("chronDate"),
-     * Publication("publication"),
-     * DOI("doi"),
-     * Authors("authors"),
-     * Keywords("keywords"),
-     * StartPage("startPage"),
-     * EndPage("endPage"),
-     * Metrics("metrics"),
-     * Publisher("publisher");
-     */
-    public enum KEY {
-        //
-        ArticleId("articleId"),
-        Abstract("abstract"),
-        Title("title"),
-        ConfLoc("confLoc"),
-        PubLink("pubLink"),
-        IssueLink("issueLink"),
-        PdfLink("pdfLink"),
-        Ref("ref"),
-        ChronDate("chronDate"),
-        PublicationTitle("publication"),
-        DOI("doi"),
-        Authors("authors"),
-        Keywords("keywords"),
-        StartPage("startPage"),
-        EndPage("endPage"),
-        Metrics("metrics"),
-        Publisher("publisher");
-        private final String value;
-
-        KEY(String value) {
-            this.value = value;
-        }
-
-        public String value() {
-            return this.value;
-        }
-    }
-
-    /**
-     * 这是Metrics中的几个关键词
-     * TotalDownloads("totalDownloads"),
-     * CitationCountPaper("citationCountPaper"),
-     * CitationCountPatent("citationCountPatent");
-     */
-    public enum METRICS {
-        //
-        TotalDownloads("totalDownloads"),
-        CitationCountPaper("citationCountPaper"),
-        CitationCountPatent("citationCountPatent");
-        public final String value;
-
-        METRICS(String value) {
-            this.value = value;
-        }
-
-        public String value() {
-            return this.value;
-        }
-    }
-
-    /**
-     * 会议名
-     * ASE("ASE"),
-     * ICSE("ICSE");
-     */
-    public enum CONFERENCE {
-        //
-        ASE("ASE"),
-        ICSE("ICSE");
-        public final String value;
-
-        CONFERENCE(String value) {
-            this.value = value;
-        }
-
-        public String value() {
-            return this.value;
-        }
-    }
-
-    /**
-     * 文章关键词Term
-     * IEEE("IEEE Keywords"),
-     * Ctrl("INSPEC: Controlled Indexing"),
-     * NonCtrl("INSPEC: Non-Controlled Indexing"),
-     * Author("Author Keywords"),
-     * Index("Index");
-     */
-    public enum TERM {
-        //
-        IEEE("IEEE Keywords"),
-        Ctrl("INSPEC: Controlled Indexing"),
-        NonCtrl("INSPEC: Non-Controlled Indexing"),
-        Author("Author Keywords"),
-        Index("Index");
-        public final String value;
-
-        TERM(String value) {
-            this.value = value;
-        }
-
-        public String value() {
-            return this.value;
-        }
-    }
-
-    /**
-     * 作者
-     * Name("name"),
-     * FirstName("firstName"),
-     * LastName("lastName"),
-     * Affiliation("affiliation");
-     */
-    public enum AUTHOR {
-        //
-        Name("name"),
-        FirstName("firstName"),
-        LastName("lastName"),
-        Affiliation("affiliation");
-        public final String value;
-
-        AUTHOR(String value) {
-            this.value = value;
-        }
-
-        public String value() {
-            return this.value;
-        }
-    }
-
-    /**
-     * 引用
-     * Order("order"),
-     * Text("text"),
-     * Title("title"),
-     * GoogleScholarLink("googleScholarLink"),
-     * RefType("refType");
-     */
-    public enum REF {
-        //
-        Order("order"),
-        Text("text"),
-        Title("title"),
-        GoogleScholarLink("googleScholarLink"),
-        RefType("refType");
-        public final String value;
-
-        REF(String value) {
-            this.value = value;
-        }
-
-        public String value() {
-            return this.value;
-        }
-    }
-
-    public static void main(String[] args) {
-        analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\Standard.json");
-//        Map<Class<?>, Object> m = new HashMap<>();
-//        m.put(Term.class, "3");
-//        System.out.println(m.get(Term.class));
-    }
-
-    public static void analyzeExistedJsonFile(String filename) {
-        List<JSONObject> jsonObjects = new LinkedList<>();
-        JSONObject errors = new JSONObject();
-        BufferedReader br;
-        try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
-            ReadLines(jsonObjects, br, errors);
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            errors.put(INPUT_STREAM_CLOSE_ERROR_KEY, INPUT_STREAM_CLOSE_ERROR);
-            return;
-        }
-        analyze(jsonObjects, errors);
-        System.out.println();
-    }
-
-    public static void analyzeUploadedJsonFile(MultipartFile file) {
-    }
-
-    private static void ReadLines(List<JSONObject> jsonObjects, BufferedReader br, JSONObject errors) {
-        String line;
-        for (int i = 1; true; i++) {
-            try {
-                line = br.readLine();
-                if (line == null || line.isEmpty()) {
-                    break;
-                }
-                JSONObject o = (JSONObject) JSON.parse(line);
-                o.put("line", i);
-                jsonObjects.add(o);
-            } catch (IOException e) {
-                e.printStackTrace();
-                errors.put("line" + i, LINE_READ_ERROR);
-            } catch (Exception e) {
-                e.printStackTrace();
-                errors.put("line" + i, LINE_PARSE_ERROR);
-            }
-
-        }
-    }
-
-    private static void analyze(List<JSONObject> jsonObjects, JSONObject errors) {
-        Map<Class<?>, Map<?, ?>> ExistedMaps = new HashMap<>();
-        ExistedMaps.put(Conference.class, new HashMap<String, Conference>());
-        ExistedMaps.put(Term.class, new HashMap<String, Term>());
-        ExistedMaps.put(Affiliation.class, new HashMap<String, Affiliation>());
-        ExistedMaps.put(Author.class, new HashMap<String, Author>());
-        ExistedMaps.put(Paper.class, new HashMap<Integer, Paper>());
-
-        Map<Class<?>, List<?>> NewLists = new HashMap<>();
-        NewLists.put(Conference.class, new LinkedList<Conference>());
-        NewLists.put(Term.class, new LinkedList<Term>());
-        NewLists.put(Affiliation.class, new LinkedList<Affiliation>());
-        NewLists.put(Author.class, new LinkedList<Author>());
-        NewLists.put(Paper.class, new LinkedList<Paper>());
-
-        int i = 0;
-        for (JSONObject jo : jsonObjects) {
-            i++;
-            try {
-                // 文献+会议
-                Conference conference = analyzeConference(jo, ExistedMaps, NewLists);
-                Paper paper = analyzePaper(jo, ExistedMaps, NewLists);
-                paper.setConferenceId(conference.getId());
-                // 关键词
-                Map<String, List<Term>> terms = analyzeTerms(jo, ExistedMaps, NewLists);
-                paper.setAuthorKeywords(joinAuthorKeywords(terms.get(TERM.Author.value())));
-                paperMapper.save(paper);
-                // 作者+机构
-                List<Author> authors = analyzeAuthors(jo, ExistedMaps, NewLists);
-
-//                authorMapper.saveAll(authors);
-//                termMapper.saveAll(terms.get(TERM.Index.value()));
-
-                // 文献-引用
-                List<Reference> references = analyzeReference(paper, jo);
-                referenceMapper.saveAll(references);
-                // 文献-关键词
-                List<PaperTerm> paperTerms = analyzePaperTerms(paper, terms.get(TERM.Index.value()));
-                paperTermMapper.saveAll(paperTerms);
-                // 文献-作者
-                List<PaperAuthors> paperAuthors = analyzePaperAuthors(paper, authors);
-                paperAuthorMapper.saveAll(paperAuthors);
-
-            } catch (JSONException e) {
-                LOGGER.warn(JSON_PARSE_ERROR + i);
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Paper analyzePaper(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newMaps) {
-        Paper paper;
-        Integer articleId = jo.getInteger(KEY.ArticleId.value());
-        Map<Integer, Paper> existed = (Map<Integer, Paper>) existedMaps.get(Paper.class);
-        List<Paper> news = (List<Paper>) newMaps.get(Paper.class);
-        if (existed.containsKey(articleId)) {
-            //todo： 文章已存在
-            throw new JSONException("");
-        }
-        paper = paperMapper.findByArticleId(articleId);
-        if (paper != null) {
-            //todo: 文章已存在
-            throw new JSONException("");
-        }
-        paper = new Paper();
-        paper.setPdfUrl(jo.getString(KEY.PdfLink.value()));
-        paper.setTitle(jo.getString(KEY.Title.value()));
-        paper.setPaperAbstract(jo.getString(KEY.Abstract.value()));
-        paper.setDoi(jo.getString(KEY.DOI.value()));
-        paper.setPublicationTitle(jo.getString(KEY.PublicationTitle.value()));
-        Map<String, Integer> Metrics = (Map<String, Integer>) jo.get(KEY.Metrics.value());
-        paper.setCitationCountPaper(Metrics.get(METRICS.CitationCountPaper.value()));
-        paper.setCitationCountPatent(Metrics.get(METRICS.CitationCountPatent.value()));
-        paper.setTotalDownloads(Metrics.get(METRICS.TotalDownloads.value()));
-        paper.setStartPage(jo.getString(KEY.StartPage.value()));
-        paper.setEndPage(jo.getString(KEY.EndPage.value()));
-        paper.setPubLink(jo.getString(KEY.PubLink.value()));
-        paper.setIssueLink(jo.getString(KEY.IssueLink.value()));
-        paper.setPublisher(jo.getString(KEY.Publisher.value()));
-        paper.setConfLoc(jo.getString(KEY.ConfLoc.value()));
-        // todo : chronDate的时间格式在json中不同，等赖总爬其他的
-        paper.setChronDate(DateUtil.parseChron(jo.getString(KEY.ChronDate.value())));
-        paper.setArticleId(articleId);
-        news.add(paper);
-        return paper;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Conference analyzeConference(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
-        Conference c;
-        Map<String, Conference> existed = (Map<String, Conference>) existedMaps.get(Conference.class);
-        List<Conference> news = (LinkedList<Conference>) newLists.get(Conference.class);
-        String name = StringUtil.stripAccents(jo.getString(KEY.PublicationTitle.value()).trim());
-        String substring = name.substring(name.length() - 7).toUpperCase();
-        if (substring.contains(CONFERENCE.ASE.value())) {
-            name = CONFERENCE.ASE.value();
-        } else if (substring.contains(CONFERENCE.ICSE.value())) {
-            name = CONFERENCE.ICSE.value();
-        } else {
-            //todo: 等赖总加商会议名
-            name = Math.random() > 0.5 ? CONFERENCE.ICSE.value() : CONFERENCE.ASE.value();
-//            throw new JSONException(CONFERENCE_NOT_EXIST);
-        }
-        if (existed.containsKey(name)) {
-            return existed.get(name);
-        }
-        if ((c = conferenceMapper.findByName(name)) == null) {
-            c = new Conference();
-            c.setName(name);
-            conferenceMapper.save(c);
-            news.add(c);
-        }
-        existed.put(name, c);
-        return c;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<Author> analyzeAuthors(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
-        Map<String, Author> existed = (Map<String, Author>) existedMaps.get(Author.class);
-        List<Author> news = (List<Author>) newLists.get(Author.class);
-        List<Author> authors = new LinkedList<>();
-        JSONArray authorArray = jo.getJSONArray(KEY.Authors.value());
-        for (Object o : authorArray) {
-            Author a;
-            JSONObject temp = (JSONObject) o;
-            String name = StringUtil.stripAccents(temp.getString(AUTHOR.Name.value()));
-            String name_key = name.toLowerCase();
-            if (existed.containsKey(name_key)) {
-                authors.add(existed.get(name_key));
-                continue;
-            } else if ((a = authorMapper.findByName(name)) == null) {
-                String firstName = StringUtil.stripAccents(temp.getString(AUTHOR.FirstName.value()));
-                String lastName = StringUtil.stripAccents(temp.getString(AUTHOR.LastName.value()));
-                a = new Author();
-                a.setName(name);
-                a.setFisrtName(firstName);
-                a.setLastName(lastName);
-                Affiliation aff = analyzeAffiliation(temp.getString(AUTHOR.Affiliation.value()), existedMaps, newLists);
-                a.setAffiliationId(aff.getId());
-                news.add(a);
-            }
-            authors.add(a);
-            existed.put(name_key, a);
-        }
-        authorMapper.saveAll(news);
-        return authors;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Affiliation analyzeAffiliation(String name, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
-        Affiliation a;
-        Map<String, Affiliation> existed = (Map<String, Affiliation>) existedMaps.get(Affiliation.class);
-        List<Affiliation> news = (List<Affiliation>) newLists.get(Affiliation.class);
-        name = StringUtil.stripAccents(name.trim());
-        String name_key = name.toLowerCase();
-        if (existed.containsKey(name_key)) {
-            return existed.get(name_key);
-        }
-        if ((a = affiliationMapper.findByName(name)) == null) {
-            a = new Affiliation();
-            a.setName(name);
-            affiliationMapper.save(a);
-            news.add(a);
-        }
-        existed.put(name_key, a);
-        return a;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Map<String, List<Term>> analyzeTerms(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
-        List<Term> indexTerms = new LinkedList<>();
-        List<Term> authorKeywords = new LinkedList<>();
-        Map<String, List<Term>> terms = new HashMap<>() {{
-            put(TERM.Index.value(), indexTerms);
-            put(TERM.Author.value(), authorKeywords);
-        }};
-        terms.put(TERM.Index.value(), indexTerms);
-        Map<String, Term> existed = (Map<String, Term>) existedMaps.get(Term.class);
-        List<Term> news = (List<Term>) newLists.get(Term.class);
-        List<JSONObject> keywords = (List<JSONObject>) jo.get(KEY.Keywords.value());
-        for (JSONObject j : keywords) {
-            String type = j.getString("type").trim();
-            List<String> words = (List<String>) j.get("kwd");
-            if (TERM.Author.value().equals(type)) {
-                for (String s : words) {
-                    Term t = new Term();
-                    t.setName(s);
-                    authorKeywords.add(t);
-                }
-            } else if (TERM.IEEE.value().equals(type) || TERM.Ctrl.value().equals(type)) {
-                for (String s : words) {
-                    Term t;
-                    s = StringUtil.stripAccents(s.trim());
-                    String name_key = s.toLowerCase();
-                    if (existed.containsKey(name_key)) {
-                        indexTerms.add(existed.get(name_key));
-                        continue;
-                    } else if ((t = termMapper.findByName(s)) == null) {
-                        t = new Term();
-                        t.setName(s);
-                        existed.put(name_key, t);
-                        news.add(t);
-                    }
-                    indexTerms.add(t);
-                }
-            }
-        }
-        termMapper.saveAll(news);
-        return terms;
-    }
-
-    private static String joinAuthorKeywords(List<Term> authorKeywords) {
-        StringBuilder sb = new StringBuilder();
-        for (Term t : authorKeywords) {
-            sb.append(t.getName()).append(", ");
-        }
-        if (sb.length() > 0) {
-            sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1);
-        }
-        return sb.toString();
-    }
-
-    private static List<PaperTerm> analyzePaperTerms(Paper paper, List<Term> terms) {
-        List<PaperTerm> paperTermList = new LinkedList<>();
-        for (Term t : terms) {
-            paperTermList.add(new PaperTerm(paper.getId(), t.getId()));
-        }
-        return paperTermList;
-    }
-
-    private static List<PaperAuthors> analyzePaperAuthors(Paper paper, List<Author> authors) {
-        List<PaperAuthors> paperAuthors = new LinkedList<>();
-        Iterator<Author> itr = authors.iterator();
-        for (int i = 1; itr.hasNext(); i++) {
-            paperAuthors.add(new PaperAuthors(itr.next().getId(), paper.getId(), i));
-        }
-        return paperAuthors;
-    }
-
-    private static List<Reference> analyzeReference(Paper paper, JSONObject jo) {
-        List<Reference> references = new LinkedList<>();
-        JSONArray ja = jo.getJSONArray(KEY.Ref.value());
-        for (Object o : ja) {
-            JSONObject temp = (JSONObject) o;
-            Reference reference = new Reference();
-            reference.setArticleId(paper.getArticleId());
-            reference.setTitle(temp.getString(REF.Title.value()));
-            reference.setReferenceOrder(temp.getInteger(REF.Order.value()));
-            reference.setText(temp.getString(REF.Text.value()));
-            reference.setGoogleScholarLink(temp.getString(REF.GoogleScholarLink.value()));
-            references.add(reference);
-        }
-        return references;
-    }
-
-    public static class JSONException extends RuntimeException {
-        public JSONException(String msg) {
-            super(msg);
-        }
-    }
-
-}
+//package group.iiicestseb.backend.utils;
+//
+//import com.alibaba.fastjson.JSON;
+//import com.alibaba.fastjson.JSONArray;
+//import com.alibaba.fastjson.JSONObject;
+//import group.iiicestseb.backend.entity.*;
+//import group.iiicestseb.backend.mapper.*;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import org.springframework.boot.actuate.endpoint.web.Link;
+//import org.springframework.stereotype.Component;
+//import org.springframework.web.multipart.MultipartFile;
+//
+//import javax.annotation.PostConstruct;
+//import javax.annotation.Resource;
+//import java.io.*;
+//import java.util.*;
+//
+///**
+// * @author jh
+// * @date 2020/3/18
+// */
+//@Component
+//public class JSONUtil {
+//    private static final Logger LOGGER = LoggerFactory.getLogger(JSONUtil.class);
+//
+//    public static final String LINE_READ_ERROR = "文件内容读取错误，跳过该行，请检查格式，错误行号：";
+//    public static final String LINE_PARSE_ERROR = "JSON内容转换失败，跳过该行，请检查格式，错误行号：";
+//    public static final String JSON_PARSE_ERROR = "JSON内容解析失败，跳过该行，请检查格式，错误行号：";
+//    public static final String INPUT_STREAM_CLOSE_ERROR_KEY = "Stream_Error";
+//    public static final String INPUT_STREAM_CLOSE_ERROR = "文件流关闭失败，停止解析";
+//    public static final String FILE_OPEN_ERROR = "文件流打开失败";
+//    public static final String CONFERENCE_NOT_EXIST = "会议名不存在";
+//
+//    @Resource(name = "PaperMapper")
+//    private PaperMapper papMapper;
+//    private static PaperMapper paperMapper;
+//    @Resource(name = "AuthorMapper")
+//    private AuthorMapper autMapper;
+//    private static AuthorMapper authorMapper;
+//    @Resource(name = "AffiliationMapper")
+//    private AffiliationMapper affMapper;
+//    private static AffiliationMapper affiliationMapper;
+//    @Resource(name = "ConferenceMapper")
+//    private ConferenceMapper conferMapper;
+//    private static ConferenceMapper conferenceMapper;
+//    @Resource(name = "TermMapper")
+//    private TermMapper tMapper;
+//    private static TermMapper termMapper;
+//    @Resource(name = "PaperTermMapper")
+//    private PaperTermMapper ptMapper;
+//    private static PaperTermMapper paperTermMapper;
+//    @Resource(name = "PaperAuthorMapper")
+//    private PaperAuthorMapper paMapper;
+//    private static PaperAuthorMapper paperAuthorMapper;
+//    @Resource(name = "ReferenceMapper")
+//    private ReferenceMapper refMapper;
+//    private static ReferenceMapper referenceMapper;
+//
+//    @PostConstruct
+//    public void init() {
+//        JSONUtil.paperMapper = this.papMapper;
+//        JSONUtil.authorMapper = this.autMapper;
+//        JSONUtil.affiliationMapper = this.affMapper;
+//        JSONUtil.conferenceMapper = this.conferMapper;
+//        JSONUtil.termMapper = this.tMapper;
+//        JSONUtil.paperTermMapper = this.ptMapper;
+//        JSONUtil.paperAuthorMapper = this.paMapper;
+//        JSONUtil.referenceMapper = this.refMapper;
+//    }
+//
+//    /**
+//     * 这是JSON中规定的关键词
+//     * ArticleId("articleId"),
+//     * Abstract("abstract"),
+//     * Title("title"),
+//     * ConfLoc("confLoc"),
+//     * IssueLink("issueLink"),
+//     * PdfLink("pdfLink"),
+//     * Ref("ref"),
+//     * ChronDate("chronDate"),
+//     * Publication("publication"),
+//     * DOI("doi"),
+//     * Authors("authors"),
+//     * Keywords("keywords"),
+//     * StartPage("startPage"),
+//     * EndPage("endPage"),
+//     * Metrics("metrics"),
+//     * Publisher("publisher");
+//     */
+//    public enum KEY {
+//        //
+//        ArticleId("articleId"),
+//        Abstract("abstract"),
+//        Title("title"),
+//        ConfLoc("confLoc"),
+//        PubLink("pubLink"),
+//        IssueLink("issueLink"),
+//        PdfLink("pdfLink"),
+//        Ref("ref"),
+//        ChronDate("chronDate"),
+//        PublicationTitle("publication"),
+//        DOI("doi"),
+//        Authors("authors"),
+//        Keywords("keywords"),
+//        StartPage("startPage"),
+//        EndPage("endPage"),
+//        Metrics("metrics"),
+//        Publisher("publisher");
+//        private final String value;
+//
+//        KEY(String value) {
+//            this.value = value;
+//        }
+//
+//        public String value() {
+//            return this.value;
+//        }
+//    }
+//
+//    /**
+//     * 这是Metrics中的几个关键词
+//     * TotalDownloads("totalDownloads"),
+//     * CitationCountPaper("citationCountPaper"),
+//     * CitationCountPatent("citationCountPatent");
+//     */
+//    public enum METRICS {
+//        //
+//        TotalDownloads("totalDownloads"),
+//        CitationCountPaper("citationCountPaper"),
+//        CitationCountPatent("citationCountPatent");
+//        public final String value;
+//
+//        METRICS(String value) {
+//            this.value = value;
+//        }
+//
+//        public String value() {
+//            return this.value;
+//        }
+//    }
+//
+//    /**
+//     * 会议名
+//     * ASE("ASE"),
+//     * ICSE("ICSE");
+//     */
+//    public enum CONFERENCE {
+//        //
+//        ASE("ASE"),
+//        ICSE("ICSE");
+//        public final String value;
+//
+//        CONFERENCE(String value) {
+//            this.value = value;
+//        }
+//
+//        public String value() {
+//            return this.value;
+//        }
+//    }
+//
+//    /**
+//     * 文章关键词Term
+//     * IEEE("IEEE Keywords"),
+//     * Ctrl("INSPEC: Controlled Indexing"),
+//     * NonCtrl("INSPEC: Non-Controlled Indexing"),
+//     * Author("Author Keywords"),
+//     * Index("Index");
+//     */
+//    public enum TERM {
+//        //
+//        IEEE("IEEE Keywords"),
+//        Ctrl("INSPEC: Controlled Indexing"),
+//        NonCtrl("INSPEC: Non-Controlled Indexing"),
+//        Author("Author Keywords"),
+//        Index("Index");
+//        public final String value;
+//
+//        TERM(String value) {
+//            this.value = value;
+//        }
+//
+//        public String value() {
+//            return this.value;
+//        }
+//    }
+//
+//    /**
+//     * 作者
+//     * Name("name"),
+//     * FirstName("firstName"),
+//     * LastName("lastName"),
+//     * Affiliation("affiliation");
+//     */
+//    public enum AUTHOR {
+//        //
+//        Name("name"),
+//        FirstName("firstName"),
+//        LastName("lastName"),
+//        Affiliation("affiliation");
+//        public final String value;
+//
+//        AUTHOR(String value) {
+//            this.value = value;
+//        }
+//
+//        public String value() {
+//            return this.value;
+//        }
+//    }
+//
+//    /**
+//     * 引用
+//     * Order("order"),
+//     * Text("text"),
+//     * Title("title"),
+//     * GoogleScholarLink("googleScholarLink"),
+//     * RefType("refType");
+//     */
+//    public enum REF {
+//        //
+//        Order("order"),
+//        Text("text"),
+//        Title("title"),
+//        GoogleScholarLink("googleScholarLink"),
+//        RefType("refType");
+//        public final String value;
+//
+//        REF(String value) {
+//            this.value = value;
+//        }
+//
+//        public String value() {
+//            return this.value;
+//        }
+//    }
+//
+//    public static void main(String[] args) {
+//        analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\Standard.json");
+////        Map<Class<?>, Object> m = new HashMap<>();
+////        m.put(Term.class, "3");
+////        System.out.println(m.get(Term.class));
+//    }
+//
+//    public static void analyzeExistedJsonFile(String filename) {
+//        List<JSONObject> jsonObjects = new LinkedList<>();
+//        JSONObject errors = new JSONObject();
+//        BufferedReader br;
+//        try {
+//            br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
+//            ReadLines(jsonObjects, br, errors);
+//            br.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            errors.put(INPUT_STREAM_CLOSE_ERROR_KEY, INPUT_STREAM_CLOSE_ERROR);
+//            return;
+//        }
+//        analyze(jsonObjects, errors);
+//        System.out.println();
+//    }
+//
+//    public static void analyzeUploadedJsonFile(MultipartFile file) {
+//    }
+//
+//    private static void ReadLines(List<JSONObject> jsonObjects, BufferedReader br, JSONObject errors) {
+//        String line;
+//        for (int i = 1; true; i++) {
+//            try {
+//                line = br.readLine();
+//                if (line == null || line.isEmpty()) {
+//                    break;
+//                }
+//                JSONObject o = (JSONObject) JSON.parse(line);
+//                o.put("line", i);
+//                jsonObjects.add(o);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                errors.put("line" + i, LINE_READ_ERROR);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                errors.put("line" + i, LINE_PARSE_ERROR);
+//            }
+//
+//        }
+//    }
+//
+//    private static void analyze(List<JSONObject> jsonObjects, JSONObject errors) {
+//        Map<Class<?>, Map<?, ?>> ExistedMaps = new HashMap<>();
+//        ExistedMaps.put(Conference.class, new HashMap<String, Conference>());
+//        ExistedMaps.put(Term.class, new HashMap<String, Term>());
+//        ExistedMaps.put(Affiliation.class, new HashMap<String, Affiliation>());
+//        ExistedMaps.put(Author.class, new HashMap<String, Author>());
+//        ExistedMaps.put(Paper.class, new HashMap<Integer, Paper>());
+//
+//        Map<Class<?>, List<?>> NewLists = new HashMap<>();
+//        NewLists.put(Conference.class, new LinkedList<Conference>());
+//        NewLists.put(Term.class, new LinkedList<Term>());
+//        NewLists.put(Affiliation.class, new LinkedList<Affiliation>());
+//        NewLists.put(Author.class, new LinkedList<Author>());
+//        NewLists.put(Paper.class, new LinkedList<Paper>());
+//
+//        int i = 0;
+//        for (JSONObject jo : jsonObjects) {
+//            i++;
+//            try {
+//                // 文献+会议
+//                Conference conference = analyzeConference(jo, ExistedMaps, NewLists);
+//                Paper paper = analyzePaper(jo, ExistedMaps, NewLists);
+//                paper.setConferenceId(conference.getId());
+//                // 关键词
+//                Map<String, List<Term>> terms = analyzeTerms(jo, ExistedMaps, NewLists);
+//                paper.setAuthorKeywords(joinAuthorKeywords(terms.get(TERM.Author.value())));
+//                paperMapper.save(paper);
+//                // 作者+机构
+//                List<Author> authors = analyzeAuthors(jo, ExistedMaps, NewLists);
+//
+////                authorMapper.saveAll(authors);
+////                termMapper.saveAll(terms.get(TERM.Index.value()));
+//
+//                // 文献-引用
+//                List<Reference> references = analyzeReference(paper, jo);
+//                referenceMapper.saveAll(references);
+//                // 文献-关键词
+//                List<PaperTerm> paperTerms = analyzePaperTerms(paper, terms.get(TERM.Index.value()));
+//                paperTermMapper.saveAll(paperTerms);
+//                // 文献-作者
+//                List<PaperAuthors> paperAuthors = analyzePaperAuthors(paper, authors);
+//                paperAuthorMapper.saveAll(paperAuthors);
+//
+//            } catch (JSONException e) {
+//                LOGGER.warn(JSON_PARSE_ERROR + i);
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    private static Paper analyzePaper(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newMaps) {
+//        Paper paper;
+//        Integer articleId = jo.getInteger(KEY.ArticleId.value());
+//        Map<Integer, Paper> existed = (Map<Integer, Paper>) existedMaps.get(Paper.class);
+//        List<Paper> news = (List<Paper>) newMaps.get(Paper.class);
+//        if (existed.containsKey(articleId)) {
+//            //todo： 文章已存在
+//            throw new JSONException("");
+//        }
+//        paper = paperMapper.findByArticleId(articleId);
+//        if (paper != null) {
+//            //todo: 文章已存在
+//            throw new JSONException("");
+//        }
+//        paper = new Paper();
+//        paper.setPdfUrl(jo.getString(KEY.PdfLink.value()));
+//        paper.setTitle(jo.getString(KEY.Title.value()));
+//        paper.setPaperAbstract(jo.getString(KEY.Abstract.value()));
+//        paper.setDoi(jo.getString(KEY.DOI.value()));
+//        paper.setPublicationTitle(jo.getString(KEY.PublicationTitle.value()));
+//        Map<String, Integer> Metrics = (Map<String, Integer>) jo.get(KEY.Metrics.value());
+//        paper.setCitationCountPaper(Metrics.get(METRICS.CitationCountPaper.value()));
+//        paper.setCitationCountPatent(Metrics.get(METRICS.CitationCountPatent.value()));
+//        paper.setTotalDownloads(Metrics.get(METRICS.TotalDownloads.value()));
+//        paper.setStartPage(jo.getString(KEY.StartPage.value()));
+//        paper.setEndPage(jo.getString(KEY.EndPage.value()));
+//        paper.setPubLink(jo.getString(KEY.PubLink.value()));
+//        paper.setIssueLink(jo.getString(KEY.IssueLink.value()));
+//        paper.setPublisher(jo.getString(KEY.Publisher.value()));
+//        paper.setConfLoc(jo.getString(KEY.ConfLoc.value()));
+//        // todo : chronDate的时间格式在json中不同，等赖总爬其他的
+//        paper.setChronDate(DateUtil.parseChron(jo.getString(KEY.ChronDate.value())));
+//        paper.setArticleId(articleId);
+//        news.add(paper);
+//        return paper;
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    private static Conference analyzeConference(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
+//        Conference c;
+//        Map<String, Conference> existed = (Map<String, Conference>) existedMaps.get(Conference.class);
+//        List<Conference> news = (LinkedList<Conference>) newLists.get(Conference.class);
+//        String name = StringUtil.stripAccents(jo.getString(KEY.PublicationTitle.value()).trim());
+//        String substring = name.substring(name.length() - 7).toUpperCase();
+//        if (substring.contains(CONFERENCE.ASE.value())) {
+//            name = CONFERENCE.ASE.value();
+//        } else if (substring.contains(CONFERENCE.ICSE.value())) {
+//            name = CONFERENCE.ICSE.value();
+//        } else {
+//            //todo: 等赖总加商会议名
+//            name = Math.random() > 0.5 ? CONFERENCE.ICSE.value() : CONFERENCE.ASE.value();
+////            throw new JSONException(CONFERENCE_NOT_EXIST);
+//        }
+//        if (existed.containsKey(name)) {
+//            return existed.get(name);
+//        }
+//        if ((c = conferenceMapper.findByName(name)) == null) {
+//            c = new Conference();
+//            c.setName(name);
+//            conferenceMapper.save(c);
+//            news.add(c);
+//        }
+//        existed.put(name, c);
+//        return c;
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    private static List<Author> analyzeAuthors(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
+//        Map<String, Author> existed = (Map<String, Author>) existedMaps.get(Author.class);
+//        List<Author> news = (List<Author>) newLists.get(Author.class);
+//        List<Author> authors = new LinkedList<>();
+//        JSONArray authorArray = jo.getJSONArray(KEY.Authors.value());
+//        for (Object o : authorArray) {
+//            Author a;
+//            JSONObject temp = (JSONObject) o;
+//            String name = StringUtil.stripAccents(temp.getString(AUTHOR.Name.value()));
+//            String name_key = name.toLowerCase();
+//            if (existed.containsKey(name_key)) {
+//                authors.add(existed.get(name_key));
+//                continue;
+//            } else if ((a = authorMapper.findByName(name)) == null) {
+//                String firstName = StringUtil.stripAccents(temp.getString(AUTHOR.FirstName.value()));
+//                String lastName = StringUtil.stripAccents(temp.getString(AUTHOR.LastName.value()));
+//                a = new Author();
+//                a.setName(name);
+//                a.setFisrtName(firstName);
+//                a.setLastName(lastName);
+//                Affiliation aff = analyzeAffiliation(temp.getString(AUTHOR.Affiliation.value()), existedMaps, newLists);
+//                a.setAffiliationId(aff.getId());
+//                news.add(a);
+//            }
+//            authors.add(a);
+//            existed.put(name_key, a);
+//        }
+//        authorMapper.saveAll(news);
+//        return authors;
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    private static Affiliation analyzeAffiliation(String name, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
+//        Affiliation a;
+//        Map<String, Affiliation> existed = (Map<String, Affiliation>) existedMaps.get(Affiliation.class);
+//        List<Affiliation> news = (List<Affiliation>) newLists.get(Affiliation.class);
+//        name = StringUtil.stripAccents(name.trim());
+//        String name_key = name.toLowerCase();
+//        if (existed.containsKey(name_key)) {
+//            return existed.get(name_key);
+//        }
+//        if ((a = affiliationMapper.findByName(name)) == null) {
+//            a = new Affiliation();
+//            a.setName(name);
+//            affiliationMapper.save(a);
+//            news.add(a);
+//        }
+//        existed.put(name_key, a);
+//        return a;
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    private static Map<String, List<Term>> analyzeTerms(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
+//        List<Term> indexTerms = new LinkedList<>();
+//        List<Term> authorKeywords = new LinkedList<>();
+//        Map<String, List<Term>> terms = new HashMap<>() {{
+//            put(TERM.Index.value(), indexTerms);
+//            put(TERM.Author.value(), authorKeywords);
+//        }};
+//        terms.put(TERM.Index.value(), indexTerms);
+//        Map<String, Term> existed = (Map<String, Term>) existedMaps.get(Term.class);
+//        List<Term> news = (List<Term>) newLists.get(Term.class);
+//        List<JSONObject> keywords = (List<JSONObject>) jo.get(KEY.Keywords.value());
+//        for (JSONObject j : keywords) {
+//            String type = j.getString("type").trim();
+//            List<String> words = (List<String>) j.get("kwd");
+//            if (TERM.Author.value().equals(type)) {
+//                for (String s : words) {
+//                    Term t = new Term();
+//                    t.setName(s);
+//                    authorKeywords.add(t);
+//                }
+//            } else if (TERM.IEEE.value().equals(type) || TERM.Ctrl.value().equals(type)) {
+//                for (String s : words) {
+//                    Term t;
+//                    s = StringUtil.stripAccents(s.trim());
+//                    String name_key = s.toLowerCase();
+//                    if (existed.containsKey(name_key)) {
+//                        indexTerms.add(existed.get(name_key));
+//                        continue;
+//                    } else if ((t = termMapper.findByName(s)) == null) {
+//                        t = new Term();
+//                        t.setName(s);
+//                        existed.put(name_key, t);
+//                        news.add(t);
+//                    }
+//                    indexTerms.add(t);
+//                }
+//            }
+//        }
+//        termMapper.saveAll(news);
+//        return terms;
+//    }
+//
+//    private static String joinAuthorKeywords(List<Term> authorKeywords) {
+//        StringBuilder sb = new StringBuilder();
+//        for (Term t : authorKeywords) {
+//            sb.append(t.getName()).append(", ");
+//        }
+//        if (sb.length() > 0) {
+//            sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1);
+//        }
+//        return sb.toString();
+//    }
+//
+//    private static List<PaperTerm> analyzePaperTerms(Paper paper, List<Term> terms) {
+//        List<PaperTerm> paperTermList = new LinkedList<>();
+//        for (Term t : terms) {
+//            paperTermList.add(new PaperTerm(paper.getId(), t.getId()));
+//        }
+//        return paperTermList;
+//    }
+//
+//    private static List<PaperAuthors> analyzePaperAuthors(Paper paper, List<Author> authors) {
+//        List<PaperAuthors> paperAuthors = new LinkedList<>();
+//        Iterator<Author> itr = authors.iterator();
+//        for (int i = 1; itr.hasNext(); i++) {
+//            paperAuthors.add(new PaperAuthors(itr.next().getId(), paper.getId(), i));
+//        }
+//        return paperAuthors;
+//    }
+//
+//    private static List<Reference> analyzeReference(Paper paper, JSONObject jo) {
+//        List<Reference> references = new LinkedList<>();
+//        JSONArray ja = jo.getJSONArray(KEY.Ref.value());
+//        for (Object o : ja) {
+//            JSONObject temp = (JSONObject) o;
+//            Reference reference = new Reference();
+//            reference.setArticleId(paper.getArticleId());
+//            reference.setTitle(temp.getString(REF.Title.value()));
+//            reference.setReferenceOrder(temp.getInteger(REF.Order.value()));
+//            reference.setText(temp.getString(REF.Text.value()));
+//            reference.setGoogleScholarLink(temp.getString(REF.GoogleScholarLink.value()));
+//            references.add(reference);
+//        }
+//        return references;
+//    }
+//
+//    public static class JSONException extends RuntimeException {
+//        public JSONException(String msg) {
+//            super(msg);
+//        }
+//    }
+//
+//}
