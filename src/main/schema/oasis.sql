@@ -9,7 +9,7 @@ flush privileges;
 ##创建机构表
 CREATE TABLE affiliation
 (
-id   INT PRIMARY KEY comment '机构id',
+id   INT PRIMARY KEY auto_increment comment '机构id',
 name varchar(200) comment '机构名'
 ) ENGINE = InnoDB comment '机构表';
 create index affiliation_name_hash using hash on affiliation (name);
@@ -17,7 +17,7 @@ create index affiliation_name_hash using hash on affiliation (name);
 ##创建作者表
 CREATE TABLE author
 (
-id             INT PRIMARY KEY comment '作者id',
+  id             INT auto_increment PRIMARY KEY comment '作者id',
 name           VARCHAR(80) comment '作者姓名',
 fisrt_name     varchar(40) comment '姓',
 last_name      varchar(40) comment '名',
@@ -29,7 +29,7 @@ create index author_name_hash using hash on author (name);
 ##创建会议表
 CREATE TABLE conference
 (
-id   INT PRIMARY KEY comment '会议id',
+id   INT PRIMARY KEY auto_increment comment '会议id',
 name VARCHAR(100) comment '会议名称'
 ) ENGINE = InnoDB comment '会议表';
 create index conference_name_hash using hash on conference (name);
@@ -37,7 +37,7 @@ create index conference_name_hash using hash on conference (name);
 ##创建文献表
 CREATE TABLE paper
 (
-id                    INT PRIMARY KEY comment '文献id',
+id                    INT PRIMARY KEY auto_increment comment '文献id',
 pdf_url               text comment '文献pdf连接',
 author_keywords       text comment '作者设定的文章关键词',
 title                 varchar(200) comment '文献标题',
@@ -78,7 +78,7 @@ create index idx_paper_id on paper_authors (paper_id);
 ##创建受控标引标准表
 CREATE TABLE term
 (
-id   INT PRIMARY KEY comment '受控标引id',
+id   INT PRIMARY KEY auto_increment comment '受控标引id',
 name varchar(80) comment '受控标引名'
 ) ENGINE = InnoDB comment '受控标引表';
 create index term_standard_name_hash using hash on term (name);
@@ -97,7 +97,7 @@ create index idx_term_id on paper_term (term_id);
 ##创建参考文献表
 create table reference
 (
-id                  int primary key comment '参考文献表',
+id                  int primary key auto_increment comment '参考文献表',
 reference_order     int comment '被引次序',
 text                text comment '被引内容',
 title               varchar(200) comment '被引文章标题',
@@ -110,7 +110,7 @@ foreign key (article_id) references paper(article_id)
 ##创建用户表
 CREATE TABLE user
 (
-id              INT PRIMARY KEY comment '用户id',
+id              INT PRIMARY KEY auto_increment comment '用户id',
 username        varchar(32) comment '用户名' unique,
 password        varchar(32) comment '密码',
 privilege_level varchar(20) comment '权限等级'
@@ -121,7 +121,7 @@ insert into user value (1, 'root', '123456', '管理员');
 ##创建浏览记录表
 CREATE TABLE record
 (
-id            INT PRIMARY KEY comment '历史记录id',
+id            INT PRIMARY KEY auto_increment comment '历史记录id',
 search_record text comment '搜索记录字段',
 user_id       int,
 foreign key (user_id) references user (id)
