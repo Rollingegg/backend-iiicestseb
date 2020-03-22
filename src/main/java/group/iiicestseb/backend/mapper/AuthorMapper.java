@@ -1,30 +1,23 @@
 package group.iiicestseb.backend.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Author;
-import group.iiicestseb.backend.vo.AuthorInfoVO;
-import org.apache.ibatis.annotations.*;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author wph
  * @date 2020/2/29
  */
-@Repository("AuthorMapper")
-public interface AuthorMapper extends JpaRepository<Author, Integer> {
+@Mapper
+public interface AuthorMapper extends BaseMapper<Author> {
 
-    /**
-     * 根据学者名查找学者
-     *
-     * @param name 学者名
-     * @return 学者
-     */
-    Author findByName(String name);
+//    /**
+//     * 根据学者名查找学者
+//     *
+//     * @param name 学者名
+//     * @return 学者
+//     */
+    //Author findByName(String name);
 
 //    /**
 //     * 通过id删除作者

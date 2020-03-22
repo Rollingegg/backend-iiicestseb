@@ -1,27 +1,18 @@
 package group.iiicestseb.backend.mapper;
 
 
-import group.iiicestseb.backend.entity.*;
-import group.iiicestseb.backend.form.AdvancedSearchForm;
-import group.iiicestseb.backend.vo.AuthorInfoVO;
-import group.iiicestseb.backend.vo.PaperInfoVO;
-import org.apache.ibatis.annotations.*;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import group.iiicestseb.backend.entity.Paper;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
-import javax.persistence.criteria.CriteriaBuilder;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
  * @author jh
  * @date 2020/2/22
  */
-@Repository("PaperMapper")
-public interface PaperMapper extends JpaRepository<Paper, Integer> {
+@Mapper
+public interface PaperMapper extends BaseMapper<Paper> {
 
 //    /**
 //     * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询
@@ -97,7 +88,7 @@ public interface PaperMapper extends JpaRepository<Paper, Integer> {
      * @param articleId IEEE制定的id
      * @return 文献
      */
-    Paper findByArticleId(Integer articleId);
+//    Paper findByArticleId(Integer articleId);
 
 //    /**
 //     * 通过id删除文献

@@ -4,6 +4,7 @@ import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.service.*;
 import group.iiicestseb.backend.vo.*;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
@@ -13,30 +14,35 @@ import java.util.List;
  * @date 2020/3/2
  */
 @Service("Regedit")
-public class RegeditImpl implements Regedit{
+public class RegeditImpl implements Regedit {
 
-
-//    @Resource(name = "Affiliation")
-//    private AffiliationService affiliationService;
-//    @Resource(name = "Author")
-//    private AuthorService authorService;
+    @Lazy
+    @Resource(name = "Affiliation")
+    private AffiliationService affiliationService;
+    @Lazy
+    @Resource(name = "Author")
+    private AuthorService authorService;
+    @Lazy
     @Resource(name = "User")
     private UserService userService;
+    @Lazy
     @Resource(name = "Paper")
     private PaperManageService paperManageService;
+    @Lazy
     @Resource(name = "Search")
     private SearchService searchService;
-//    @Resource(name = "Statistics")
-//    private StatisticsService statisticsService;
+    @Lazy
+    @Resource(name = "Statistics")
+    private StatisticsService statisticsService;
 
 
 
     //-----------------------------------------PaperManageService------------------------------
 
-    @Override
-    public void deletePaperById(int id) {
-        paperManageService.deletePaperById(id);
-    }
+//    @Override
+//    public void deletePaperById(int id) {
+//        paperManageService.deletePaperById(id);
+//    }
 
     //-----------------------------------------UserService--------------------------------------
 

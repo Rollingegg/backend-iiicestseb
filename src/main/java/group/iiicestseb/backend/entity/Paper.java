@@ -1,111 +1,80 @@
 package group.iiicestseb.backend.entity;
 
-import lombok.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
-import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Objects;
 
-@Entity
-@Table(name = "paper", schema = "iiicestseb")
+
+@TableName("paper")
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Paper {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(generator = "JDBC",strategy = GenerationType.IDENTITY)
+    @TableId("id")
     private int id;
 
-    @Basic
-    @Column(name = "pdf_url")
+    @TableField("pdf_url")
     private String pdfUrl;
 
-    @Basic
-    @Column(name = "author_keywords")
+    @TableField("author_keywords")
     private String authorKeywords;
 
-    @Basic
-    @Column(name = "title")
+    @TableField("title")
     private String title;
 
-    @Basic
-    @Column(name = "paper_abstract")
+    @TableField("paper_abstract")
     private String paperAbstract;
 
-    @Basic
-    @Column(name = "doi")
+    @TableField("doi")
     private String doi;
 
-    @Basic
-    @Column(name = "publication_title")
+
+    @TableField("publication_title")
     private String publicationTitle;
 
-    @Basic
-    @Column(name = "citation_count_paper")
+    @TableField("citation_count_paper")
     private Integer citationCountPaper;
 
-    @Basic
-    @Column(name = "citation_count_patent")
+    @TableField("citation_count_patent")
     private Integer citationCountPatent;
 
-    @Basic
-    @Column(name = "total_downloads")
-    public Integer getTotalDownloads() {
-        return totalDownloads;
-    }
+    @TableField("total_downloads")
     private Integer totalDownloads;
 
-    @Basic
-    @Column(name = "start_page")
+    @TableField("start_page")
     private String startPage;
 
-    @Basic
-    @Column(name = "end_page")
+    @TableField("end_page")
     private String endPage;
 
-    @Basic
-    @Column(name = "pub_link")
+    @TableField("pub_link")
     private String pubLink;
 
-    @Basic
-    @Column(name = "issue_link")
+    @TableField("issue_link")
     private String issueLink;
 
-    @Basic
-    @Column(name = "publisher")
+    @TableField("publisher")
     private String publisher;
 
-    @Basic
-    @Column(name = "conf_loc")
+    @TableField("conf_loc")
     private String confLoc;
 
-    @Basic
-    @Column(name = "chron_date")
+    @TableField("chron_date")
     private LocalDateTime chronDate;
 
-    @Basic
-    @Column(name = "article_id")
+    @TableField("article_id")
     private Integer articleId;
 
-    @Basic
-    @Column(name = "conference_id")
+    @TableField("conference_id")
     private Integer conferenceId;
-
-//    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "conference_id", referencedColumnName = "id")
-//    private Conference conferenceByConferenceId;
-//
-//    @OneToMany(mappedBy = "paperByPaperId")
-//    private Collection<PaperTerm> paperTermsById;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "article_id", referencedColumnName = "article_id")
-//    private Reference referenceByArticleId;
-
 
 
     @Override

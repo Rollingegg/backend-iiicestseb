@@ -1,19 +1,10 @@
-<!--<?xml version="1.0" encoding="UTF-8"?>-->
-<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
-<!--<mapper namespace="group.iiicestseb.backend.mapper.AuthorMapper">-->
-<!--  <resultMap id="AuthorResultMap" type="group.iiicestseb.backend.entity.Author">-->
-<!--    <id property="id" column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />-->
-<!--    <result property="name" column="name" javaType="java.lang.String" jdbcType="VARCHAR" />-->
-<!--    <result property="affiliationId" column="affiliation_id" javaType="java.lang.Integer" jdbcType="INTEGER" />-->
-<!--  </resultMap>-->
-<!--  <insert id="insertAuthorList" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="group.iiicestseb.backend.entity.Author">-->
-<!--    insert into-->
-<!--    author(name, affiliation_id)-->
-<!--    values-->
-<!--    <foreach collection="authorList" item="author" separator=",">-->
-<!--      (#{author.name,jdbcType=CHAR}, #{author.affiliationId})-->
-<!--    </foreach>-->
-<!--  </insert>-->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="group.iiicestseb.backend.mapper.AuthorMapper">
+  <resultMap id="AuthorResultMap" type="group.iiicestseb.backend.entity.Author">
+    <id property="id" column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result property="name" column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result property="affiliationId" column="affiliation_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+  </resultMap>
 
-
-<!--</mapper>-->
+</mapper>

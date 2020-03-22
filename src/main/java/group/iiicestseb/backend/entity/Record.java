@@ -1,32 +1,29 @@
 package group.iiicestseb.backend.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
-@Table(name = "record", schema = "iiicestseb")
+@TableName("record")
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Record {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(generator = "JDBC",strategy = GenerationType.IDENTITY)
+    @TableId("id")
     private int id;
 
-    @Basic
-    @Column(name = "search_record")
+    @TableField("search_record")
     private String searchRecord;
 
-    @Basic
-    @Column(name = "user_id")
+    @TableField("user_id")
     private Integer userId;
 
 //    @ManyToOne

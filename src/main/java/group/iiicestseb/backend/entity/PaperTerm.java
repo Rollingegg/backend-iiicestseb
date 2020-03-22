@@ -1,27 +1,25 @@
 package group.iiicestseb.backend.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
-@Table(name = "paper_term", schema = "iiicestseb")
-@IdClass(PaperTermPK.class)
+
+@TableName("paper_term")
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaperTerm {
-    @Id
-    @Column(name = "paper_id")
+    @TableField("paper_id")
     private int paperId;
 
-    @Id
-    @Column(name = "term_id")
+    @TableField("term_id")
     private int termId;
 
 //    @ManyToOne

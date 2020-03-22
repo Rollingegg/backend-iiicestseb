@@ -1,22 +1,18 @@
 package group.iiicestseb.backend.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.service.IService;
 import group.iiicestseb.backend.entity.Affiliation;
-import org.apache.ibatis.annotations.*;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Service;
 
 /**
  * @author wph
  * @date 2020/2/29
  */
-@Repository("AffiliationMapper")
-public interface AffiliationMapper extends JpaRepository<Affiliation,Integer> {
+@Mapper
+public interface AffiliationMapper extends BaseMapper<Affiliation> {
 
-    @Query(value = "select * from affiliation",nativeQuery = true)
-    public List<Affiliation> test();
 
     /**
      * 通过机构名查找机构
@@ -24,7 +20,8 @@ public interface AffiliationMapper extends JpaRepository<Affiliation,Integer> {
      * @param name 机构名
      * @return 机构
      */
-    Affiliation findByName(String name);
+//    @Select("select * from affiliation where name = #{name}")
+//    Affiliation findByName(String name);
 //    /**
 //     * 通过id删除机构
 //     *

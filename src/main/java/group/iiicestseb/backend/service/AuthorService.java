@@ -19,12 +19,12 @@ public interface AuthorService {
 //     * @param name 作者名
 //     * @return 作者详细信息VO
 //     */
-//    public AuthorInfoVO getAuthorInfo(String name);
+//    AuthorInfoVO getAuthorInfo(String name);
 //
 //    /**
 //     * 查询论文所有作者
 //     * @param id 论文id
 //     * @return 作者名称列表
 //     */
-//    public CopyOnWriteArrayList<String> getAuthorByPaperId(int id);
+//    CopyOnWriteArrayList<String> getAuthorByPaperId(int id);
 }

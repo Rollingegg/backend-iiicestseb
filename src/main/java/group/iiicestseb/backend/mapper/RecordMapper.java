@@ -1,19 +1,19 @@
 package group.iiicestseb.backend.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import group.iiicestseb.backend.entity.PaperAuthors;
 import group.iiicestseb.backend.entity.Record;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author wph
  */
-public interface RecordMapper extends JpaRepository<Record,Integer> {
-
+@Mapper
+public interface RecordMapper extends BaseMapper<Record> {
     /**
      * 根据用户id查找用户记录
      * @param userId 用户id
      * @return 用户浏览记录列表
      */
-    public List<Record> findByUserId(Integer userId);
+    //public List<Record> findByUserId(Integer userId);
 }

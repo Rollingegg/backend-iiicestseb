@@ -19,7 +19,7 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 @Service("Search")
 public class SearchServiceImpl implements SearchService {
-    @Lazy
+
     @Resource(name = "Regedit")
     private Regedit regedit;
     public static final String ALL = "all";

@@ -1,7 +1,6 @@
+
 package group.iiicestseb.backend.utils;
 
-import group.iiicestseb.backend.entity.Affiliation;
-import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import org.junit.Test;
@@ -9,7 +8,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 /**
  * @author jh
@@ -19,18 +19,19 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 //@Transactional
 public class JSONUtilTest {
-    @Autowired
+    @Resource
     private AuthorMapper authorMapper;
-    @Autowired
+    @Resource
     private AffiliationMapper affiliationMapper;
-    @Autowired
+    @Resource
     private JSONUtil jsonUtil;
 
     @Test
-    public void temp(){
+    public void temp() {
 //        JSONUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\Standard.json");
         jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_ase13_19(0-605).json");
         System.out.println();
     }
 
 }
+

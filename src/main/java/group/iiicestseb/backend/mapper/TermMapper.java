@@ -1,15 +1,16 @@
 package group.iiicestseb.backend.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Term;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author jh
  * @date 2020/3/21
  */
-@Repository("TermMapper")
-public interface TermMapper extends JpaRepository<Term, Integer> {
+@Mapper
+public interface TermMapper extends BaseMapper<Term> {
 
     /**
      * 根据术语名查找术语
@@ -17,5 +18,5 @@ public interface TermMapper extends JpaRepository<Term, Integer> {
      * @param name 术语名
      * @return 术语
      */
-    Term findByName(String name);
+    //Term findByName(String name);
 }

@@ -1,15 +1,16 @@
 package group.iiicestseb.backend.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Conference;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author jh
  * @date 2020/3/20
  */
-@Repository("ConferenceMapper")
-public interface ConferenceMapper extends JpaRepository<Conference, Integer> {
+@Mapper
+public interface ConferenceMapper extends BaseMapper<Conference> {
 
     /**
      * 通过名字查找会议

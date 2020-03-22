@@ -20,14 +20,14 @@ public interface StatisticsService {
 //     *
 //     * @param filename 文件名
 //     */
-//    public void loadExistedCSV(String filename);
+//    void loadExistedCSV(String filename);
 //
 //    /**
 //     * 创建用户记录
 //     * @param record 用户记录
 //     * @return 插入记录主键
 //     */
-//    public int createUserRecord(Record record);
+//    int createUserRecord(Record record);
 //
 //    /**
 //     * 解析上传的csv文件
@@ -35,7 +35,7 @@ public interface StatisticsService {
 //     * @param file 文件
 //     * @return 解析后的数据
 //     */
-//    public Map<String, Object> analyzeUploadedCSV(MultipartFile file);
+//    Map<String, Object> analyzeUploadedCSV(MultipartFile file);
 //
 //    /**
 //     * 计算并返回最热门的num个术语

@@ -13,7 +13,8 @@ import java.util.List;
  * @author jh
  * @date 2020 /2/22
  */
-public interface StatisticsMapper{
+@Mapper
+public interface StatisticsMapper {
 
 //    /**
 //     * Insert user record int.

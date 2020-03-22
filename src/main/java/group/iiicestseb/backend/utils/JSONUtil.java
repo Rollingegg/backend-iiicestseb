@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.mapper.*;
+import group.iiicestseb.backend.service.AffiliationService;
+import group.iiicestseb.backend.service.AuthorService;
+import group.iiicestseb.backend.service.PaperManageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.actuate.endpoint.web.Link;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.*;
 import java.util.*;
+
 
 /**
  * @author jh
@@ -34,22 +37,12 @@ public class JSONUtil {
     public static final String CONFERENCE_NOT_EXIST = "会议名不存在";
     public static final String PAPER_EXISTED = "文献已存在，跳过该行";
 
-    @Resource(name = "PaperMapper")
-    private PaperMapper paperMapper;
-    @Resource(name = "AuthorMapper")
-    private AuthorMapper authorMapper;
-    @Resource(name = "AffiliationMapper")
-    private AffiliationMapper affiliationMapper;
-    @Resource(name = "ConferenceMapper")
-    private ConferenceMapper conferenceMapper;
-    @Resource(name = "TermMapper")
-    private TermMapper termMapper;
-    @Resource(name = "PaperTermMapper")
-    private PaperTermMapper paperTermMapper;
-    @Resource(name = "PaperAuthorMapper")
-    private PaperAuthorMapper paperAuthorMapper;
-    @Resource(name = "ReferenceMapper")
-    private ReferenceMapper referenceMapper;
+    @Resource(name = "Regedit")
+    private PaperManageService paperManageService;
+    @Resource(name = "Regedit")
+    private AuthorService authorService;
+    @Resource(name = "Regedit")
+    private AffiliationService affiliationService;
 
     @PostConstruct
     public void init() {
@@ -299,12 +292,12 @@ public class JSONUtil {
         // 关键词
         Map<String, List<Term>> terms = analyzeTerms(jo, existedMaps, newLists);
         paper.setAuthorKeywords(joinAuthorKeywords(terms.get(TERM.Author.value())));
-        paperMapper.save(paper);
+        paperManageService.insertPaper(paper);
         // 作者+机构
         List<Author> authors = analyzeAuthors(jo, existedMaps, newLists);
         // 文献-引用
         List<Reference> references = analyzeReference(paper, jo);
-        referenceMapper.saveAll(references);
+        paperManageService.insertReferences(references);
         // 文献-关键词
         List<PaperTerm> paperTerms = analyzePaperTerms(paper, terms.get(TERM.Index.value()));
         paperTermMapper.saveAll(paperTerms);

@@ -16,18 +16,18 @@ public interface UserService {
      * @param userForm 用户账户密码表单
      * @return 用户信息vo
      */
-    public UserVO signIn(UserForm userForm);
+    UserVO signIn(UserForm userForm);
 
     /**
      * 用户注册
      * @author wph
      * @param userForm 用户账户密码表单
      */
-    public void register(UserForm userForm);
+    void register(UserForm userForm);
 
     /**
      * 判断用户名存在
      * @param username 用户名
      */
-    public void isExist(String username);
+    void isExist(String username);
 }

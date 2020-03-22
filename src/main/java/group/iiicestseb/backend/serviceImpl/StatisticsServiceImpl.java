@@ -1,5 +1,9 @@
 package group.iiicestseb.backend.serviceImpl;
 
+import group.iiicestseb.backend.mapper.AffiliationMapper;
+import group.iiicestseb.backend.mapper.AuthorMapper;
+import group.iiicestseb.backend.mapper.PaperMapper;
+import group.iiicestseb.backend.mapper.StatisticsMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.StatisticsService;
 import org.springframework.context.annotation.Lazy;
@@ -16,21 +20,21 @@ import javax.annotation.Resource;
 @Transactional(rollbackFor = Exception.class)
 @Service("Statistics")
 public class StatisticsServiceImpl implements StatisticsService {
-    @Lazy
+
     @Resource(name = "Regedit")
     private Regedit regedit;
 
-//    @Resource
-//    private AffiliationMapper affiliationMapper;
-//
-//    @Resource
-//    private AuthorMapper authorMapper;
-//
-//    @Resource
-//    private PaperMapper paperMapper;
-//
-//    @Resource
-//    StatisticsMapper statisticsMapper;
+    @Resource
+    private AffiliationMapper affiliationMapper;
+
+    @Resource
+    private AuthorMapper authorMapper;
+
+    @Resource
+    private PaperMapper paperMapper;
+
+    @Resource
+    StatisticsMapper statisticsMapper;
 //
 //    @Override
 //    @Transactional(rollbackFor = RuntimeException.class)

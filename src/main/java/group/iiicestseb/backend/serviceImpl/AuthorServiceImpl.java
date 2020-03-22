@@ -1,5 +1,7 @@
 package group.iiicestseb.backend.serviceImpl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AuthorService;
@@ -17,12 +19,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Service("Author")
 @Transactional(rollbackFor = Exception.class)
-public class AuthorServiceImpl implements AuthorService {
-    @Lazy
+public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> implements AuthorService {
+
     @Resource(name = "Regedit")
     private Regedit regedit;
-//    @Resource
-//    private AuthorMapper authorMapper;
+    @Resource
+    private AuthorMapper authorMapper;
 //
 //    @Override
 //    public AuthorInfoVO getAuthorInfo(String name) {
