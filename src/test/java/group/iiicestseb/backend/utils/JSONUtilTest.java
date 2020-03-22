@@ -23,11 +23,13 @@ public class JSONUtilTest {
     private AuthorMapper authorMapper;
     @Autowired
     private AffiliationMapper affiliationMapper;
+    @Autowired
+    private JSONUtil jsonUtil;
 
     @Test
     public void temp(){
 //        JSONUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\Standard.json");
-        JSONUtil.analyzeExistedJsonFile("E:\\sec3\\Backend-iiicestseb\\src\\main\\resources\\json\\new_icse15_19(0-50).json");
+        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_ase13_19(0-605).json");
         System.out.println();
     }
 

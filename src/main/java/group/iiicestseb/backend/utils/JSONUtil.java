@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.endpoint.web.Link;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -24,49 +25,34 @@ import java.util.*;
 public class JSONUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JSONUtil.class);
 
-    public static final String LINE_READ_ERROR = "文件内容读取错误，跳过该行，请检查格式，错误行号：";
-    public static final String LINE_PARSE_ERROR = "JSON内容转换失败，跳过该行，请检查格式，错误行号：";
-    public static final String JSON_PARSE_ERROR = "JSON内容解析失败，跳过该行，请检查格式，错误行号：";
+    public static final String LINE_READ_ERROR = "文件内容读取错误，跳过该行，请检查格式";
+    public static final String LINE_PARSE_ERROR = "JSON内容转换失败，跳过该行，请检查格式";
+    public static final String JSON_PARSE_ERROR = "JSON内容解析失败，跳过该行，请检查格式";
     public static final String INPUT_STREAM_CLOSE_ERROR_KEY = "Stream_Error";
     public static final String INPUT_STREAM_CLOSE_ERROR = "文件流关闭失败，停止解析";
     public static final String FILE_OPEN_ERROR = "文件流打开失败";
     public static final String CONFERENCE_NOT_EXIST = "会议名不存在";
+    public static final String PAPER_EXISTED = "文献已存在，跳过该行";
 
     @Resource(name = "PaperMapper")
-    private PaperMapper papMapper;
-    private static PaperMapper paperMapper;
+    private PaperMapper paperMapper;
     @Resource(name = "AuthorMapper")
-    private AuthorMapper autMapper;
-    private static AuthorMapper authorMapper;
+    private AuthorMapper authorMapper;
     @Resource(name = "AffiliationMapper")
-    private AffiliationMapper affMapper;
-    private static AffiliationMapper affiliationMapper;
+    private AffiliationMapper affiliationMapper;
     @Resource(name = "ConferenceMapper")
-    private ConferenceMapper conferMapper;
-    private static ConferenceMapper conferenceMapper;
+    private ConferenceMapper conferenceMapper;
     @Resource(name = "TermMapper")
-    private TermMapper tMapper;
-    private static TermMapper termMapper;
+    private TermMapper termMapper;
     @Resource(name = "PaperTermMapper")
-    private PaperTermMapper ptMapper;
-    private static PaperTermMapper paperTermMapper;
+    private PaperTermMapper paperTermMapper;
     @Resource(name = "PaperAuthorMapper")
-    private PaperAuthorMapper paMapper;
-    private static PaperAuthorMapper paperAuthorMapper;
+    private PaperAuthorMapper paperAuthorMapper;
     @Resource(name = "ReferenceMapper")
-    private ReferenceMapper refMapper;
-    private static ReferenceMapper referenceMapper;
+    private ReferenceMapper referenceMapper;
 
     @PostConstruct
     public void init() {
-        JSONUtil.paperMapper = this.papMapper;
-        JSONUtil.authorMapper = this.autMapper;
-        JSONUtil.affiliationMapper = this.affMapper;
-        JSONUtil.conferenceMapper = this.conferMapper;
-        JSONUtil.termMapper = this.tMapper;
-        JSONUtil.paperTermMapper = this.ptMapper;
-        JSONUtil.paperAuthorMapper = this.paMapper;
-        JSONUtil.referenceMapper = this.refMapper;
     }
 
     /**
@@ -236,34 +222,27 @@ public class JSONUtil {
         }
     }
 
-    public static void main(String[] args) {
-        analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\Standard.json");
-//        Map<Class<?>, Object> m = new HashMap<>();
-//        m.put(Term.class, "3");
-//        System.out.println(m.get(Term.class));
-    }
-
-    public static void analyzeExistedJsonFile(String filename) {
+    public void analyzeExistedJsonFile(String filename) {
         List<JSONObject> jsonObjects = new LinkedList<>();
-        JSONObject errors = new JSONObject();
+        List<String> logs = new LinkedList<>();
         BufferedReader br;
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
-            ReadLines(jsonObjects, br, errors);
+            ReadLines(jsonObjects, br, logs);
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
-            errors.put(INPUT_STREAM_CLOSE_ERROR_KEY, INPUT_STREAM_CLOSE_ERROR);
+            logs.add(INPUT_STREAM_CLOSE_ERROR);
             return;
         }
-        analyze(jsonObjects, errors);
+        analyze(jsonObjects, logs);
         System.out.println();
     }
 
-    public static void analyzeUploadedJsonFile(MultipartFile file) {
+    public void analyzeUploadedJsonFile(MultipartFile file) {
     }
 
-    private static void ReadLines(List<JSONObject> jsonObjects, BufferedReader br, JSONObject errors) {
+    private void ReadLines(List<JSONObject> jsonObjects, BufferedReader br, List<String> logs) {
         String line;
         for (int i = 1; true; i++) {
             try {
@@ -272,20 +251,19 @@ public class JSONUtil {
                     break;
                 }
                 JSONObject o = (JSONObject) JSON.parse(line);
-                o.put("line", i);
+                o.put("line", "第" + i + "行: ");
                 jsonObjects.add(o);
             } catch (IOException e) {
                 e.printStackTrace();
-                errors.put("line" + i, LINE_READ_ERROR);
+                logs.add("第" + i + "行: " + LINE_READ_ERROR);
             } catch (Exception e) {
                 e.printStackTrace();
-                errors.put("line" + i, LINE_PARSE_ERROR);
+                logs.add("第" + i + "行: " + LINE_PARSE_ERROR);
             }
-
         }
     }
 
-    private static void analyze(List<JSONObject> jsonObjects, JSONObject errors) {
+    private void analyze(List<JSONObject> jsonObjects, List<String> logs) {
         Map<Class<?>, Map<?, ?>> ExistedMaps = new HashMap<>();
         ExistedMaps.put(Conference.class, new HashMap<String, Conference>());
         ExistedMaps.put(Term.class, new HashMap<String, Term>());
@@ -300,55 +278,54 @@ public class JSONUtil {
         NewLists.put(Author.class, new LinkedList<Author>());
         NewLists.put(Paper.class, new LinkedList<Paper>());
 
-        int i = 0;
         for (JSONObject jo : jsonObjects) {
-            i++;
             try {
-                // 文献+会议
-                Conference conference = analyzeConference(jo, ExistedMaps, NewLists);
-                Paper paper = analyzePaper(jo, ExistedMaps, NewLists);
-                paper.setConferenceId(conference.getId());
-                // 关键词
-                Map<String, List<Term>> terms = analyzeTerms(jo, ExistedMaps, NewLists);
-                paper.setAuthorKeywords(joinAuthorKeywords(terms.get(TERM.Author.value())));
-                paperMapper.save(paper);
-                // 作者+机构
-                List<Author> authors = analyzeAuthors(jo, ExistedMaps, NewLists);
-
-//                authorMapper.saveAll(authors);
-//                termMapper.saveAll(terms.get(TERM.Index.value()));
-
-                // 文献-引用
-                List<Reference> references = analyzeReference(paper, jo);
-                referenceMapper.saveAll(references);
-                // 文献-关键词
-                List<PaperTerm> paperTerms = analyzePaperTerms(paper, terms.get(TERM.Index.value()));
-                paperTermMapper.saveAll(paperTerms);
-                // 文献-作者
-                List<PaperAuthors> paperAuthors = analyzePaperAuthors(paper, authors);
-                paperAuthorMapper.saveAll(paperAuthors);
-
+                analyzeOne(jo, ExistedMaps, NewLists);
             } catch (JSONException e) {
-                LOGGER.warn(JSON_PARSE_ERROR + i);
+                LOGGER.warn(e.getMessage());
+                logs.add(jo.getString("line") + e.getMessage());
+            } catch (Exception e) {
                 e.printStackTrace();
+                return;
             }
         }
     }
 
+    @Transactional
+    protected void analyzeOne(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) throws JSONException {
+        Conference conference = analyzeConference(jo, existedMaps, newLists);
+        Paper paper = analyzePaper(jo, existedMaps, newLists);
+        paper.setConferenceId(conference.getId());
+        // 关键词
+        Map<String, List<Term>> terms = analyzeTerms(jo, existedMaps, newLists);
+        paper.setAuthorKeywords(joinAuthorKeywords(terms.get(TERM.Author.value())));
+        paperMapper.save(paper);
+        // 作者+机构
+        List<Author> authors = analyzeAuthors(jo, existedMaps, newLists);
+        // 文献-引用
+        List<Reference> references = analyzeReference(paper, jo);
+        referenceMapper.saveAll(references);
+        // 文献-关键词
+        List<PaperTerm> paperTerms = analyzePaperTerms(paper, terms.get(TERM.Index.value()));
+        paperTermMapper.saveAll(paperTerms);
+        // 文献-作者
+        List<PaperAuthors> paperAuthors = analyzePaperAuthors(paper, authors);
+        paperAuthorMapper.saveAll(paperAuthors);
+    }
+
     @SuppressWarnings("unchecked")
-    private static Paper analyzePaper(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newMaps) {
+    private Paper analyzePaper(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
         Paper paper;
         Integer articleId = jo.getInteger(KEY.ArticleId.value());
         Map<Integer, Paper> existed = (Map<Integer, Paper>) existedMaps.get(Paper.class);
-        List<Paper> news = (List<Paper>) newMaps.get(Paper.class);
+        List<Paper> news = (List<Paper>) newLists.get(Paper.class);
         if (existed.containsKey(articleId)) {
-            //todo： 文章已存在
-            throw new JSONException("");
+            throw new JSONException(PAPER_EXISTED);
         }
         paper = paperMapper.findByArticleId(articleId);
         if (paper != null) {
-            //todo: 文章已存在
-            throw new JSONException("");
+            existed.put(articleId, paper);
+            throw new JSONException(PAPER_EXISTED);
         }
         paper = new Paper();
         paper.setPdfUrl(jo.getString(KEY.PdfLink.value()));
@@ -374,7 +351,7 @@ public class JSONUtil {
     }
 
     @SuppressWarnings("unchecked")
-    private static Conference analyzeConference(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
+    private Conference analyzeConference(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
         Conference c;
         Map<String, Conference> existed = (Map<String, Conference>) existedMaps.get(Conference.class);
         List<Conference> news = (LinkedList<Conference>) newLists.get(Conference.class);
@@ -387,7 +364,7 @@ public class JSONUtil {
         } else {
             //todo: 等赖总加商会议名
             name = Math.random() > 0.5 ? CONFERENCE.ICSE.value() : CONFERENCE.ASE.value();
-//            throw new JSONException(CONFERENCE_NOT_EXIST);
+            throw new JSONException(CONFERENCE_NOT_EXIST);
         }
         if (existed.containsKey(name)) {
             return existed.get(name);
@@ -403,9 +380,10 @@ public class JSONUtil {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<Author> analyzeAuthors(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
+    private List<Author> analyzeAuthors(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
         Map<String, Author> existed = (Map<String, Author>) existedMaps.get(Author.class);
         List<Author> news = (List<Author>) newLists.get(Author.class);
+        List<Author> tempNews = new LinkedList<>();
         List<Author> authors = new LinkedList<>();
         JSONArray authorArray = jo.getJSONArray(KEY.Authors.value());
         for (Object o : authorArray) {
@@ -425,17 +403,18 @@ public class JSONUtil {
                 a.setLastName(lastName);
                 Affiliation aff = analyzeAffiliation(temp.getString(AUTHOR.Affiliation.value()), existedMaps, newLists);
                 a.setAffiliationId(aff.getId());
-                news.add(a);
+                tempNews.add(a);
             }
             authors.add(a);
             existed.put(name_key, a);
         }
-        authorMapper.saveAll(news);
+        authorMapper.saveAll(tempNews);
+        news.addAll(tempNews);
         return authors;
     }
 
     @SuppressWarnings("unchecked")
-    private static Affiliation analyzeAffiliation(String name, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
+    private Affiliation analyzeAffiliation(String name, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
         Affiliation a;
         Map<String, Affiliation> existed = (Map<String, Affiliation>) existedMaps.get(Affiliation.class);
         List<Affiliation> news = (List<Affiliation>) newLists.get(Affiliation.class);
@@ -455,7 +434,7 @@ public class JSONUtil {
     }
 
     @SuppressWarnings("unchecked")
-    private static Map<String, List<Term>> analyzeTerms(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
+    private Map<String, List<Term>> analyzeTerms(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
         List<Term> indexTerms = new LinkedList<>();
         List<Term> authorKeywords = new LinkedList<>();
         Map<String, List<Term>> terms = new HashMap<>() {{
@@ -465,6 +444,7 @@ public class JSONUtil {
         terms.put(TERM.Index.value(), indexTerms);
         Map<String, Term> existed = (Map<String, Term>) existedMaps.get(Term.class);
         List<Term> news = (List<Term>) newLists.get(Term.class);
+        List<Term> tempNews = new LinkedList<>();
         List<JSONObject> keywords = (List<JSONObject>) jo.get(KEY.Keywords.value());
         for (JSONObject j : keywords) {
             String type = j.getString("type").trim();
@@ -487,13 +467,14 @@ public class JSONUtil {
                         t = new Term();
                         t.setName(s);
                         existed.put(name_key, t);
-                        news.add(t);
+                        tempNews.add(t);
                     }
                     indexTerms.add(t);
                 }
             }
         }
-        termMapper.saveAll(news);
+        termMapper.saveAll(tempNews);
+        news.addAll(tempNews);
         return terms;
     }
 
