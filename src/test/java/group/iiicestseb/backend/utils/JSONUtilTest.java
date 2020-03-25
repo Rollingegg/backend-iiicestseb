@@ -3,6 +3,7 @@ package group.iiicestseb.backend.utils;
 
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.mapper.AuthorMapper;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,11 @@ public class JSONUtilTest {
     private AffiliationMapper affiliationMapper;
     @Resource
     private JSONUtil jsonUtil;
+
+    @Before
+    public void setup(){
+        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\Standard.json");
+    }
 
     @Test
     public void temp() throws Exception{
