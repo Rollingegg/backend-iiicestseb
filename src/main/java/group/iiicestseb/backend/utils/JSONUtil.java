@@ -10,6 +10,7 @@ import group.iiicestseb.backend.service.ConferenceService;
 import group.iiicestseb.backend.service.PaperManageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +25,7 @@ import java.util.*;
  * @author jh
  * @date 2020/3/18
  */
-@Component
+@Component("JSONUtil")
 public class JSONUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JSONUtil.class);
 
@@ -41,6 +42,7 @@ public class JSONUtil {
     public static final String SUCCESS_COUNT_INFO = "成功：";
     public static final String EXISTED_COUNT_INFO = "已存在：";
     public static final String ERROR_COUNT_INFO = "请查看日志，发生未知错误数：";
+    public static final String STANDARD_JSON_FILE = "Standard.json";
 
     @Resource(name = "Regedit")
     private PaperManageService paperManageService;
@@ -51,8 +53,11 @@ public class JSONUtil {
     @Resource(name = "Regedit")
     private ConferenceService conferenceService;
 
+    private static JSONUtil Instance;
+
     @PostConstruct
     public void init() {
+        JSONUtil.Instance = this;
     }
 
     /**
@@ -223,24 +228,35 @@ public class JSONUtil {
     }
 
     /**
+     * 加载测试数据
+     */
+    public static void loadTestData() {
+        analyzeExistedJsonFile(STANDARD_JSON_FILE);
+    }
+
+    /**
      * 解析已经存在的数据源
      *
      * @param filename 数据源文件名
      * @return 解析日志
      */
-    public List<String> analyzeExistedJsonFile(String filename) {
+    public static List<String> analyzeExistedJsonFile(String filename) {
+        return Instance.analyzeExistedJsonFileInner(filename);
+    }
+
+    private List<String> analyzeExistedJsonFileInner(String filename) {
+        ClassPathResource file = new ClassPathResource("json/" + filename);
         List<JSONObject> jsonObjects = new LinkedList<>();
         List<String> logs = new LinkedList<>();
         BufferedReader br;
         try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
+            br = new BufferedReader(new InputStreamReader(file.getInputStream()));
             ReadLines(jsonObjects, br, logs);
             br.close();
-        } catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             logs.add(FILE_NOT_FOUND + filename);
             return logs;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logs.add(INPUT_STREAM_CLOSE_ERROR);
             return logs;
         }
@@ -254,7 +270,11 @@ public class JSONUtil {
      * @param file 上传的数据源文件
      * @return 解析日志
      */
-    public List<String> analyzeUploadedJsonFile(MultipartFile file) {
+    public static List<String> analyzeUploadedJsonFile(MultipartFile file) {
+        return Instance.analyzeUploadedJsonFileInner(file);
+    }
+
+    private List<String> analyzeUploadedJsonFileInner(MultipartFile file) {
         List<JSONObject> jsonObjects = new LinkedList<>();
         List<String> logs = new LinkedList<>();
         BufferedReader br;
@@ -279,16 +299,16 @@ public class JSONUtil {
                     break;
                 }
                 JSONObject o = (JSONObject) JSON.parse(line);
-                o.put("line", "第" + i + "行: ");
+                o.put("line", "第" + i + "行：");
                 jsonObjects.add(o);
             } catch (IOException e) {
                 e.printStackTrace();
-                logs.add("第" + i + "行: " + LINE_READ_ERROR);
-                LOGGER.warn("第" + i + "行: " + LINE_READ_ERROR);
+                logs.add("第" + i + "行：" + LINE_READ_ERROR);
+                LOGGER.warn("第" + i + "行：" + LINE_READ_ERROR);
             } catch (Exception e) {
                 e.printStackTrace();
-                logs.add("第" + i + "行: " + LINE_PARSE_ERROR);
-                LOGGER.warn("第" + i + "行: " + LINE_PARSE_ERROR);
+                logs.add("第" + i + "行：" + LINE_PARSE_ERROR);
+                LOGGER.warn("第" + i + "行：" + LINE_PARSE_ERROR);
             }
         }
     }
@@ -321,10 +341,14 @@ public class JSONUtil {
                 LOGGER.warn(jo.getString("line") + e.getMessage());
                 logs.add(jo.getString("line") + e.getMessage());
                 existed++;
-            } catch (Exception e) {
+            } catch (NumberFormatException | NullPointerException e) {
+                LOGGER.warn(jo.getString("line") + JSON_PARSE_ERROR);
+                logs.add(jo.getString("line") + JSON_PARSE_ERROR);
                 error++;
+            } catch (Exception e) {
                 LOGGER.warn(jo.getString("line") + e.getMessage());
                 logs.add(jo.getString("line") + e.getMessage());
+                error++;
                 e.printStackTrace();
             }
         }
