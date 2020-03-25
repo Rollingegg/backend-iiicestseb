@@ -1,16 +1,15 @@
 package group.iiicestseb.backend.serviceImpl;
 
-import group.iiicestseb.backend.mapper.AffiliationMapper;
-import group.iiicestseb.backend.mapper.AuthorMapper;
-import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.mapper.StatisticsMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.StatisticsService;
-import org.springframework.context.annotation.Lazy;
+import group.iiicestseb.backend.vo.AuthorHotVO;
+import group.iiicestseb.backend.vo.TermWithHotVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 /**
@@ -24,17 +23,29 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Resource(name = "Regedit")
     private Regedit regedit;
 
-    @Resource
-    private AffiliationMapper affiliationMapper;
-
-    @Resource
-    private AuthorMapper authorMapper;
-
-    @Resource
-    private PaperMapper paperMapper;
+//    @Resource
+//    private AffiliationMapper affiliationMapper;
+//
+//    @Resource
+//    private AuthorMapper authorMapper;
+//
+//    @Resource
+//    private PaperMapper paperMapper;
 
     @Resource
     StatisticsMapper statisticsMapper;
+
+    @Override
+    public List<TermWithHotVO> calculateHotTerms(Integer num) {
+        return statisticsMapper.selectTermsWithHotLimit(num);
+    }
+
+    @Override
+    public List<AuthorHotVO> calculateMaxPublishAuthor(Integer num) {
+        return statisticsMapper.selectMaxPublishAuthorLimit(num);
+    }
+
+
 //
 //    @Override
 //    @Transactional(rollbackFor = RuntimeException.class)
@@ -53,15 +64,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 //        return CSVUtil.analyzeUploadedCSV(file);
 //    }
 //
-//    @Override
-//    public List<TermWithHotVO> calculateHotTerms(Integer num) {
-//        return statisticsMapper.selectTermsWithHotLimit(num);
-//    }
-//
-//    @Override
-//    public List<AuthorWithPublish> calculateMaxPublishAuthor(Integer num) {
-//        return statisticsMapper.selectMaxPublishAuthorLimit(num);
-//    }
+
 //
 
 }

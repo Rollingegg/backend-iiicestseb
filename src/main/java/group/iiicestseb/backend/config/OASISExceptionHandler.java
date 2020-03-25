@@ -1,5 +1,8 @@
 package group.iiicestseb.backend.config;
 
+import group.iiicestseb.backend.exception.paper.NoPaperFoundException;
+import group.iiicestseb.backend.exception.paper.PaperFormException;
+import group.iiicestseb.backend.exception.paper.PaperTypeException;
 import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
 import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
 import group.iiicestseb.backend.vo.Response;
@@ -45,4 +48,20 @@ public class OASISExceptionHandler {
     public Response wrongLoginInfoException(WrongLoginInfoException ex){
         return Response.buildFailure(ex.getMessage());
     }
+
+    @ExceptionHandler(PaperTypeException.class)
+    public Response paperTypeException(PaperTypeException ex){
+        return Response.buildFailure(ex.getMessage());
+    }
+
+    @ExceptionHandler(NoPaperFoundException.class)
+    public Response noPaperFoundException(NoPaperFoundException ex){
+        return Response.buildFailure(ex.getMessage());
+    }
+
+    @ExceptionHandler(PaperFormException.class)
+    public Response paperFormException(PaperFormException ex){
+        return Response.buildFailure(ex.getMessage());
+    }
+
 }

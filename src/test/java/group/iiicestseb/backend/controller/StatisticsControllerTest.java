@@ -1,56 +1,99 @@
-//package group.iiicestseb.backend.controller;
-//
-//import com.alibaba.fastjson.JSON;
-//import group.iiicestseb.backend.service.StatisticsService;
-//import group.iiicestseb.backend.utils.CSVUtil;
-//import org.apache.commons.httpclient.methods.multipart.FilePart;
-//import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-//import org.apache.commons.httpclient.methods.multipart.Part;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.http.MediaType;
-//import org.springframework.mock.web.MockHttpSession;
-//import org.springframework.mock.web.MockMultipartFile;
-//import org.springframework.test.context.junit4.SpringRunner;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-//import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-//import org.springframework.transaction.annotation.Transactional;
-//import org.springframework.web.context.WebApplicationContext;
-//import org.springframework.web.multipart.MultipartFile;
-//
-//import javax.annotation.Resource;
-//import java.io.File;
-//import java.io.FileInputStream;
-//
-///**
-// * @author jh
-// * @date 2020/3/5
-// */
-//@SpringBootTest
-//@RunWith(SpringRunner.class)
-//@Transactional
-//public class StatisticsControllerTest {
-//
-//    @Resource(name = "Statistics")
-//    private StatisticsService statisticsService;
-//
-//    @Autowired
-//    private WebApplicationContext wac;
-//    private MockMvc mvc;
-//    private MockHttpSession session;
-//
-//    @Before
-//    public void setUp() {
-//        mvc = MockMvcBuilders.webAppContextSetup(wac).build();
-//        session = new MockHttpSession();
-//        statisticsService.loadExistedCSV("Standard.csv");
-//    }
-//
+package group.iiicestseb.backend.controller;
+
+
+import group.iiicestseb.backend.service.StatisticsService;
+import group.iiicestseb.backend.vo.AuthorHotVO;
+import group.iiicestseb.backend.vo.TermWithHotVO;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author jh
+ * @date 2020/3/5
+ */
+@SpringBootTest
+@RunWith(SpringRunner.class)
+@Transactional
+public class StatisticsControllerTest {
+
+    @Mock
+    StatisticsService statisticsService;
+
+    @InjectMocks
+    StatisticsController statisticsController = new StatisticsController();
+
+    private MockMvc mvc;
+    private MockHttpSession session;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        mvc = MockMvcBuilders.standaloneSetup(statisticsController).build();
+        session = new MockHttpSession();
+
+    }
+
+    @Test
+    public void getHotTermsParam() throws Exception {
+        Integer param = 50;
+        ArrayList<TermWithHotVO> termWithHotVOArrayList = new ArrayList<>();
+        TermWithHotVO termWithHotVO_1 = new TermWithHotVO(1,"a",2);
+        TermWithHotVO termWithHotVO_2 = new TermWithHotVO(2,"b",555);
+        termWithHotVOArrayList.add(termWithHotVO_1);
+        termWithHotVOArrayList.add(termWithHotVO_2);
+
+        Mockito.when(statisticsService.calculateHotTerms(param)).thenReturn(termWithHotVOArrayList);
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/hotTerms")
+                .param("num", Integer.toString(param))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].id").value(2));
+        Mockito.verify(statisticsService).calculateHotTerms(param);
+    }
+
+    @Test
+    public void getMaxPublishAuthor() throws Exception {
+        int param = 5;
+        List<AuthorHotVO> authorHotVOList = new ArrayList<>();
+        AuthorHotVO authorHotVO_1 = new AuthorHotVO(1,"jh","nju",100);
+        AuthorHotVO authorHotVO_2 = new AuthorHotVO(2,"hxd","zju",200);
+        authorHotVOList.add(authorHotVO_1);
+        authorHotVOList.add(authorHotVO_2);
+        Mockito.when(statisticsService.calculateMaxPublishAuthor(param)).thenReturn(authorHotVOList);
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/maxPublishAuthor")
+                .param("num", Integer.toString(param))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].id").value(2));
+        Mockito.verify(statisticsService).calculateMaxPublishAuthor(param);
+    }
+
+
+
 //    @Test
 //    public void analyzeCSVSuccess() throws Exception {
 //        String param = "Standard.csv";
@@ -153,7 +196,7 @@
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.result.errors[0].msg").value(CSVUtil.COL_FORMAT_ERROR + 5))
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.result.errors[0].row").value( 5));
 //    }
-//
+
 //    @Test
 //    public void getHotTermsSuccess() throws Exception {
 //        int param = 10;
@@ -201,4 +244,4 @@
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.result[4]").exists());
 //    }
-//}
+}

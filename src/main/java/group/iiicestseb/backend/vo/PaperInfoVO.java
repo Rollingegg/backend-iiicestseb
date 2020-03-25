@@ -3,17 +3,19 @@ package group.iiicestseb.backend.vo;
 import group.iiicestseb.backend.entity.Conference;
 import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.entity.Term;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 文献管理页面 文献的详细信息
  * @author wph
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaperInfoVO {
 
     /**
@@ -35,5 +37,6 @@ public class PaperInfoVO {
      * 术语列表
      */
     private List<Term> termList;
+
 
 }

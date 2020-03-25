@@ -3,8 +3,11 @@ package group.iiicestseb.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Paper;
-import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
+import group.iiicestseb.backend.vo.PaperInfoVO;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
+
+import java.util.List;
 
 
 /**
@@ -14,27 +17,25 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface PaperMapper extends BaseMapper<Paper> {
 
-//    /**
-//     * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询
-//     *
-//     * @param type     查询类型 适用于 DOI 标题 摘要 作者 机构
-//     * @param keywords 搜索关键字
-//     * @return 文献列表
-//     */
-//    @Query("select " +
-//            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
-//            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
-//            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
-//            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
-//            ",paper_term pt1,term t1 " +
-//            "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
-//            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
-//            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
-//            "${type} like '%${keywords}%'" +
-//            "group by p1.id " +
-//            "order by citation_count desc limit #{limit}")
-//    @ResultMap("PaperInfoVOResultMap")
-//    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperByType(String type, String keywords,Integer limit);
+    /**
+     * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询
+     *
+     * @param type     查询类型 适用于 DOI 标题 摘要 作者 机构
+     * @param keywords 搜索关键字
+     * @return 文献列表
+     */
+    @Select("select p.id, conference_id, pa.author_id, pt.term_id " +
+            "from paper p, paper_authors pa,paper_term pt " +
+            "where pa.paper_id = p.id and pt.paper_id = p.id " +
+            "group by p.id " +
+            "order by p.citation_count_paper desc limit #{limit}")
+    @Results(id = "PaperInfoVOResultMap",value = {
+            @Result(column = "id",property = "paper",one = @One(select = "group.iiicestseb.backend.mapper.PaperMapper.selectById",fetchType = FetchType.LAZY) ),
+            @Result(column = "conference_id",property = "conference",one = @One(select = "group.iiicestseb.backend.mapper.ConferenceMapper.selectById",fetchType = FetchType.LAZY) ),
+            @Result(column = "author_id",property = "authorInfoList",many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId",fetchType = FetchType.LAZY) ),
+            @Result(column = "term_id",property = "termList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.LAZY) )
+    })
+    List<PaperInfoVO> simpleSearchPaperByType(String type, String keywords, Integer limit);
 //
 //    List<AuthorInfoVO> selectAuthorInfoById(Integer paperId);
 //
@@ -82,12 +83,12 @@ public interface PaperMapper extends BaseMapper<Paper> {
 //                                                     Integer limit);
 
 
-    /**
-     * 通过IEEE的ID查找论文
-     *
-     * @param articleId IEEE制定的id
-     * @return 文献
-     */
+//    /**
+//     * 通过IEEE的ID查找论文
+//     *
+//     * @param articleId IEEE制定的id
+//     * @return 文献
+//     */
 //    Paper findByArticleId(Integer articleId);
 
 //    /**

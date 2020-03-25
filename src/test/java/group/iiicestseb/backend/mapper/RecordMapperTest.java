@@ -1,6 +1,6 @@
 package group.iiicestseb.backend.mapper;
 
-import group.iiicestseb.backend.entity.User;
+import group.iiicestseb.backend.entity.Record;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,25 +12,27 @@ import javax.annotation.Resource;
 
 import static org.junit.Assert.assertEquals;
 
-@SpringBootTest
 @RunWith(SpringRunner.class)
+@SpringBootTest
 @Transactional
-public class UserMapperTest {
+public class RecordMapperTest {
 
     @Resource
-    private UserMapper userMapper;
-    private User user = new User();
+    RecordMapper recordMapper;
+
+    private Record record =  new Record();
 
     @Before
     public void setUp() throws Exception {
-        user.setUsername("test");
-        user.setUsername("hxd");
+
+        record.setSearchRecord("sec");
+        record.setUserId(1);
+
     }
 
-
     @Test
-    public void selectByUsername() {
-        userMapper.insert(user);
-        assertEquals(user.getUsername(),userMapper.findByUsername(user.getUsername()).getUsername());
+    public void findByUserId() {
+        recordMapper.insert(record);
+        assertEquals(record.getSearchRecord(),recordMapper.findByUserId(record.getUserId()).get(0).getSearchRecord());
     }
 }

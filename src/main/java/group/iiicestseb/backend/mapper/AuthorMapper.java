@@ -2,7 +2,14 @@ package group.iiicestseb.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Author;
+import group.iiicestseb.backend.vo.AuthorInfoVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.type.JdbcType;
+
+import java.util.List;
 
 /**
  * @author wph
@@ -10,6 +17,23 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AuthorMapper extends BaseMapper<Author> {
+
+
+    /**
+     * 找出文献的所有作者
+     * @param paperId 文献id
+     * @return 作者基本信息
+     */
+    @Select("select au.id,au.name,aff.id,aff.name " +
+            "from paper_authors pa, author au, affiliation aff " +
+            "where pa.paper_id = #{paperId} and au.id = pa.paper_id and au.affiliation_id = aff.id")
+    @Results(id = "AuthorInfoResultMap",value = {
+            @Result(column = "id",property = "id",javaType = Integer.class, jdbcType = JdbcType.INTEGER),
+            @Result(column = "name",property = "name",javaType = String.class,jdbcType = JdbcType.VARCHAR),
+            @Result(column = "id",property = "affiliationId",javaType = Integer.class, jdbcType = JdbcType.INTEGER),
+            @Result(column = "name",property = "affiliationName",javaType = String.class,jdbcType = JdbcType.VARCHAR)
+    })
+    List<AuthorInfoVO> selectAuthorInfoByPaperId(Integer paperId);
 
 //    /**
 //     * 根据学者名查找学者

@@ -17,7 +17,7 @@ public class TermWithHotVO {
     /**
      * 术语
      */
-    private String word;
+    private String name;
 
     /**
      * 热度
@@ -28,18 +28,18 @@ public class TermWithHotVO {
         super();
     }
 
-    public TermWithHotVO(String word) {
-        this.word = word;
+    public TermWithHotVO(String name) {
+        this.name = name;
     }
 
-    public TermWithHotVO(String word, Integer hot) {
-        this.word = word;
+    public TermWithHotVO(String name, Integer hot) {
+        this.name = name;
         this.hot = hot;
     }
 
-    public TermWithHotVO(Integer id, String word, Integer hot) {
+    public TermWithHotVO(Integer id, String name, Integer hot) {
         this.id = id;
-        this.word = word;
+        this.name = name;
         this.hot = hot;
     }
 

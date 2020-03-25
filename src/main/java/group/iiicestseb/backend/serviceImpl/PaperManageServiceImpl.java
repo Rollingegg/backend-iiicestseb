@@ -1,9 +1,7 @@
 package group.iiicestseb.backend.serviceImpl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.entity.Paper;
-import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.PaperManageService;
@@ -26,10 +24,10 @@ public class PaperManageServiceImpl extends ServiceImpl<PaperMapper, Paper> impl
     private Regedit regedit;
     @Resource
     private PaperMapper paperMapper;
-//
-//    @Override
-//    public void deletePaperById(int id) {
-//        //paperMapper.deleteById(id);
-//    }
+
+    @Override
+    public void deletePaperById(int id) {
+        paperMapper.deleteById(id);
+    }
 
 }

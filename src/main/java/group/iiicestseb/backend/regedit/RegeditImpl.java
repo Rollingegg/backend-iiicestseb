@@ -39,10 +39,10 @@ public class RegeditImpl implements Regedit {
 
     //-----------------------------------------PaperManageService------------------------------
 
-//    @Override
-//    public void deletePaperById(int id) {
-//        paperManageService.deletePaperById(id);
-//    }
+    @Override
+    public void deletePaperById(int id) {
+        paperManageService.deletePaperById(id);
+    }
 
     //-----------------------------------------UserService--------------------------------------
 
@@ -55,6 +55,7 @@ public class RegeditImpl implements Regedit {
     public void register(UserForm userForm) {
         userService.register(userForm);
     }
+
     @Override
     public void isExist(String username) {
         userService.isExist(username);

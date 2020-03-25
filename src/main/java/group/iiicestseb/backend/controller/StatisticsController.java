@@ -2,22 +2,14 @@ package group.iiicestseb.backend.controller;
 
 
 import group.iiicestseb.backend.service.StatisticsService;
-import group.iiicestseb.backend.vo.AuthorWithPublish;
+import group.iiicestseb.backend.vo.AuthorHotVO;
 import group.iiicestseb.backend.vo.Response;
 import group.iiicestseb.backend.vo.TermWithHotVO;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -32,9 +24,60 @@ public class StatisticsController {
     public static final String SHOULD_BE_POSITIVE = "参数应该大于0";
     public static final String PARAM_TOO_LARGE = "参数太大";
     public static final String PARAMETER_ERROR = "参数无效或不合法";
-//
-//    @Resource(name = "Statistics")
-//    private StatisticsService statisticsService;
+
+    @Resource(name = "Statistics")
+    private StatisticsService statisticsService;
+
+
+    /**
+     * 计算并返回最热门的num个术语
+     * 热度按为所有文章中出现的总次数
+     *
+     * @param num num个术语
+     * @return 最热门的num个术语和其出现次数
+     */
+    @GetMapping("hotTerms")
+    public Response getHotTerms(@RequestParam("num")
+                                @Max(value = 500,message = PARAM_TOO_LARGE)
+                                @Min(value = 1,message = SHOULD_BE_POSITIVE)
+                                        Integer num) {
+        try {
+            List<TermWithHotVO> termsHot = statisticsService.calculateHotTerms(num);
+            if (termsHot == null){
+                return Response.buildSuccess();
+            }
+            return Response.buildSuccess(termsHot);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.buildFailure(e.getMessage());
+        }
+    }
+
+
+    /**
+     * 计算并返回发表论文最多的的num个学者和其发表的论文
+     *
+     * @param num num个学者
+     * @return 最热门的num个学者和其发表的论文
+     */
+    @GetMapping("/maxPublishAuthor")
+    public Response getMaxPublishAuthor(@RequestParam("num")
+                                        @Max(value = 500,message = PARAM_TOO_LARGE)
+                                        @Min(value = 1,message = SHOULD_BE_POSITIVE)
+                                                Integer num) {
+        try {
+            List<AuthorHotVO> authorHotVOList = statisticsService.calculateMaxPublishAuthor(num);
+            if (authorHotVOList == null){
+                return Response.buildSuccess();
+            }
+            return Response.buildSuccess(authorHotVOList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.buildFailure(e.getMessage());
+        }
+    }
+
+
 //
 //    @PostMapping("/analyzeCSV")
 //    public Response analyzeCSV(@RequestParam("filename") String filename) {
@@ -49,31 +92,7 @@ public class StatisticsController {
 //        return Response.buildSuccess(statisticsService.analyzeUploadedCSV(file));
 //    }
 //
-//    @GetMapping("hotTerms")
-//    public Response getHotTerms(@RequestParam("num") Integer num) {
-//        Assert.isTrue(num > 0, SHOULD_BE_POSITIVE);
-//        Assert.isTrue(num < 500, PARAM_TOO_LARGE);
-//        try {
-//            List<TermWithHotVO> termsHot = statisticsService.calculateHotTerms(num);
-//            return Response.buildSuccess(termsHot);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return Response.buildFailure(e.getMessage());
-//        }
-//    }
-//
-//    @GetMapping("/maxPublishAuthor")
-//    public Response getMaxPublishAuthor(@RequestParam("num") Integer num) {
-//        Assert.isTrue(num > 0, SHOULD_BE_POSITIVE);
-//        Assert.isTrue(num < 100, PARAM_TOO_LARGE);
-//        try {
-//            List<AuthorWithPublish> authorWithPublishList = statisticsService.calculateMaxPublishAuthor(num);
-//            return Response.buildSuccess(authorWithPublishList);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return Response.buildFailure(e.getMessage());
-//        }
-//    }
+
 //
 //    @GetMapping("/StandardCSV")
 //    public Response getStandardCSV(HttpServletResponse response){

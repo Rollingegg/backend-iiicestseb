@@ -3,6 +3,7 @@ package group.iiicestseb.backend.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * @author jh
@@ -16,5 +17,6 @@ public interface UserMapper extends BaseMapper<User> {
      * @param username 用户名
      * @return 用户实体
      */
-    //public User findByUsername(String username);
+    @Select("select * from user where username = #{username}")
+    public User findByUsername(String username);
 }
