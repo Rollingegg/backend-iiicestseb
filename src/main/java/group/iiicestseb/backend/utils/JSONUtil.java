@@ -34,8 +34,13 @@ public class JSONUtil {
     public static final String INPUT_STREAM_CLOSE_ERROR_KEY = "Stream_Error";
     public static final String INPUT_STREAM_CLOSE_ERROR = "文件流关闭失败，停止解析";
     public static final String FILE_OPEN_ERROR = "文件流打开失败";
+    public static final String FILE_NOT_FOUND = "文件不存在：";
     public static final String CONFERENCE_NOT_EXIST = "会议名不存在";
     public static final String PAPER_EXISTED = "文献已存在，跳过该行";
+    public static final String ANALYZE_COUNT_INFO = "共解析这么多行数据：";
+    public static final String SUCCESS_COUNT_INFO = "成功：";
+    public static final String EXISTED_COUNT_INFO = "已存在：";
+    public static final String ERROR_COUNT_INFO = "请查看日志，发生未知错误数：";
 
     @Resource(name = "Regedit")
     private PaperManageService paperManageService;
@@ -217,7 +222,13 @@ public class JSONUtil {
         }
     }
 
-    public void analyzeExistedJsonFile(String filename) {
+    /**
+     * 解析已经存在的数据源
+     *
+     * @param filename 数据源文件名
+     * @return 解析日志
+     */
+    public List<String> analyzeExistedJsonFile(String filename) {
         List<JSONObject> jsonObjects = new LinkedList<>();
         List<String> logs = new LinkedList<>();
         BufferedReader br;
@@ -225,16 +236,38 @@ public class JSONUtil {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename))));
             ReadLines(jsonObjects, br, logs);
             br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException e){
+            logs.add(FILE_NOT_FOUND + filename);
+            return logs;
+        }
+        catch (IOException e) {
             logs.add(INPUT_STREAM_CLOSE_ERROR);
-            return;
+            return logs;
         }
         analyze(jsonObjects, logs);
-        System.out.println();
+        return logs;
     }
 
-    public void analyzeUploadedJsonFile(MultipartFile file) {
+    /**
+     * 解析上传的数据源
+     *
+     * @param file 上传的数据源文件
+     * @return 解析日志
+     */
+    public List<String> analyzeUploadedJsonFile(MultipartFile file) {
+        List<JSONObject> jsonObjects = new LinkedList<>();
+        List<String> logs = new LinkedList<>();
+        BufferedReader br;
+        try {
+            br = new BufferedReader(new InputStreamReader(file.getInputStream()));
+            ReadLines(jsonObjects, br, logs);
+            br.close();
+        } catch (IOException e) {
+            logs.add(INPUT_STREAM_CLOSE_ERROR);
+            return logs;
+        }
+        analyze(jsonObjects, logs);
+        return logs;
     }
 
     private void ReadLines(List<JSONObject> jsonObjects, BufferedReader br, List<String> logs) {
@@ -251,9 +284,11 @@ public class JSONUtil {
             } catch (IOException e) {
                 e.printStackTrace();
                 logs.add("第" + i + "行: " + LINE_READ_ERROR);
+                LOGGER.warn("第" + i + "行: " + LINE_READ_ERROR);
             } catch (Exception e) {
                 e.printStackTrace();
                 logs.add("第" + i + "行: " + LINE_PARSE_ERROR);
+                LOGGER.warn("第" + i + "行: " + LINE_PARSE_ERROR);
             }
         }
     }
@@ -273,27 +308,30 @@ public class JSONUtil {
         NewLists.put(Author.class, new LinkedList<Author>());
         NewLists.put(Paper.class, new LinkedList<Paper>());
 
-        int count=0;
+        int count = 0;
         int success = 0;
         int existed = 0;
+        int error = 0;
         for (JSONObject jo : jsonObjects) {
             count++;
             try {
                 analyzeOne(jo, ExistedMaps, NewLists);
                 success++;
             } catch (JSONException e) {
-                LOGGER.warn(e.getMessage());
+                LOGGER.warn(jo.getString("line") + e.getMessage());
                 logs.add(jo.getString("line") + e.getMessage());
                 existed++;
             } catch (Exception e) {
+                error++;
+                LOGGER.warn(jo.getString("line") + e.getMessage());
+                logs.add(jo.getString("line") + e.getMessage());
                 e.printStackTrace();
-                System.out.println("共解析这么多行数据：" + count);
-                return;
             }
         }
-        System.out.println("共解析这么多行数据：" + count);
-        System.out.println("成功：" + success);
-        System.out.println("已存在：" + existed);
+        LOGGER.info(ANALYZE_COUNT_INFO + count);
+        LOGGER.info(SUCCESS_COUNT_INFO + success);
+        LOGGER.info(EXISTED_COUNT_INFO + existed);
+        LOGGER.info(ERROR_COUNT_INFO + error);
     }
 
     @Transactional(rollbackFor = {JSONException.class, Exception.class})
@@ -369,7 +407,7 @@ public class JSONUtil {
         } else {
             //todo: 等赖总加商会议名
             name = Math.random() > 0.5 ? CONFERENCE.ICSE.value() : CONFERENCE.ASE.value();
-            throw new JSONException(CONFERENCE_NOT_EXIST);
+//            throw new JSONException(CONFERENCE_NOT_EXIST);
         }
         if (existed.containsKey(name)) {
             return existed.get(name);
@@ -475,7 +513,7 @@ public class JSONUtil {
                         tempNews.add(t);
                     }
                     // 避免两个标准中有重复的术语
-                    if (!foundTerms.containsKey(name_key)){
+                    if (!foundTerms.containsKey(name_key)) {
                         foundTerms.put(name_key, null);
                         indexTerms.add(t);
                     }

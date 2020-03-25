@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -17,7 +18,7 @@ import javax.annotation.Resource;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-//@Transactional
+@Transactional
 public class JSONUtilTest {
     @Resource
     private AuthorMapper authorMapper;
@@ -27,10 +28,10 @@ public class JSONUtilTest {
     private JSONUtil jsonUtil;
 
     @Test
-    public void temp() {
+    public void temp() throws Exception{
 //        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_ase13_19(0-605).json");
-//        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_icse15_19(0-815).json");
-        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_icse10_14(0-1200).json");
+        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_icse15_19(0-815).json");
+//        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_icse10_14(0-1200).json");
 
 //        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_icse15_19(0-50).json");
         System.out.println();
