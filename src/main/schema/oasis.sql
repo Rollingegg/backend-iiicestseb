@@ -10,7 +10,7 @@ flush privileges;
 CREATE TABLE affiliation
 (
 id   INT PRIMARY KEY auto_increment comment '机构id',
-name varchar(200) comment '机构名'
+name varchar(300) comment '机构名'
 ) ENGINE = InnoDB comment '机构表';
 create index affiliation_name_hash using hash on affiliation (name);
 
@@ -19,7 +19,7 @@ CREATE TABLE author
 (
   id             INT auto_increment PRIMARY KEY comment '作者id',
 name           VARCHAR(80) comment '作者姓名',
-fisrt_name     varchar(40) comment '姓',
+first_name     varchar(40) comment '姓',
 last_name      varchar(40) comment '名',
 affiliation_id int comment '作者所属机构id',
 foreign key (affiliation_id) references affiliation (id)

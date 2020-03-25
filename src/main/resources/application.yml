@@ -60,22 +60,6 @@ spring:
     add-properties: true
   datasource:
     username: root
-  jpa:
-    database: mysql
-    show-sql: false
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        generate_statistics: false
-        order_inserts: true
-        order_updates: true
-        order_deletes: true
-        dialect: org.hibernate.dialect.MySQL5Dialect
-        jdbc:
-          batch_size: 100
-          batch_versioned_data: true
-          rewriteBatchedStatements: true
 logging:
   level:
     org.hibernate.SQL: debug
@@ -98,22 +82,6 @@ spring:
   datasource:
     username: root
     password: IIICEStseB
-  jpa:
-    database: mysql
-    show-sql: false
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        generate_statistics: false
-        order_inserts: true
-        order_updates: true
-        order_deletes: true
-        dialect: org.hibernate.dialect.MySQL5Dialect
-        jdbc:
-          batch_size: 100
-          batch_versioned_data: true
-          rewriteBatchedStatements: true
 logging:
   level:
     org.hibernate.SQL: debug
@@ -137,13 +105,6 @@ spring:
     url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     hikari:
       max-lifetime: 3600000
-  jpa:
-    database: mysql
-    show-sql: false
-    properties:
-      hibernate:
-        generate_statistics: false
-
   devtools:
     add-properties: true
 server:

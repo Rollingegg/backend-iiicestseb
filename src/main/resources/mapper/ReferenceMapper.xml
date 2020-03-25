@@ -7,12 +7,17 @@
 <!--    <result property="name" column="name" javaType="java.lang.String" jdbcType="VARCHAR" />-->
 <!--  </resultMap>-->
 
-<!--  <insert id="insertAffiliationList" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="group.iiicestseb.backend.entity.Affiliation">-->
-<!--    insert into-->
-<!--    affiliation(name)-->
-<!--    values-->
-<!--    <foreach collection="affiliationList" item="aff" separator=",">-->
-<!--      (#{aff.name,jdbcType=CHAR})-->
-<!--    </foreach>-->
-<!--  </insert>-->
+  <insert id="insertList" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="group.iiicestseb.backend.entity.Reference">
+    insert into
+    reference(reference_order, text, title, google_scholar_link, ref_type, article_id)
+    values
+    <foreach collection="list" item="ref" separator=",">
+      (#{ref.referenceOrder,jdbcType=INTEGER},
+       #{ref.text,jdbcType=CLOB},
+       #{ref.title,jdbcType=CHAR},
+       #{ref.googleScholarLink,jdbcType=CHAR},
+       #{ref.refType,jdbcType=CHAR},
+       #{ref.articleId,jdbcType=INTEGER})
+    </foreach>
+  </insert>
 </mapper>

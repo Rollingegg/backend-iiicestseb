@@ -1,5 +1,6 @@
 package group.iiicestseb.backend.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -10,21 +11,24 @@ import lombok.NoArgsConstructor;
 import java.util.Objects;
 
 
-
+/**
+ * @author jh
+ * @date 2020/3/25
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("author")
 public class Author {
 
-    @TableId("id")
+    @TableId(value = "id", type = IdType.AUTO)
     private int id;
 
     @TableField("name")
     private String name;
 
-    @TableField("firstname")
-    private String fisrtName;
+    @TableField("first_name")
+    private String firstName;
 
     @TableField("last_name")
     private String lastName;
@@ -44,14 +48,14 @@ public class Author {
         Author that = (Author) o;
         return id == that.id &&
                 Objects.equals(name, that.name) &&
-                Objects.equals(fisrtName, that.fisrtName) &&
+                Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
                 Objects.equals(affiliationId, that.affiliationId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, fisrtName, lastName/*, affiliationId*/);
+        return Objects.hash(id, name, firstName, lastName, affiliationId);
     }
 
 }

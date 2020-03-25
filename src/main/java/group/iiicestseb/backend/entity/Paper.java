@@ -1,24 +1,25 @@
 package group.iiicestseb.backend.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 
-@TableName("paper")
-@Setter
-@Getter
+/**
+ * @author jh
+ * @date 2020/3/25
+ */
+@TableName(value = "paper")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Paper {
-    @TableId("id")
+    @TableId(value = "id", type = IdType.AUTO)
     private int id;
 
     @TableField("pdf_url")
@@ -35,7 +36,6 @@ public class Paper {
 
     @TableField("doi")
     private String doi;
-
 
     @TableField("publication_title")
     private String publicationTitle;

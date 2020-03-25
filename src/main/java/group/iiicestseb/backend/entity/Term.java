@@ -1,23 +1,24 @@
 package group.iiicestseb.backend.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
-@TableName("term")
-@Setter
-@Getter
+/**
+ * @author jh
+ * @date 2020/3/25
+ */
+@TableName(value = "term")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Term {
 
-    @TableId("id")
+    @TableId(value = "id", type = IdType.AUTO)
     private int id;
 
     @TableField("name")

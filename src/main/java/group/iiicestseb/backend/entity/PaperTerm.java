@@ -2,17 +2,17 @@ package group.iiicestseb.backend.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
 
+/**
+ * @author jh
+ * @date 2020/3/25
+ */
 @TableName("paper_term")
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaperTerm {

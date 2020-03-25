@@ -2,10 +2,7 @@ package group.iiicestseb.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Term;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
 import java.util.List;
@@ -31,14 +28,20 @@ public interface TermMapper extends BaseMapper<Term> {
     })
     List<Term> selectByPaperId(Integer paperId);
 
-
-
-
     /**
      * 根据术语名查找术语
      *
      * @param name 术语名
      * @return 术语
      */
-    //Term findByName(String name);
+    @Select("select * from term where name=#{name}")
+    @ResultType(Term.class)
+    Term selectByName(@Param("name") String name);
+
+    /**
+     * 批量存储术语
+     *
+     * @param termList 术语列表
+     */
+    void insertTermList(List<Term> termList);
 }

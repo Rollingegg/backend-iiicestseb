@@ -36,6 +36,10 @@ public interface PaperMapper extends BaseMapper<Paper> {
             @Result(column = "term_id",property = "termList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.LAZY) )
     })
     List<PaperInfoVO> simpleSearchPaperByType(String type, String keywords, Integer limit);
+
+    @Select("select * from paper where article_id=#{articleId}")
+    @ResultType(Paper.class)
+    Paper selectByArticleId(@Param("articleId") Integer articleId);
 //
 //    List<AuthorInfoVO> selectAuthorInfoById(Integer paperId);
 //

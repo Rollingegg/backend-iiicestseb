@@ -23,6 +23,16 @@ public class AffiliationServiceImpl extends ServiceImpl<AffiliationMapper, Affil
     private Regedit regedit;
     @Resource
     private AffiliationMapper affiliationMapper;
+
+    @Override
+    public Affiliation findAffiliationByName(String name) {
+        return affiliationMapper.selectByName(name);
+    }
+
+    @Override
+    public void saveAffiliation(Affiliation affiliation) {
+        save(affiliation);
+    }
 //
 //
 //    @Override

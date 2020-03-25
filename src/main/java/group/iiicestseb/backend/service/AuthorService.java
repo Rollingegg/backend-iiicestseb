@@ -1,8 +1,10 @@
 package group.iiicestseb.backend.service;
 
 
+import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.vo.AuthorInfoVO;
 
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -11,6 +13,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public interface AuthorService {
 
+    /**
+     * 根据作者名查询作者
+     * @param name 作者名
+     * @return 作者PO
+     */
+    Author findAuthorByName(String name);
+
+    /**
+     * 插入作者列表
+     *
+     * @param authorList 作者列表
+     */
+    void insertAuthorList(List<Author> authorList);
 
 
 //    /**

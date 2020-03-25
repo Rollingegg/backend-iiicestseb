@@ -4,16 +4,16 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
+/**
+ * @author jh
+ * @date 2020/3/25
+ */
 @TableName("user")
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -35,7 +35,7 @@ public class User {
         if (this == o) {return true;}
         if (o == null || getClass() != o.getClass()) {return false;}
         User that = (User) o;
-        return id == that.id &&
+        return id.equals(that.id) &&
                 Objects.equals(username, that.username) &&
                 Objects.equals(password, that.password) &&
                 Objects.equals(privilegeLevel, that.privilegeLevel);

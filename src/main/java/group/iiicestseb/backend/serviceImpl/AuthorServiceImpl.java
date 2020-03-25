@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -25,6 +26,19 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
     private Regedit regedit;
     @Resource
     private AuthorMapper authorMapper;
+
+    @Override
+    public Author findAuthorByName(String name) {
+        return authorMapper.selectByName(name);
+    }
+
+    @Override
+    public void insertAuthorList(List<Author> authorList) {
+        if (authorList.isEmpty()) {
+            return;
+        }
+        saveBatch(authorList);
+    }
 //
 //    @Override
 //    public AuthorInfoVO getAuthorInfo(String name) {

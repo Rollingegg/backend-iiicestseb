@@ -1,5 +1,6 @@
 package group.iiicestseb.backend.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -9,14 +10,18 @@ import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
+/**
+ * @author jh
+ * @date 2020/3/25
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("affiliation")
 public class Affiliation {
 
-    @TableId("id")
-    private int id;
+    @TableId(value = "id",type = IdType.AUTO)
+    private Integer id;
 
     @TableField("name")
     private String name;

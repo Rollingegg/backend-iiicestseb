@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import group.iiicestseb.backend.entity.Affiliation;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.ResultType;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,15 +16,15 @@ import org.springframework.stereotype.Service;
 @Mapper
 public interface AffiliationMapper extends BaseMapper<Affiliation> {
 
-
     /**
      * 通过机构名查找机构
      *
      * @param name 机构名
      * @return 机构
      */
-//    @Select("select * from affiliation where name = #{name}")
-//    Affiliation findByName(String name);
+    @Select("select * from affiliation where name = #{name}")
+    @ResultType(Affiliation.class)
+    Affiliation selectByName(String name);
 //    /**
 //     * 通过id删除机构
 //     *

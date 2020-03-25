@@ -18,5 +18,5 @@ public interface RecordMapper extends BaseMapper<Record> {
      * @return 用户浏览记录列表
      */
     @Select("select * from record where user_id = #{userId}")
-    public List<Record> findByUserId(Integer userId);
+    List<Record> findByUserId(Integer userId);
 }

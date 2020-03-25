@@ -2,7 +2,7 @@ package group.iiicestseb.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Conference;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -18,5 +18,7 @@ public interface ConferenceMapper extends BaseMapper<Conference> {
      * @param name 会议名
      * @return 会议
      */
-    Conference findByName(String name);
+    @Select("select * from conference where name=#{name}")
+    @ResultType(Conference.class)
+    Conference findByName(@Param("name") String name);
 }
