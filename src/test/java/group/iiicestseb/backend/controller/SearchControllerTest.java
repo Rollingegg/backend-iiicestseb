@@ -2,6 +2,8 @@ package group.iiicestseb.backend.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import group.iiicestseb.backend.exception.paper.PaperFormException;
+import group.iiicestseb.backend.exception.paper.PaperTypeException;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.service.SearchService;
 import group.iiicestseb.backend.vo.SearchResultVO;
@@ -23,6 +25,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.NestedServletException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +94,57 @@ public class SearchControllerTest {
     }
 
 
+    /**
+     * 搜索出现异常
+     */
+    @Test
+    public void advancedPaperInvalidInfo() throws Exception {
+        AdvancedSearchForm advancedSearchForm = new AdvancedSearchForm();
+        advancedSearchForm.setTermKeyword(null);
+        advancedSearchForm.setTitleKeyword(null);
+        advancedSearchForm.setAllKeyword(null);
+        advancedSearchForm.setAuthorKeyword(null);
+        advancedSearchForm.setDoiKeyword(null);
+        advancedSearchForm.setAffiliationKeyword(null);
+        advancedSearchForm.setPaperAbstractKeyword(null);
+        advancedSearchForm.setType("advanced");
+        //advancedSearchForm.setDoiKeyword("1");
+        advancedSearchForm.setLimit(10);
+        advancedSearchForm.setPage(0);
+        String param = JSON.toJSONString(advancedSearchForm);
+        Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
+        thrown.expect(NestedServletException.class);
+        mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(param)
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperFormException.MSG));
+        Mockito.verify(searchService).advancedSearchPaper(advancedSearchForm);
+
+
+
+
+        advancedSearchForm.setType(null);
+        advancedSearchForm.setAllKeyword("test");
+        //advancedSearchForm.setDoiKeyword("1");
+        advancedSearchForm.setLimit(10);
+        advancedSearchForm.setPage(0);
+        param = JSON.toJSONString(advancedSearchForm);
+        Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
+        thrown.expect(NestedServletException.class);
+        mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(param)
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperTypeException.MESSAGE));
+        Mockito.verify(searchService).advancedSearchPaper(advancedSearchForm);
+    }
 
 
 }
