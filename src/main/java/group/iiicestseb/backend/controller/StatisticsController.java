@@ -5,6 +5,7 @@ import group.iiicestseb.backend.service.StatisticsService;
 import group.iiicestseb.backend.vo.AuthorHotVO;
 import group.iiicestseb.backend.vo.Response;
 import group.iiicestseb.backend.vo.TermWithHotVO;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -19,11 +20,14 @@ import java.util.List;
 @RestController
 @RequestMapping("statistics")
 @CrossOrigin
+@Validated
 public class StatisticsController {
     public static final String CSV_ANALYZE_ERROR = "CSV解析错误，请查阅日志";
     public static final String SHOULD_BE_POSITIVE = "参数应该大于0";
     public static final String PARAM_TOO_LARGE = "参数太大";
     public static final String PARAMETER_ERROR = "参数无效或不合法";
+    public static final String GET_HOT_TERMS_ERROR= "获取热门术语发生严重的未知错误";
+    public static final String GET_MAX_PUBLISH_AUTHOR_ERROR = "获取热门作者发生严重的未知错误";
 
     @Resource(name = "Statistics")
     private StatisticsService statisticsService;
@@ -48,8 +52,7 @@ public class StatisticsController {
             }
             return Response.buildSuccess(termsHot);
         } catch (Exception e) {
-            e.printStackTrace();
-            return Response.buildFailure(e.getMessage());
+            return Response.buildFailure(GET_HOT_TERMS_ERROR);
         }
     }
 
@@ -64,7 +67,7 @@ public class StatisticsController {
     public Response getMaxPublishAuthor(@RequestParam("num")
                                         @Max(value = 500,message = PARAM_TOO_LARGE)
                                         @Min(value = 1,message = SHOULD_BE_POSITIVE)
-                                                Integer num) {
+                                                int num) {
         try {
             List<AuthorHotVO> authorHotVOList = statisticsService.calculateMaxPublishAuthor(num);
             if (authorHotVOList == null){
@@ -72,8 +75,7 @@ public class StatisticsController {
             }
             return Response.buildSuccess(authorHotVOList);
         } catch (Exception e) {
-            e.printStackTrace();
-            return Response.buildFailure(e.getMessage());
+            return Response.buildFailure(GET_MAX_PUBLISH_AUTHOR_ERROR);
         }
     }
 

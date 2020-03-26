@@ -23,8 +23,8 @@ public class UserMapperTest {
 
     @Before
     public void setUp() throws Exception {
-        user.setUsername("test");
-        user.setUsername("hxd");
+        user.setPassword("testtest");
+        user.setUsername("hxdhxd");
     }
 
 
@@ -32,5 +32,6 @@ public class UserMapperTest {
     public void selectByUsername() {
         userMapper.insert(user);
         assertEquals(user.getUsername(),userMapper.findByUsername(user.getUsername()).getUsername());
+        assertEquals(user.getPassword(),userMapper.findByUsername(user.getUsername()).getPassword());
     }
 }

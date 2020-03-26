@@ -22,14 +22,14 @@ public interface AuthorMapper extends BaseMapper<Author> {
      * @param paperId 文献id
      * @return 作者基本信息
      */
-    @Select("select au.id,au.name,aff.id,aff.name " +
+    @Select("select au.id,au.name,aff.id as aff_id,aff.name as aff_name " +
             "from paper_authors pa, author au, affiliation aff " +
-            "where pa.paper_id = #{paperId} and au.id = pa.paper_id and au.affiliation_id = aff.id")
+            "where pa.paper_id = #{paperId} and au.id = pa.author_id and au.affiliation_id = aff.id")
     @Results(id = "AuthorInfoResultMap", value = {
             @Result(column = "id", property = "id", javaType = Integer.class, jdbcType = JdbcType.INTEGER),
             @Result(column = "name", property = "name", javaType = String.class, jdbcType = JdbcType.VARCHAR),
-            @Result(column = "id", property = "affiliationId", javaType = Integer.class, jdbcType = JdbcType.INTEGER),
-            @Result(column = "name", property = "affiliationName", javaType = String.class, jdbcType = JdbcType.VARCHAR)
+            @Result(column = "aff_id", property = "affiliationId", javaType = Integer.class, jdbcType = JdbcType.INTEGER),
+            @Result(column = "aff_name", property = "affiliationName", javaType = String.class, jdbcType = JdbcType.VARCHAR)
     })
     List<AuthorInfoVO> selectAuthorInfoByPaperId(Integer paperId);
 

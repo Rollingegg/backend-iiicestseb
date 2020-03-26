@@ -1,7 +1,7 @@
 package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.form.AdvancedSearchForm;
-import group.iiicestseb.backend.vo.PaperInfoVO;
+import group.iiicestseb.backend.vo.SearchResultVO;
 
 import java.util.List;
 
@@ -11,15 +11,15 @@ import java.util.List;
  */
 public interface SearchService {
 
-    /**
-     * 论文低级检索
-     *
-     * @param type    类型 有 全部/标题/作者/摘要/DOI/机构名
-     * @param keyword 搜索关键字
-     * @param limit   搜索数
-     * @return 论文列表
-     */
-    List<PaperInfoVO> simpleSearchPaper(String type, String keyword, Integer limit);
+//    /**
+//     * 论文低级检索
+//     *
+//     * @param type    类型 有 全部/标题/作者/摘要/DOI/机构名
+//     * @param keyword 搜索关键字
+//     * @param limit   搜索数
+//     * @return 论文列表
+//     */
+//    List<SearchResultVO> simpleSearchPaper(String type, String keyword, Integer limit);
 
     /**
      * 论文高级检索
@@ -27,7 +27,7 @@ public interface SearchService {
      * @param advancedSearchForm 所有搜索关键词表单
      * @return 论文列表
      */
-    List<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm);
+    List<SearchResultVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm);
 //
 
 }

@@ -1,12 +1,13 @@
 package group.iiicestseb.backend.form;
 
+import group.iiicestseb.backend.exception.paper.PaperFormException;
+import group.iiicestseb.backend.exception.paper.PaperTypeException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.validation.constraints.Max;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Min;
 
 /**
  * 高级检索表单
@@ -16,11 +17,38 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdvancedSearchForm {
+    public static final String ALL = "all";
+    public static final String AFFILIATION ="affiliation_name";
+    public static final String TITLE ="title";
+    public static final String ABSTRACT ="paper_abstract";
+    public static final String DOI ="doi";
+    public static final String AUTHOR ="author_name";
+    public static final String TERM ="term";
+    public static final String ADVANCED ="advanced";
+    public static final String LIMIT_ERROR= "limit必须大于0，不超过200";
+    public static final String PAGE_ERROR= "页码必须大于等于0";
+
+
+    /**
+     * 页码
+     */
+    @Min(value = 0,message = PAGE_ERROR)
+    private Integer page;
+
+    /**
+     * 搜索类型
+     */
+    private String type;
+
+    /**
+     * all搜索关键字
+     */
+    private String allKeyword;
 
     /**
      * 文章标题关键字
      */
-    private String paperTitleKeyword;
+    private String titleKeyword;
 
     /**
      * 文章摘要关键字
@@ -48,7 +76,36 @@ public class AdvancedSearchForm {
     private String termKeyword;
 
     /**
-     *
+     * 搜索个数
      */
+    @Min(value = 1,message = LIMIT_ERROR)
+    @Max(value = 200,message = LIMIT_ERROR)
     private Integer limit = 50;
+
+
+
+
+    public void isValid(){
+        if( !(ALL.equals(this.type) ||
+                AFFILIATION.equals(this.type) ||
+                AUTHOR.equals(this.type) ||
+                ABSTRACT.equals(this.type) ||
+                TITLE.equals(this.type) ||
+                TERM.equals(this.type) ||
+                DOI.equals(this.type) ||
+                ADVANCED.equals(this.type)
+                )){
+            throw new PaperTypeException();
+        }
+        if(this.getTermKeyword()== null &&
+                this.getAuthorKeyword()== null &&
+                this.getDoiKeyword()== null &&
+                this.getTitleKeyword() == null &&
+                this.getPaperAbstractKeyword()== null &&
+                this.getAffiliationKeyword()== null  &&
+                this.getAllKeyword()==null){
+            throw new PaperFormException();
+        }
+
+    }
 }

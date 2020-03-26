@@ -11,14 +11,34 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+
 /**
  * @author jh
  * @date 2020/3/4
  */
 @RestControllerAdvice
 public class OASISExceptionHandler {
+
+    //validation异常
+    @ExceptionHandler(ConstraintViolationException.class)
+    public Response handleConstraintViolationException(ConstraintViolationException ex) {
+
+        return Response.buildFailure(ex.getMessage());
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response validateErrorException(MethodArgumentNotValidException ex) {
+        // ex.getFieldError():随机返回一个对象属性的异常信息。如果要一次性返回所有对象属性异常信息，则调用ex.getAllErrors()
+//        FieldError error = ex.getFieldError();
+//        // 生成返回结果
+//        String errorMessage;
+//        if (error != null) {
+//            errorMessage = error.getDefaultMessage();
+//        } else {
+//            errorMessage = ex.getMessage();
+//        }
         final FieldError error = ex.getBindingResult().getFieldError();
         String errorMessage;
         if (error != null) {
@@ -34,6 +54,8 @@ public class OASISExceptionHandler {
 //        return Response.buildFailure(ex.getMessage());
 //    }
 
+
+
     @ExceptionHandler(IllegalArgumentException.class)
     public Response assertErrorException(IllegalArgumentException ex) {
         return Response.buildFailure(ex.getMessage());
@@ -45,23 +67,24 @@ public class OASISExceptionHandler {
     }
 
     @ExceptionHandler(WrongLoginInfoException.class)
-    public Response wrongLoginInfoException(WrongLoginInfoException ex){
+    public Response handleWrongLoginInfoException(WrongLoginInfoException ex){
         return Response.buildFailure(ex.getMessage());
     }
 
     @ExceptionHandler(PaperTypeException.class)
-    public Response paperTypeException(PaperTypeException ex){
+    public Response handlePaperTypeException(PaperTypeException ex){
         return Response.buildFailure(ex.getMessage());
     }
 
     @ExceptionHandler(NoPaperFoundException.class)
-    public Response noPaperFoundException(NoPaperFoundException ex){
+    public Response handleNoPaperFoundException(NoPaperFoundException ex){
         return Response.buildFailure(ex.getMessage());
     }
 
     @ExceptionHandler(PaperFormException.class)
-    public Response paperFormException(PaperFormException ex){
+    public Response handlePaperFormException(PaperFormException ex){
         return Response.buildFailure(ex.getMessage());
     }
+
 
 }

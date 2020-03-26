@@ -4,7 +4,7 @@ import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.service.*;
-import group.iiicestseb.backend.vo.PaperInfoVO;
+import group.iiicestseb.backend.vo.SearchResultVO;
 import group.iiicestseb.backend.vo.UserVO;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -122,13 +122,9 @@ public class RegeditImpl implements Regedit {
 
     //---------------------------SearchService-------------------------------
 
-    @Override
-    public List<PaperInfoVO> simpleSearchPaper(String type, String keyword, Integer limit) {
-        return searchService.simpleSearchPaper(type, keyword, limit);
-    }
 
     @Override
-    public List<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
+    public List<SearchResultVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
         return searchService.advancedSearchPaper(advancedSearchForm);
     }
 

@@ -3,10 +3,12 @@ package group.iiicestseb.backend.controller;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.service.UserService;
 import group.iiicestseb.backend.vo.Response;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -18,6 +20,7 @@ import javax.validation.constraints.Size;
 @ResponseBody
 @CrossOrigin
 @RequestMapping("/user")
+@Validated
 public class UserController {
     @Resource(name = "Regedit")
     private UserService userService;
@@ -27,6 +30,7 @@ public class UserController {
     public static final String IS_EXIST_ERROR = "用户查询出现未知错误";
     public static final String USERNAME_INVALID_LENGTH = "用户名长度要在6至20个字符之间";
     public static final String USERNAME_INVALID_SPACE = "用户名不能包含空格";
+    public static final String USNAME_EMPTY = "用户名不能为空";
 
     /**
      * 用户登录/注册界面 用户登录
@@ -57,7 +61,6 @@ public class UserController {
         } catch (Exception e) {
             return Response.buildFailure(REGISTER_IN_ERROR);
         }
-
     }
 
 
@@ -66,10 +69,11 @@ public class UserController {
      * @param username 用户名
      * @return 无
      */
-    @GetMapping("/judge/{username}")
-    public Response isExist(@PathVariable
-                                @Size(min = 6,max = 20,message = USERNAME_INVALID_LENGTH)
-                                        @Pattern(regexp = "\\S+",message = USERNAME_INVALID_SPACE)
+    @GetMapping("/judge")
+    @Valid
+    public Response isExist(@RequestParam(name = "username") @Size(min = 6,max = 20,message = USERNAME_INVALID_LENGTH)
+                                @Pattern(regexp = "\\S+",message = USERNAME_INVALID_SPACE)
+                                @NotBlank(message = USNAME_EMPTY)
                                         String username) {
         try {
             userService.isExist(username);
@@ -78,4 +82,6 @@ public class UserController {
             return Response.buildFailure(IS_EXIST_ERROR);
         }
     }
+
+
 }

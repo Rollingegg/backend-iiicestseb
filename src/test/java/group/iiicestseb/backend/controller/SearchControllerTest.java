@@ -1,13 +1,16 @@
 package group.iiicestseb.backend.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import group.iiicestseb.backend.entity.Conference;
 import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.entity.Term;
 import group.iiicestseb.backend.exception.paper.PaperTypeException;
+import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.service.SearchService;
 import group.iiicestseb.backend.vo.AuthorInfoVO;
 import group.iiicestseb.backend.vo.PaperInfoVO;
+import group.iiicestseb.backend.vo.SearchResultVO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,28 +51,18 @@ public class SearchControllerTest {
     SearchController searchController;
 
 
-    private List<PaperInfoVO> paperInfoVOList = new ArrayList<>();
-    private Paper paper = new Paper();
-    private Conference conference = new Conference(2, "ieee");
-    //private Author author = new Author(3,"hxd","h","xd",2);
-    private Term term = new Term(3, "test");
-    private AuthorInfoVO authorInfoVO = new AuthorInfoVO(4, "hxd", 5, "nju");
-    private PaperInfoVO paperInfoVO;
+    private List<SearchResultVO> searchResultVOList = new ArrayList<>();
+
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         session = new MockHttpSession();
         mvc = MockMvcBuilders.standaloneSetup(searchController).build();
-        paper.setId(1);
-        List<Term> termList = new ArrayList<>();
-        termList.add(term);
-        AuthorInfoVO authorInfoVO = new AuthorInfoVO();
-        authorInfoVO.setId(4);
-        List<AuthorInfoVO> authorList = new ArrayList<>();
-        authorList.add(authorInfoVO);
-        paperInfoVO = new PaperInfoVO(paper, conference, authorList, termList);
-        paperInfoVOList.add(paperInfoVO);
+
+        SearchResultVO searchResultVO = new SearchResultVO();
+        searchResultVO.setId(1);
+        searchResultVOList.add(searchResultVO);
 
     }
 
@@ -79,73 +72,32 @@ public class SearchControllerTest {
      */
     @Test
     public void simpleSearchPaperSuccess() throws Exception {
-        Mockito.when(searchService.simpleSearchPaper("all", "hxd", 50)).thenReturn(paperInfoVOList);
+        AdvancedSearchForm advancedSearchForm = new AdvancedSearchForm();
+        advancedSearchForm.setTermKeyword(null);
+        advancedSearchForm.setTitleKeyword("a");
+        advancedSearchForm.setAllKeyword("e");
+        advancedSearchForm.setAuthorKeyword("Dool");
+        advancedSearchForm.setDoiKeyword(null);
+        advancedSearchForm.setAffiliationKeyword(null);
+        advancedSearchForm.setPaperAbstractKeyword(null);
+        advancedSearchForm.setType("advanced");
+        //advancedSearchForm.setDoiKeyword("1");
+        advancedSearchForm.setLimit(10);
+        advancedSearchForm.setPage(0);
+        String param = JSON.toJSONString(advancedSearchForm);
+        Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
         mvc.perform(MockMvcRequestBuilders.get("/search/simple")
-                .param("type", "all")
-                .param("keyword", "hxd")
-                .param("limit", "50")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].paper.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].conference.id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].authorInfoList[0].id").value(4))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].termList[0].id").value(3));
-        Mockito.verify(searchService).simpleSearchPaper("all", "hxd", 50);
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].id").value(1));
+        Mockito.verify(searchService).advancedSearchPaper(a);
     }
-
-    /**
-     * 测试搜索类型错误的情况
-     * @throws Exception 搜索类型错误异常
-     */
-    @Test
-    public void simpleSearchPaperTypeError() throws Exception {
-        thrown.expect(NestedServletException.class);
-        mvc.perform(MockMvcRequestBuilders.get("/search/simple")
-                .param("type", "wrongtype")
-                .param("keyword", "hxd")
-                .param("limit", "50")
-                .accept(MediaType.APPLICATION_JSON)
-                .session(session)
-        ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperTypeException.MESSAGE));
-    }
+    
 
 
-    @Test
-    public void advancedSearchPaper() throws Exception {
 
-
-        mvc.perform(MockMvcRequestBuilders.get("/search/advanced")
-                .param("paper_title", "a")
-                .param("paper_abstract", "a")
-                .param("doi", "a")
-                .param("author_name", "a")
-                .param("affiliation_name", "a")
-                .param("term", "programs")
-                .param("limit", "50")
-                .accept(MediaType.APPLICATION_JSON)
-                .session(session)
-        ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
-
-
-        mvc.perform(MockMvcRequestBuilders.get("/search/advanced")
-                .param("paper_title", "aaaaaaaaaa")
-                .param("paper_abstract", "a")
-                .param("doi", "a")
-                .param("author_name", "a")
-                .param("affiliation_name", "a")
-                .param("term", "programs")
-                .param("limit", "50")
-                .accept(MediaType.APPLICATION_JSON)
-                .session(session)
-        ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
-
-    }
 }

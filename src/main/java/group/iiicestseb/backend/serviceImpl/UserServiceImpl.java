@@ -1,9 +1,7 @@
 package group.iiicestseb.backend.serviceImpl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import group.iiicestseb.backend.entity.Record;
-import group.iiicestseb.backend.entity.Term;
 import group.iiicestseb.backend.entity.User;
 import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
 import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
@@ -69,8 +67,4 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 throw new UserAlreadyRegisterException();
             }
     }
-
-    Wrapper<Term> wrapper;
-
-
 }

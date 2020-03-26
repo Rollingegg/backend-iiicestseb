@@ -3,9 +3,12 @@ package group.iiicestseb.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.vo.PaperInfoVO;
+import group.iiicestseb.backend.vo.SearchResultVO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
+import org.apache.ibatis.type.JdbcType;
 
 import java.util.List;
 
@@ -24,39 +27,40 @@ public interface PaperMapper extends BaseMapper<Paper> {
      * @param keywords 搜索关键字
      * @return 文献列表
      */
-    @Select("select p.id, conference_id, pa.author_id, pt.term_id " +
-            "from paper p, paper_authors pa,paper_term pt " +
-            "where pa.paper_id = p.id and pt.paper_id = p.id " +
-            "group by p.id " +
-            "order by p.citation_count_paper desc limit #{limit}")
-    @Results(id = "PaperInfoVOResultMap",value = {
-            @Result(column = "id",property = "paper",one = @One(select = "group.iiicestseb.backend.mapper.PaperMapper.selectById",fetchType = FetchType.LAZY) ),
-            @Result(column = "conference_id",property = "conference",one = @One(select = "group.iiicestseb.backend.mapper.ConferenceMapper.selectById",fetchType = FetchType.LAZY) ),
-            @Result(column = "author_id",property = "authorInfoList",many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId",fetchType = FetchType.LAZY) ),
-            @Result(column = "term_id",property = "termList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.LAZY) )
-    })
-    List<PaperInfoVO> simpleSearchPaperByType(String type, String keywords, Integer limit);
+//    @Select("select p.id, conference_id, pa.author_id, pt.term_id " +
+//            "from paper p, paper_authors pa,paper_term pt " +
+//            "where pa.paper_id = p.id and pt.paper_id = p.id " +
+//            "group by p.id " +
+//            "order by p.citation_count_paper desc limit #{limit}")
+//    @Results(id = "PaperInfoVOResultMap",value = {
+//            @Result(column = "id",property = "paper",one = @One(select = "group.iiicestseb.backend.mapper.PaperMapper.selectById",fetchType = FetchType.LAZY) ),
+//            @Result(column = "conference_id",property = "conference",one = @One(select = "group.iiicestseb.backend.mapper.ConferenceMapper.selectById",fetchType = FetchType.LAZY) ),
+//            @Result(column = "author_id",property = "authorInfoList",many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId",fetchType = FetchType.LAZY) ),
+//            @Result(column = "term_id",property = "termList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.LAZY) )
+//    })
+
+//    @Select("<script>" +
+//            "select p.id,p.title,p.paper_abstract,p.pdf_url,p.citation_count_paper,p.id,p.id " +
+//            "from paper p " +
+//            "where 1=1 " +
+//            "<if test='type==\"doi\"'> " +
+//            " and p.doi like '%${keywords}%'" +
+//            "</if>" +
+//            "</script>")
+//    @Results(id = "SearchResultVOResultMap",value = {
+//            @Result(column = "id",property = "id",jdbcType = JdbcType.INTEGER),
+//            @Result(column = "title",property = "title",jdbcType = JdbcType.VARCHAR),
+//            @Result(column = "paper_abstract",property = "paperAbstract",jdbcType = JdbcType.VARCHAR),
+//            @Result(column = "pdf_url",property = "pdfUrl",jdbcType = JdbcType.VARCHAR),
+//            @Result(column = "citation_count_paper",property = "citationCountPaper",jdbcType = JdbcType.INTEGER),
+//            @Result(column = "id",property = "authorList",many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId",fetchType = FetchType.LAZY) ),
+//            @Result(column = "id",property = "termsList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.LAZY) )
+//    })
+//    List<SearchResultVO> simpleSearchPaperByType(String type, String keywords, Integer limit);
 
     @Select("select * from paper where article_id=#{articleId}")
     @ResultType(Paper.class)
     Paper selectByArticleId(@Param("articleId") Integer articleId);
-//
-//    List<AuthorInfoVO> selectAuthorInfoById(Integer paperId);
-//
-//    List<AuthorInfoVO> selectTermById(Integer paperId);
-//
-//
-//
-//
-//    /**
-//     * 适用于模糊字段查找 全部 类型的简单查询
-//     *
-//     * @param keywords 关键字
-//     * @return 文献列表
-//     */
-//    @Query(value = "select new PaperInfoVO(Paper, ) " +
-//            "from Paper, Conference , Author ,",nativeQuery = true,)
-//    List<PaperInfoVO> simpleSearchPaperAll(String keywords,Integer limit);
 //
 //
 //    /**
@@ -65,26 +69,88 @@ public interface PaperMapper extends BaseMapper<Paper> {
 //     * @param advancedSearchForm 高级检索表单
 //     * @return 论文列表
 //     */
-//    @Select("select " +
-//            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
-//            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
-//            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
-//            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
-//            ",paper_term pt1,term t1 " +
-//            "where (p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
-//            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
-//            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
-//            "(p1.paper_title like '%${advancedSearchForm.paperTitleKeyword}%' OR #{advancedSearchForm.paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
-//            "(p1.paper_abstract like '%${advancedSearchForm.paperAbstractKeyword}%'  OR #{advancedSearchForm.paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +
-//            "(p1.DOI like '%${advancedSearchForm.doiKeyword}%'  OR #{advancedSearchForm.doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
-//            "(au1.name like '%${advancedSearchForm.authorKeyword}%'  OR #{advancedSearchForm.authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
-//            "(af1.name like '%${advancedSearchForm.affiliationKeyword}%'  OR #{advancedSearchForm.affiliationKeyword,jdbcType=VARCHAR} IS NULL) and" +
-//            "(t1.word like '%${advancedSearchForm.termKeyword}%'  OR #{advancedSearchForm.termKeyword,jdbcType=VARCHAR} IS NULL))  " +
-//            "group by p1.id " +
-//            "order by citation_count desc limit #{limit,jdbcType=INTEGER}")
-//    @ResultMap("PaperInfoVOResultMap")
-//    CopyOnWriteArrayList<PaperInfoVO> advancedSearch(AdvancedSearchForm advancedSearchForm,
-//                                                     Integer limit);
+    @Select("<script>" +
+
+
+            "select p.id,p.title,p.paper_abstract,p.pdf_url,p.citation_count_paper,p.id,p.id  " +
+            "from paper p " +
+            //高级搜索
+            "<if test='type==\"advanced\"'> " +
+            ",((select pa.paper_id as key_id " +
+            "from author a, affiliation aff, paper_authors pa " +
+            "where a.id = pa.author_id and a.affiliation_id = aff.id  " +
+            "and ((aff.name is null or aff.name like '%${affiliationKeyword}%') and (a.name is null or a.name like '%${authorKeyword}%'))) as x " +
+            "inner join " +
+            "(select pt.paper_id as key_id " +
+            "from paper_term pt, term t " +
+            "where t.id = pt.term_id " +
+            "and (t.name is null or t.name like '%${termKeyword}%')) as y on(x.key_id = y.key_id) ) " +
+            "where p.id = x.key_id " +
+            "and (p.title is null or p.title like '%${titleKeyword}%') " +
+            "and (p.paper_abstract is null or p.paper_abstract like '%${paperAbstractKeyword}%')" +
+            "and (p.doi is null or p.doi like '%${doiKeyword}%')" +
+            "</if>" +
+            //all搜索
+            "<if test='type==\"all\"'> " +
+            ",((select pa.paper_id as key_id " +
+            "from author a, affiliation aff, paper_authors pa " +
+            "where a.id = pa.author_id and a.affiliation_id = aff.id  " +
+            "and ((aff.name is not null and aff.name like '%${allKeyword}%') or (a.name like '%${allKeyword}%' and a.name is not null))) " +
+            "union " +
+            "(select pt.paper_id as key_id " +
+            "from paper_term pt, term t " +
+            "where t.id = pt.term_id " +
+            "and (t.name is not null and t.name like '%${allKeyword}%'))) as x " +
+            "where p.id = x.key_id  " +
+            "or (p.title like '%${allKeyword}%' and p.title is not null)" +
+            "or (p.paper_abstract like '%${allKeyword}%' and p.paper_abstract is not null)" +
+            "or (p.doi like '%${allKeyword}%' and p.doi is not null)" +
+            "</if>" +
+            //简单搜索术语， 连接文献表
+            "<if test='type==\"affiliation\"'> " +
+            ", paper_term pt, term t " +
+            "where p.id = pt.paper_id and t.id = pt.term_id " +
+            "and t.name like '%${termKeyword}%'" +
+            "</if>" +
+            //简单搜索机构， 连接作者表、机构表
+            "<if test='type==\"affiliation\"'> " +
+            ", author a, paper_authors pa,affiliation aff " +
+            "where p.id = pa.paper_id and a.id = pa.author_id and a.affiliation_id = aff.id " +
+            "and aff.name like '%${affiliationKeyword}%'" +
+            "</if>" +
+            //简单搜索搜索作者 只连接作者表
+            "<if test='type==\"author\"'> " +
+            ", author a, paper_authors pa " +
+            "where p.id = pa.paper_id and a.id = pa.author_id  " +
+            "and a.name like '%${authorKeyword}%'" +
+            "</if>" +
+            //简单搜索 论文的三个信息 无需提前链接
+            "<if test='type==\"doi\" or  type==\"title\" or type==\"paperAbstract\"'> " +
+            "where 1=1 " +
+            "<if test='type==\"doi\"'> " +
+            " and p.doi like '%${doiKeyword}%'" +
+            "</if>" +
+            "<if test='type==\"titleKeyword\"'> " +
+            " and p.title like '%${titleKeyword}%'" +
+            "</if>" +
+            "<if test='type==\"paperAbstract\"'> " +
+            " and p.paper_abstract like '%${paperAbstractKeyword}%'" +
+            "</if>" +
+            "</if> " +
+            "group by p.id " +
+            "order by p.citation_count_paper desc " +
+            "limit 0,#{limit}" +
+            "</script>")
+    @Results(id = "SearchResultVOResultMap",value = {
+            @Result(column = "id",property = "id",jdbcType = JdbcType.INTEGER),
+            @Result(column = "title",property = "title",jdbcType = JdbcType.VARCHAR),
+            @Result(column = "paper_abstract",property = "paperAbstract",jdbcType = JdbcType.VARCHAR),
+            @Result(column = "pdf_url",property = "pdfUrl",jdbcType = JdbcType.VARCHAR),
+            @Result(column = "citation_count_paper",property = "citationCountPaper",jdbcType = JdbcType.INTEGER),
+            @Result(column = "id",property = "authorList",many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId",fetchType = FetchType.LAZY) ),
+            @Result(column = "id",property = "termsList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.LAZY) )}
+    )
+    List<SearchResultVO > advancedSearch(AdvancedSearchForm advancedSearchForm);
 
 
 //    /**

@@ -5,7 +5,7 @@ import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.SearchService;
-import group.iiicestseb.backend.vo.PaperInfoVO;
+import group.iiicestseb.backend.vo.SearchResultVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,24 +32,26 @@ public class SearchServiceImpl implements SearchService {
 
     @Resource
     private PaperMapper paperMapper;
-    @Override
-    public List<PaperInfoVO> simpleSearchPaper(String  type, String keyword, Integer limit){
-        //todo 需要等数据库重构完成才能写
-        List<PaperInfoVO> paperInfoVOList = paperMapper.simpleSearchPaperByType(type,keyword,limit);
-        if (paperInfoVOList.size()==0){
-            throw  new NoPaperFoundException();
-        }
-        return null;
-    }
-
-    @Override
-    public List<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
-
-        //todo 需要等数据库重构完成才能写
-//        List<PaperInfoVO> paperInfoVOList = paperMapper.simpleSearchPaperByType(type,keyword,limit);
-//        if (paperInfoVOList.size()==0){
+//    @Override
+//    public List<SearchResultVO> simpleSearchPaper(String  type, String keyword, Integer limit){
+//        //todo 需要等数据库重构完成才能写
+//        List<SearchResultVO> searchResultVOList = paperMapper.simpleSearchPaperByType(type,keyword,limit);
+//        if (searchResultVOList.size()==0){
 //            throw  new NoPaperFoundException();
 //        }
-        return null;
+//        return searchResultVOList;
+//    }
+
+    @Override
+    public List<SearchResultVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
+
+        //todo 需要等数据库重构完成才能写
+        //分夜
+        advancedSearchForm.setPage(advancedSearchForm.getPage()*advancedSearchForm.getLimit());
+        List<SearchResultVO> result = paperMapper.advancedSearch(advancedSearchForm);
+        if (result.size()==0){
+            throw  new NoPaperFoundException();
+        }
+        return result;
     }
 }

@@ -9,23 +9,6 @@ spring:
     password: IIICEStseB
   jackson:
     time-zone: GMT+8
-
-  jpa:
-    database: mysql
-    show-sql: false
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        generate_statistics: false
-        order_inserts: true
-        order_updates: true
-        order_deletes: true
-        dialect: org.hibernate.dialect.MySQL5Dialect
-        jdbc:
-          batch_size: 100
-          batch_versioned_data: true
-          rewriteBatchedStatements: true
   servlet:
     multipart:
       max-file-size:

@@ -1,36 +1,24 @@
-//package group.iiicestseb.backend.mapper;
-//
-//import group.iiicestseb.backend.entity.*;
-//
-//import group.iiicestseb.backend.form.AdvancedSearchForm;
-//import group.iiicestseb.backend.service.StatisticsService;
-//import group.iiicestseb.backend.utils.DateUtil;
-//import group.iiicestseb.backend.vo.AuthorInfoVO;
-//import group.iiicestseb.backend.vo.PaperInfoVO;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.test.context.junit4.SpringRunner;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import javax.annotation.Resource;
-//
-//import java.time.LocalDateTime;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import static org.junit.Assert.*;
-//@SpringBootTest
-//@RunWith(SpringRunner.class)
-//@Transactional
-//public class PaperMapperTest {
-//    @Resource
-//    private PaperMapper paperMapper;
+package group.iiicestseb.backend.mapper;
+
+import group.iiicestseb.backend.form.AdvancedSearchForm;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+@SpringBootTest
+@RunWith(SpringRunner.class)
+@Transactional
+public class PaperMapperTest {
+    @Resource
+    private PaperMapper paperMapper;
 //    private Paper paper1 = new Paper();
 //    private Paper paper2 = new Paper();
 //    private List<Paper> papers = new ArrayList<>();
-//
+
 //    @Resource
 //    private AuthorMapper authorMapper;
 //    @Resource
@@ -40,11 +28,11 @@
 //
 //    private Author author1 = new Author();
 //    private Author author2 = new Author();
-//
-//
-//
-//    @Before
-//    public void setUp() throws Exception {
+
+
+
+    @Before
+    public void setUp() throws Exception {
 //        paper1.setPaperTitle("a");
 //        paper2.setPaperTitle("b");
 //        paper1.setPaperAbstract("test1");
@@ -56,9 +44,29 @@
 //        papers.add(paper2);
 //
 //        statisticsService.loadExistedCSV("Standard.csv");
-//
-//    }
-//
+
+    }
+
+    @Test
+    public void simpleSearchPaperByType() {
+        AdvancedSearchForm advancedSearchForm = new AdvancedSearchForm();
+        advancedSearchForm.setTermKeyword(null);
+        advancedSearchForm.setTitleKeyword("a");
+        advancedSearchForm.setAllKeyword("e");
+        advancedSearchForm.setAuthorKeyword("Dool");
+        advancedSearchForm.setDoiKeyword(null);
+        advancedSearchForm.setAffiliationKeyword(null);
+        advancedSearchForm.setPaperAbstractKeyword(null);
+        advancedSearchForm.setType("advanced");
+        //advancedSearchForm.setDoiKeyword("1");
+        advancedSearchForm.setLimit(10);
+        advancedSearchForm.setPage(0);
+        System.out.println(paperMapper.advancedSearch(advancedSearchForm));
+
+    }
+
+
+
 //    @Test
 //    public void deleteByPrimaryKey() {
 //        paperMapper.insert(paper1);
@@ -244,7 +252,7 @@
 ////            System.out.println(x);
 ////            System.out.println("testend");
 ////        }
-//
+
 //
 //    }
-//}
+}
