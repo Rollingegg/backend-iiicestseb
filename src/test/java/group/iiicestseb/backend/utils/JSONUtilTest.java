@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
@@ -23,22 +24,18 @@ public class JSONUtilTest {
     private AuthorMapper authorMapper;
     @Resource
     private AffiliationMapper affiliationMapper;
-    @Resource
-    private JSONUtil jsonUtil;
 
-    @Before
-    public void setup(){
-        //jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\Standard.json");
-    }
+
+
 
     @Test
     public void temp() throws Exception{
-//        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_ase13_19(0-605).json");
-        //jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_icse15_19(0-815).json");
-//        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_icse10_14(0-1200).json");
+//        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\ase13_19(605).json");
+//        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\icse15_19(815).json");
+//        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\icse10_14(1200).json");
 
-//        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\new_icse15_19(0-50).json");
-        jsonUtil.analyzeExistedJsonFile("E:\\sec3\\Backend-iiicestseb\\src\\main\\resources\\json\\Standard.json");
+//        jsonUtil.analyzeExistedJsonFile("E:\\codes\\backend\\src\\main\\resources\\json\\icse15_19(50).json");
+//        JSONUtil.loadTestData();
         System.out.println();
     }
 
