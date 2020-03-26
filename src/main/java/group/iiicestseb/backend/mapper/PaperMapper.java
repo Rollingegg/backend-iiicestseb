@@ -139,7 +139,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "</if> " +
             "group by p.id " +
             "order by p.citation_count_paper desc " +
-            "limit 0,#{limit}" +
+            "limit #{page},#{limit}" +
             "</script>")
     @Results(id = "SearchResultVOResultMap",value = {
             @Result(column = "id",property = "id",jdbcType = JdbcType.INTEGER),

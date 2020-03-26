@@ -232,6 +232,7 @@ public class JSONUtil {
      */
     public static void loadTestData() {
         analyzeExistedJsonFile(STANDARD_JSON_FILE);
+        //analyzeExistedJsonFile("icse15_19(50)");
     }
 
     /**

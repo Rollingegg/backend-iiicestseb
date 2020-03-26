@@ -118,7 +118,7 @@ spring:
   profiles: wph
   datasource:
     password: shengdasogood
-    url: jdbc:mysql://localhost:3306/iiicestseb?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+    url: jdbc:mysql://localhost:3306/iiicestseb?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
 
     hikari:
       max-lifetime: 3600000
