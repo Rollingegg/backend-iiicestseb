@@ -7,6 +7,10 @@ spring:
     url: jdbc:mysql://3.dwxh.xyz:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: IIICEStseB
+
+
+
+
   jackson:
     time-zone: GMT+8
   servlet:
@@ -124,6 +128,14 @@ spring:
       max-lifetime: 3600000
     username: root
     driver-class-name: com.mysql.jdbc.Driver
+    druid:
+      initial-size: 1
+      min-idle: 1
+      max-active: 200
+      test-on-borrow: true
+      stat-view-servlet:
+        allow: true
+
   jpa:
     database: mysql
     show-sql: false
