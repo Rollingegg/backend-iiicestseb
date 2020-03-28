@@ -26,7 +26,7 @@ public class StatisticsController {
     public static final String SHOULD_BE_POSITIVE = "参数应该大于0";
     public static final String PARAM_TOO_LARGE = "参数太大";
     public static final String PARAMETER_ERROR = "参数无效或不合法";
-    public static final String GET_HOT_TERMS_ERROR= "获取热门术语发生严重的未知错误";
+    public static final String GET_HOT_TERMS_ERROR = "获取热门术语发生严重的未知错误";
     public static final String GET_MAX_PUBLISH_AUTHOR_ERROR = "获取热门作者发生严重的未知错误";
 
     @Resource(name = "Statistics")
@@ -42,18 +42,16 @@ public class StatisticsController {
      */
     @GetMapping("hotTerms")
     public Response getHotTerms(@RequestParam("num")
-                                @Max(value = 500,message = PARAM_TOO_LARGE)
-                                @Min(value = 1,message = SHOULD_BE_POSITIVE)
+                                @Max(value = 500, message = PARAM_TOO_LARGE)
+                                @Min(value = 1, message = SHOULD_BE_POSITIVE)
                                         Integer num) {
-        try {
-            List<TermWithHotVO> termsHot = statisticsService.calculateHotTerms(num);
-            if (termsHot == null){
-                return Response.buildSuccess();
-            }
-            return Response.buildSuccess(termsHot);
-        } catch (Exception e) {
-            throw e;
+
+        List<TermWithHotVO> termsHot = statisticsService.calculateHotTerms(num);
+        if (termsHot == null) {
+            return Response.buildSuccess();
         }
+        return Response.buildSuccess(termsHot);
+
     }
 
 
@@ -65,18 +63,15 @@ public class StatisticsController {
      */
     @GetMapping("/maxPublishAuthor")
     public Response getMaxPublishAuthor(@RequestParam("num")
-                                        @Max(value = 500,message = PARAM_TOO_LARGE)
-                                        @Min(value = 1,message = SHOULD_BE_POSITIVE)
+                                        @Max(value = 500, message = PARAM_TOO_LARGE)
+                                        @Min(value = 1, message = SHOULD_BE_POSITIVE)
                                                 int num) {
-        try {
-            List<AuthorHotVO> authorHotVOList = statisticsService.calculateMaxPublishAuthor(num);
-            if (authorHotVOList == null){
-                return Response.buildSuccess();
-            }
-            return Response.buildSuccess(authorHotVOList);
-        } catch (Exception e) {
-            throw e;
+
+        List<AuthorHotVO> authorHotVOList = statisticsService.calculateMaxPublishAuthor(num);
+        if (authorHotVOList == null) {
+            return Response.buildSuccess();
         }
+        return Response.buildSuccess(authorHotVOList);
     }
 
 

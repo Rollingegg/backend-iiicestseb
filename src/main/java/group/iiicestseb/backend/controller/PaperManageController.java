@@ -24,7 +24,7 @@ public class PaperManageController {
     @Resource(name = "Paper")
     private PaperManageService paperManageService;
 
-    public static  final String DELETE_PAPER_ERROR = "删除文献出现位置错误";
+    public static final String DELETE_PAPER_ERROR = "删除文献出现位置错误";
 
     public static final String CSV_ANALYZE_ERROR = "CSV解析错误，请查阅日志";
     public static final String SHOULD_BE_POSITIVE = "参数应该大于0";
@@ -35,17 +35,15 @@ public class PaperManageController {
 
     /**
      * 管理员删除论文
+     *
      * @param id 论文id
      * @return 无
      */
     @DeleteMapping("/delete")
-    public Response deletePaper(@RequestParam("id")int id){
-        try {
-            paperManageService.deletePaperById(id);
-            return Response.buildSuccess();
-        }catch (Exception e){
-            throw e;
-        }
+    public Response deletePaper(@RequestParam("id") int id) {
+
+        paperManageService.deletePaperById(id);
+        return Response.buildSuccess();
     }
 
     /**
@@ -117,6 +115,4 @@ public class PaperManageController {
         }
         return Response.buildSuccess();
     }
-
-
 }

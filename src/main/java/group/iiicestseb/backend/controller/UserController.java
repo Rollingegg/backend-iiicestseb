@@ -1,7 +1,5 @@
 package group.iiicestseb.backend.controller;
 
-import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
-import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.service.UserService;
 import group.iiicestseb.backend.vo.Response;
@@ -41,13 +39,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public Response signIn(@RequestBody @Valid UserForm userForm) {
-        try {
-            return Response.buildSuccess(userService.signIn(userForm));
-        }catch (WrongLoginInfoException ex){
-            throw ex;
-        } catch (Exception e) {
-            throw e;
-        }
+        return Response.buildSuccess(userService.signIn(userForm));
     }
 
     /**
@@ -59,14 +51,8 @@ public class UserController {
     @PostMapping("/register")
     public Response register(@RequestBody @Valid UserForm userForm) {
 
-        try {
-            userService.register(userForm);
-            return Response.buildSuccess();
-        } catch (UserAlreadyRegisterException ex){
-            throw ex;
-        } catch (Exception e) {
-            throw e;
-        }
+        userService.register(userForm);
+        return Response.buildSuccess();
     }
 
 
@@ -80,14 +66,9 @@ public class UserController {
     public Response isExist(@RequestParam(name = "username") @Size(min = 4,max = 20,message = UserForm.USERNAME_LENGTH_INVALID)
                                 @Pattern(regexp = "\\S+",message = UserForm.USERNAME_CONTAIN_SPACE)
                                         String username) {
-        try {
-            userService.isExist(username);
-            return Response.buildSuccess();
-        } catch (UserAlreadyRegisterException ex) {
-            throw ex;
-        } catch (Exception ex){
-            throw ex;
-        }
+
+        userService.isExist(username);
+        return Response.buildSuccess();
     }
 
 
