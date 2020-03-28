@@ -130,7 +130,8 @@
 				<version>0.8.3</version>
 				<configuration>
 					<includes>
-						<include>/**/*</include>
+						<include>**/*Controller*</include>
+						<include>**/*ServiceImpl*</include>
 					</includes>
 					<propertyName>surefireArgLine</propertyName>
 <!--					<includes>-->
