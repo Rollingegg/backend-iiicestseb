@@ -33,6 +33,12 @@ public class SearchServiceTest extends EasyMockSupport {
         List<SearchResultVO> searchResultVOList = new CopyOnWriteArrayList<SearchResultVO>();
         SearchResultVO searchResultVO = new SearchResultVO();
         searchResultVO.setId(1);
+        searchResultVO.setCitationCountPaper(1);
+        searchResultVO.setPdfUrl("www");
+        searchResultVO.setTitle("do");
+        searchResultVO.setPaperAbstract("nothing");
+        searchResultVO.setAuthorList(null);
+        searchResultVO.setTermsList(null);
         searchResultVOList.add(searchResultVO);
         AdvancedSearchForm form = new AdvancedSearchForm();
         form.setType("all");
@@ -41,7 +47,7 @@ public class SearchServiceTest extends EasyMockSupport {
         EasyMock.expect(paperMapper.advancedSearch(EasyMock.anyObject())).andReturn(searchResultVOList);
         replayAll();
         //searchService.advancedSearchPaper(form);
-        assertEquals(1,(int)searchService.advancedSearchPaper(form).get(0).getId());
+        assertEquals(searchResultVO,searchService.advancedSearchPaper(form).get(0));
         verifyAll();
     }
 

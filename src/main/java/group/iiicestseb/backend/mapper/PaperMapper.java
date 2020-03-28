@@ -4,7 +4,6 @@ package group.iiicestseb.backend.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
-import group.iiicestseb.backend.vo.PaperInfoVO;
 import group.iiicestseb.backend.vo.SearchResultVO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;

@@ -2,10 +2,8 @@ package group.iiicestseb.backend.service;
 
 
 import group.iiicestseb.backend.entity.Author;
-import group.iiicestseb.backend.vo.AuthorInfoVO;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author wph
