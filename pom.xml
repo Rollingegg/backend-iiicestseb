@@ -129,9 +129,15 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.3</version>
 				<configuration>
+					<includes>
+						<include>/**/*</include>
+					</includes>
 					<propertyName>surefireArgLine</propertyName>
 <!--					<includes>-->
-<!--						<include>/**/*Test.java</include>-->
+<!--					<includes>-->
+<!--						<include>**/*Controller.class</include>-->
+<!--						<include>**/*ServiceImpl.class</include>-->
+<!--					</includes>-->
 <!--					</includes>-->
 				</configuration>
 				<executions>
@@ -142,8 +148,8 @@
 						</goals>
 						<configuration>
 							<includes>
-								<include>**/*Controller.class</include>
-								<include>**/*ServiceImpl.class</include>
+								<include>**/*Controller*</include>
+								<include>**/*ServiceImpl*</include>
 							</includes>
 						</configuration>
 					</execution>
@@ -155,8 +161,8 @@
 						</goals>
 						<configuration>
 							<includes>
-								<include>**/*Controller.class</include>
-								<include>**/*ServiceImpl.class</include>
+								<include>**/*Controller*</include>
+								<include>**/*ServiceImpl*</include>
 							</includes>
 						</configuration>
 					</execution>
@@ -168,7 +174,7 @@
 				<version>2.19</version>
 				<configuration>
 					<includes>
-						<include>/**/*Test.java</include>
+						<include>/**/*</include>
 					</includes>
 					<argLine>${surefireArgLine}</argLine>
 				</configuration>
