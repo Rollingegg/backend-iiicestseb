@@ -1,5 +1,6 @@
 package group.iiicestseb.backend.controller;
 
+import group.iiicestseb.backend.exception.paper.JSONAnalyzeException;
 import group.iiicestseb.backend.service.PaperManageService;
 import group.iiicestseb.backend.utils.JSONUtil;
 import group.iiicestseb.backend.vo.Response;
@@ -76,19 +77,7 @@ public class PaperManageController {
      */
     @GetMapping("/StandardJSON")
     public Response getStandardJSON(HttpServletResponse response) {
-        response.setHeader("content-type", "application/octet-stream; charset=utf-8");
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Standard.json";
-        response.setHeader(headerKey, headerValue);
-        response.setContentType("application/octet-stream");
-        ClassPathResource file = new ClassPathResource("json/Standard.json");
-        try {
-            response.getOutputStream().write(file.getInputStream().readAllBytes());
-            response.setContentLength(Math.toIntExact(file.contentLength()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            Response.buildFailure(UNKNOWN_ERROR);
-        }
+        JSONUtil.getStandardJSON(response);
         return Response.buildSuccess();
     }
 
