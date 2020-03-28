@@ -32,8 +32,6 @@ import java.io.FileInputStream;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        TransactionalTestExecutionListener.class})
 @Transactional
 public class PaperManageControllerTest {
     @Autowired

@@ -24,10 +24,7 @@ import java.util.List;
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        TransactionalTestExecutionListener.class})
 @Transactional
-@WebAppConfiguration
 public class PaperMapperTest {
     @Resource
     private PaperMapper paperMapper;
