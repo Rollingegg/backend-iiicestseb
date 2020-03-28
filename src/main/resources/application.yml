@@ -4,11 +4,17 @@ spring:
   datasource:
     type: com.mysql.cj.jdbc.MysqlDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.dwxh.xyz:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://3.dwxh.xyz:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
     username: root
     password: IIICEStseB
 
-
+    druid:
+      initial-size: 1
+      min-idle: 1
+      max-active: 200
+      test-on-borrow: true
+      stat-view-servlet:
+        allow: true
 
 
   jackson:
@@ -136,22 +142,22 @@ spring:
       stat-view-servlet:
         allow: true
 
-  jpa:
-    database: mysql
-    show-sql: false
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        generate_statistics: false
-        order_inserts: true
-        order_updates: true
-        order_deletes: true
-        dialect: org.hibernate.dialect.MySQL5Dialect
-        jdbc:
-          batch_size: 200
-          batch_versioned_data: true
-          rewriteBatchedStatements: true
+#  jpa:
+#    database: mysql
+#    show-sql: false
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        generate_statistics: false
+#        order_inserts: true
+#        order_updates: true
+#        order_deletes: true
+#        dialect: org.hibernate.dialect.MySQL5Dialect
+#        jdbc:
+#          batch_size: 200
+#          batch_versioned_data: true
+#          rewriteBatchedStatements: true
 
   devtools:
     add-properties: true
