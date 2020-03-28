@@ -44,7 +44,7 @@ public class OASISExceptionHandler {
         } else {
             errorMessage = ex.getMessage();
         }
-        String msg = errorMessage.substring(errorMessage.indexOf(":")+2);
+        String msg = errorMessage.substring(errorMessage.indexOf(":")+1);
         if (msg.indexOf(",")!=-1){
             msg =msg.substring(0,msg.indexOf(","));
         }

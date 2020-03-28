@@ -99,53 +99,53 @@ public class StatisticsControllerTest {
         Mockito.verify(statisticsService).calculateMaxPublishAuthor(param);
     }
 
-    /**
-     * 获取热度术语产生严重错误
-     * @throws Exception 未知错误
-     */
-    @Test
-    public void getHotTermsParamError() throws Exception {
-        Integer param = 50;
-        ArrayList<TermWithHotVO> termWithHotVOArrayList = new ArrayList<>();
-        TermWithHotVO termWithHotVO_1 = new TermWithHotVO(1,"a",2);
-        TermWithHotVO termWithHotVO_2 = new TermWithHotVO(2,"b",555);
-        termWithHotVOArrayList.add(termWithHotVO_1);
-        termWithHotVOArrayList.add(termWithHotVO_2);
-
-        Mockito.when(statisticsService.calculateHotTerms(param)).thenThrow(new RuntimeException());
-        mvc.perform(MockMvcRequestBuilders.get("/statistics/hotTerms")
-                .param("num", Integer.toString(param))
-                .accept(MediaType.APPLICATION_JSON)
-                .session(session)
-        ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(StatisticsController.GET_HOT_TERMS_ERROR));
-        Mockito.verify(statisticsService).calculateHotTerms(param);
-    }
-
-
-    /**
-     * 获取热度作者出现未知错误
-     * @throws Exception 未知错误
-     */
-    @Test
-    public void getMaxPublishAuthorError() throws Exception {
-        int param = 5;
-        List<AuthorHotVO> authorHotVOList = new ArrayList<>();
-        AuthorHotVO authorHotVO_1 = new AuthorHotVO(1,"jh","nju",100);
-        AuthorHotVO authorHotVO_2 = new AuthorHotVO(2,"hxd","zju",200);
-        authorHotVOList.add(authorHotVO_1);
-        authorHotVOList.add(authorHotVO_2);
-        Mockito.when(statisticsService.calculateMaxPublishAuthor(param)).thenThrow(new RuntimeException());
-        mvc.perform(MockMvcRequestBuilders.get("/statistics/maxPublishAuthor")
-                .param("num", Integer.toString(param))
-                .accept(MediaType.APPLICATION_JSON)
-                .session(session)
-        ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(StatisticsController.GET_MAX_PUBLISH_AUTHOR_ERROR));
-        Mockito.verify(statisticsService).calculateMaxPublishAuthor(param);
-    }
+//    /**
+//     * 获取热度术语产生严重错误
+//     * @throws Exception 未知错误
+//     */
+//    @Test
+//    public void getHotTermsParamError() throws Exception {
+//        Integer param = 50;
+//        ArrayList<TermWithHotVO> termWithHotVOArrayList = new ArrayList<>();
+//        TermWithHotVO termWithHotVO_1 = new TermWithHotVO(1,"a",2);
+//        TermWithHotVO termWithHotVO_2 = new TermWithHotVO(2,"b",555);
+//        termWithHotVOArrayList.add(termWithHotVO_1);
+//        termWithHotVOArrayList.add(termWithHotVO_2);
+//
+//        Mockito.when(statisticsService.calculateHotTerms(param)).thenThrow(new RuntimeException());
+//        mvc.perform(MockMvcRequestBuilders.get("/statistics/hotTerms")
+//                .param("num", Integer.toString(param))
+//                .accept(MediaType.APPLICATION_JSON)
+//                .session(session)
+//        ).andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(StatisticsController.GET_HOT_TERMS_ERROR));
+//        Mockito.verify(statisticsService).calculateHotTerms(param);
+//    }
+//
+//
+//    /**
+//     * 获取热度作者出现未知错误
+//     * @throws Exception 未知错误
+//     */
+//    @Test
+//    public void getMaxPublishAuthorError() throws Exception {
+//        int param = 5;
+//        List<AuthorHotVO> authorHotVOList = new ArrayList<>();
+//        AuthorHotVO authorHotVO_1 = new AuthorHotVO(1,"jh","nju",100);
+//        AuthorHotVO authorHotVO_2 = new AuthorHotVO(2,"hxd","zju",200);
+//        authorHotVOList.add(authorHotVO_1);
+//        authorHotVOList.add(authorHotVO_2);
+//        Mockito.when(statisticsService.calculateMaxPublishAuthor(param)).thenThrow(new RuntimeException());
+//        mvc.perform(MockMvcRequestBuilders.get("/statistics/maxPublishAuthor")
+//                .param("num", Integer.toString(param))
+//                .accept(MediaType.APPLICATION_JSON)
+//                .session(session)
+//        ).andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(StatisticsController.GET_MAX_PUBLISH_AUTHOR_ERROR));
+//        Mockito.verify(statisticsService).calculateMaxPublishAuthor(param);
+//    }
 
 
 

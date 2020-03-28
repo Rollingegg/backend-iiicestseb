@@ -38,13 +38,14 @@ public class SearchControllerTest {
     @Autowired
     private WebApplicationContext wac;
     private MockMvc mvc;
+    private MockMvc mvcStandalone;
     private MockHttpSession session;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Mock
-    SearchService searchService;
+    SearchService searchServiceStub;
     @InjectMocks
     SearchController searchController;
 
@@ -57,6 +58,7 @@ public class SearchControllerTest {
         MockitoAnnotations.initMocks(this);
         session = new MockHttpSession();
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mvcStandalone = MockMvcBuilders.standaloneSetup(searchController).build();
 
         SearchResultVO searchResultVO = new SearchResultVO();
         searchResultVO.setId(1);
@@ -83,8 +85,8 @@ public class SearchControllerTest {
         advancedSearchForm.setLimit(10);
         advancedSearchForm.setPage(0);
         String param = JSON.toJSONString(advancedSearchForm);
-        Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
-        mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
+        Mockito.when(searchServiceStub.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
+        mvcStandalone.perform(MockMvcRequestBuilders.post("/search/advanced")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(param)
                 .accept(MediaType.APPLICATION_JSON)
@@ -92,7 +94,7 @@ public class SearchControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].id").value(1));
-        Mockito.verify(searchService).advancedSearchPaper(advancedSearchForm);
+        Mockito.verify(searchServiceStub).advancedSearchPaper(advancedSearchForm);
     }
 
 
@@ -115,6 +117,7 @@ public class SearchControllerTest {
         advancedSearchForm.setPage(0);
         String param = JSON.toJSONString(advancedSearchForm);
         //Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
+
         mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(param)
@@ -147,11 +150,11 @@ public class SearchControllerTest {
 
 
         advancedSearchForm.setType("all");
-        advancedSearchForm.setLimit(0);
-        advancedSearchForm.setType(null);
+        advancedSearchForm.setLimit(500);
+        advancedSearchForm.setType("all");
         advancedSearchForm.setAllKeyword("test");
         //advancedSearchForm.setDoiKeyword("1");
-        advancedSearchForm.setLimit(10);
+        //advancedSearchForm.setLimit(10);
         advancedSearchForm.setPage(0);
         param = JSON.toJSONString(advancedSearchForm);
         //Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);

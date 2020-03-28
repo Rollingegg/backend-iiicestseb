@@ -33,6 +33,7 @@ public class PaperManageControllerTest {
     WebApplicationContext wac;
 
     private MockMvc mvc;
+    private MockMvc mvcStadalone;
     private MockHttpSession session;
 
     @Mock
@@ -46,6 +47,7 @@ public class PaperManageControllerTest {
         JSONUtil.loadTestData();
         MockitoAnnotations.initMocks(this);
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mvcStadalone = MockMvcBuilders.standaloneSetup(paperManageController).build();
         session = new MockHttpSession();
     }
 
@@ -54,7 +56,7 @@ public class PaperManageControllerTest {
     public void DeletePaperSuccess() throws Exception {
 
         Mockito.doNothing().when(paperManageService).deletePaperById(1);
-        mvc.perform(MockMvcRequestBuilders.delete("/admin/paper/delete")
+        mvcStadalone.perform(MockMvcRequestBuilders.delete("/admin/paper/delete")
                 .param("id", "1")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)

@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 /**
  * @author jh
@@ -42,7 +43,7 @@ public class SearchController {
      * @return 论文列表
      */
     @PostMapping("/advanced")
-    public Response advancedSearchPaper(@RequestBody AdvancedSearchForm advancedSearchForm){
+    public Response advancedSearchPaper(@RequestBody @Valid AdvancedSearchForm advancedSearchForm){
         advancedSearchForm.isValid();
         try{
             List<SearchResultVO> searchResult= searchService.advancedSearchPaper(advancedSearchForm);
