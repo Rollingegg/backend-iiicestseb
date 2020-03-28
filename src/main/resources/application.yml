@@ -186,6 +186,7 @@ logging:
     org.engine.QueryParameters: debug
     org.hibernate.engine.query.HQLQueryPlan: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
+
     group:
       iiicestseb:
         backend:

@@ -1,4 +1,5 @@
-import group.iiicestseb.backend.controller.PaperManageController;
+package group.iiicestseb.backend.controller;
+
 import group.iiicestseb.backend.service.PaperManageService;
 import group.iiicestseb.backend.utils.JSONUtil;
 import org.junit.Before;
@@ -26,8 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.FileInputStream;
-
-package group.iiicestseb.backend.controller;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
