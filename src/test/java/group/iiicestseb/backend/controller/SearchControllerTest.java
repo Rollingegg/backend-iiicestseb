@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
@@ -25,7 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.NestedServletException;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,8 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @Transactional
 public class SearchControllerTest {
-
+    @Autowired
+    private WebApplicationContext wac;
     private MockMvc mvc;
     private MockHttpSession session;
 
@@ -54,7 +56,7 @@ public class SearchControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         session = new MockHttpSession();
-        mvc = MockMvcBuilders.standaloneSetup(searchController).build();
+        mvc = MockMvcBuilders.webAppContextSetup(wac).build();
 
         SearchResultVO searchResultVO = new SearchResultVO();
         searchResultVO.setId(1);
@@ -112,17 +114,16 @@ public class SearchControllerTest {
         advancedSearchForm.setLimit(10);
         advancedSearchForm.setPage(0);
         String param = JSON.toJSONString(advancedSearchForm);
-        Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
-        thrown.expect(NestedServletException.class);
+        //Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
         mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperFormException.MSG));
-        Mockito.verify(searchService).advancedSearchPaper(advancedSearchForm);
+        //Mockito.verify(searchService).advancedSearchPaper(advancedSearchForm);
 
 
 
@@ -133,17 +134,52 @@ public class SearchControllerTest {
         advancedSearchForm.setLimit(10);
         advancedSearchForm.setPage(0);
         param = JSON.toJSONString(advancedSearchForm);
-        Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
-        thrown.expect(NestedServletException.class);
+        //Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
         mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperTypeException.MESSAGE));
-        Mockito.verify(searchService).advancedSearchPaper(advancedSearchForm);
+        //Mockito.verify(searchService).advancedSearchPaper(advancedSearchForm);
+
+
+        advancedSearchForm.setType("all");
+        advancedSearchForm.setLimit(0);
+        advancedSearchForm.setType(null);
+        advancedSearchForm.setAllKeyword("test");
+        //advancedSearchForm.setDoiKeyword("1");
+        advancedSearchForm.setLimit(10);
+        advancedSearchForm.setPage(0);
+        param = JSON.toJSONString(advancedSearchForm);
+        //Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
+        mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(param)
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(AdvancedSearchForm.LIMIT_ERROR));
+
+
+
+        advancedSearchForm.setLimit(10);
+        advancedSearchForm.setPage(-1);
+        param = JSON.toJSONString(advancedSearchForm);
+        //Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
+        mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(param)
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(AdvancedSearchForm.PAGE_ERROR));
+
+
     }
 
 

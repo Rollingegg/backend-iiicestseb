@@ -2,10 +2,11 @@ package group.iiicestseb.backend.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
+import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.service.UserService;
 import group.iiicestseb.backend.vo.UserVO;
-import org.easymock.EasyMockSupport;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,50 +16,54 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.util.NestedServletException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class UserControllerTest extends EasyMockSupport {
-
+//使用这个Annotate会在跑单元测试的时候真实的启一个web服务，然后开始调用Controller的Rest API，待单元测试跑完之后再将web服务停掉;
+@WebAppConfiguration
+public class UserControllerTest{
+    @Autowired
+    public WebApplicationContext wac;
     private MockMvc mvc;
+    private MockMvc mvcStandalone;
     private MockHttpSession session;
 
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
     @Mock
-    private UserService userService;
-
-    private UserForm userForm = new UserForm();
-    private UserVO userVO = new UserVO();
-
+    private UserService userServiceStub;
     @InjectMocks
-    private UserController userController = new UserController();
+    private UserController userControllerUnit = new UserController();
+
+
+    private UserVO userVO = new UserVO();
 
     @Before
     public void setUp() throws Exception {
-        mvc = MockMvcBuilders.standaloneSetup(userController).build();
+        mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mvcStandalone = MockMvcBuilders.standaloneSetup(userControllerUnit).build();
         session = new MockHttpSession();
         //加入session
-
-        userForm.setPassword("testtest");
-        userForm.setUsername("hxdhxdhxf");
 
         MockitoAnnotations.initMocks(this);
 
         userVO.setPrivilegeLevel("用户");
-        userVO.setUsername("hxdhxd");
+        userVO.setUsername("testtest");
 
     }
 
@@ -67,58 +72,56 @@ public class UserControllerTest extends EasyMockSupport {
      * @throws Exception 无
      */
     @Test
-    public void signIn() throws Exception {
+    public void signInFail() throws Exception {
+        UserForm userForm = new UserForm("testtest","testhxd");
         String param = JSON.toJSONString(userForm);
-        Mockito.when(userService.signIn(userForm)).thenReturn(userVO);
+        Mockito.when(userServiceStub.signIn(Mockito.any(UserForm.class))).thenThrow(new WrongLoginInfoException());
+        thrown.expect(NestedServletException.class);
+        thrown.expectMessage(WrongLoginInfoException.MSG);
+        mvcStandalone.perform(MockMvcRequestBuilders.post("/user/login")
+                .contentType(MediaType.APPLICATION_JSON).content(param)
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session));
+        Mockito.verify(userServiceStub).signIn(userForm);
+    }
 
-        mvc.perform(MockMvcRequestBuilders.post("/user/login")
+    /**
+     * 正常登录
+     * @throws Exception 无
+     */
+    @Test
+    public void signInSuccess() throws Exception {
+        UserForm userForm = new UserForm("testtest","testhxd");
+        String param = JSON.toJSONString(userForm);
+        Mockito.when(userServiceStub.signIn(Mockito.any(UserForm.class))).thenReturn(userVO);
+        mvcStandalone.perform(MockMvcRequestBuilders.post("/user/login")
                 .contentType(MediaType.APPLICATION_JSON).content(param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result.username").value("hxdhxd"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                //.andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.username").value("testtest"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.privilegeLevel").value("用户"));
-        Mockito.verify(userService).signIn(userForm);
-    }
-
-    /**
-     * 发生严重的未知登录错误
-     * @throws Exception 登录未知错误
-     */
-    @Test
-    public void signInError() throws Exception {
-        String param = JSON.toJSONString(userForm);
-        Mockito.when(userService.signIn(userForm)).thenThrow(new RuntimeException());
-
-        //thrown.expect(NestedServletException.class);
-        mvc.perform(MockMvcRequestBuilders.post("/user/login")
-                .contentType(MediaType.APPLICATION_JSON).content(param)
-                .accept(MediaType.APPLICATION_JSON)
-                .session(session))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(UserController.SIGN_IN_ERROR));
-        Mockito.verify(userService).signIn(userForm);
+        Mockito.verify(userServiceStub).signIn(userForm);
     }
 
 
     /**
-     * 发生严重的未知注册错误
-     * @throws Exception 注册未知错误
+     * 注册成功
+     * @throws Exception 无
      */
     @Test
-    public void registerError() throws Exception {
+    public void registerSuccess() throws Exception {
+        UserForm userForm = new UserForm("testtest","testhxd");
         String param = JSON.toJSONString(userForm);
-        Mockito.doThrow(new RuntimeException()).when(userService).register(userForm);
-        mvc.perform(MockMvcRequestBuilders.post("/user/register")
+        Mockito.doNothing().when(userServiceStub).register(userForm);
+        mvcStandalone.perform(MockMvcRequestBuilders.post("/user/register")
                 .contentType(MediaType.APPLICATION_JSON).content(param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(UserController.REGISTER_IN_ERROR));
-        Mockito.verify(userService).register(userForm);
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"));
+        Mockito.verify(userServiceStub).register(userForm);
     }
 
     /**
@@ -126,103 +129,75 @@ public class UserControllerTest extends EasyMockSupport {
      * @throws Exception 无
      */
     @Test
-    public void register() throws Exception {
+    public void registerFail() throws Exception {
+        UserForm userForm = new UserForm("testtest","testhxd");
         String param = JSON.toJSONString(userForm);
-        Mockito.doNothing().when(userService).register(userForm);
-
-        mvc.perform(MockMvcRequestBuilders.post("/user/register")
+        Mockito.doThrow(new UserAlreadyRegisterException()).when(userServiceStub).register(userForm);
+        thrown.expectMessage(UserAlreadyRegisterException.MSG);
+        mvcStandalone.perform(MockMvcRequestBuilders.post("/user/register")
                 .contentType(MediaType.APPLICATION_JSON).content(param)
                 .accept(MediaType.APPLICATION_JSON)
-                .session(session))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"));
-        Mockito.verify(userService).register(userForm);
+                .session(session));
+        Mockito.verify(userServiceStub).register(userForm);
     }
 
     /**
-     * 注册事判断用户不存在
+     * 判断用户不存在成功
      * @throws Exception 无
      */
     @Test
-    public void isExist() throws Exception {
+    public void isExistSuccess() throws Exception {
+        UserForm userForm = new UserForm("testtest","testhxd");
         String param = JSON.toJSONString(userForm);
-        Mockito.doNothing().when(userService).isExist("testset");
-
-        mvc.perform(MockMvcRequestBuilders.get("/user/judge")
-                .param("username","testset")
+        Mockito.doNothing().when(userServiceStub).isExist("testset1");
+        mvcStandalone.perform(MockMvcRequestBuilders.get("/user/judge")
+                .param("username","testset1")
                 .session(session))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"));
-        Mockito.verify(userService).isExist("testset");
+        Mockito.verify(userServiceStub).isExist("testset1");
     }
 
 
+
     /**
-     * 注册事判断用户发生严重的未知错误
-     * @throws Exception 无
+     * isExist发现输入的用户名已注册
+     * @throws Exception 用户已注册
      */
     @Test
-    public void isExistError() throws Exception {
-        String param = JSON.toJSONString(userForm);
-        Mockito.doThrow(new RuntimeException()).when(userService).isExist("testset");
-        mvc.perform(MockMvcRequestBuilders.get("/user/judge")
-                .param("username","testset")
-                .session(session))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(UserController.IS_EXIST_ERROR));
-        Mockito.verify(userService).isExist("testset");
+    public void isExistFail() throws Exception {
+        String param = "testset1";
+        Mockito.doThrow(new UserAlreadyRegisterException()).when(userServiceStub).isExist("testset1");
+        thrown.expect(NestedServletException.class);
+        thrown.expectMessage(UserAlreadyRegisterException.MSG);
+        mvcStandalone.perform(MockMvcRequestBuilders.get("/user/judge")
+                .param("username",param)
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session));
+        Mockito.verify(userServiceStub).isExist(param);
     }
 
-
     /**
-     * 验证userform表单是否正确
+     * 判断用户名是否被使用的参数错误
      * @throws Exception
      */
     @Test
-    public void validUserForm() throws Exception {
-        thrown.expectMessage(UserForm.USERNAME_EMPTY);
-        userForm.setUsername(null);
-        thrown.expectMessage(UserForm.PASSWORD_EMPTY);
-        userForm.setPassword(null);
-        thrown.expectMessage(UserForm.USERNAME_LENGTH_INVALID);
-        userForm.setUsername("rwer");
-        thrown.expectMessage(UserForm.PASSWORD_LENGTH_INVALID);
-        userForm.setPassword("1233");
-        thrown.expectMessage(UserForm.USERNAME_CONTAIN_SPACE);
-        userForm.setUsername("hxd jhaaa");
-        thrown.expectMessage(UserForm.PASSWORD_CONTAIN_SPACE);
-        userForm.setPassword("123 1233");
-    }
+    public void isExistParamException() throws Exception {
+        String param = "r";
+        mvc.perform(MockMvcRequestBuilders.get("/user/judge")
+                .param("username",param)
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(UserForm.USERNAME_LENGTH_INVALID));
 
-//    /**
-//     * isExist传入的username格式不对
-//     * @throws Exception
-//     */
-//    @Test
-//    public void isExistInvalidUsername() throws Exception {
-//        String param = "test";
-//        //名字长度不对
-//        thrown.expect(Exception.class);
-//        mvc.perform(MockMvcRequestBuilders.get("/user/judge")
-//                .param("username",param)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .session(session))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(UserController.USERNAME_INVALID_LENGTH));
-//        Mockito.verify(userService).isExist(param);
-//
-//        //名字有空格
-//        param = JSON.toJSONString("test test");
-//        thrown.expectMessage(UserController.USERNAME_INVALID_LENGTH);
-//        mvc.perform(MockMvcRequestBuilders.get("/user/judge")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .param("username",param)
-//                .session(session))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(UserController.USNAME_EMPTY));
-//        Mockito.verify(userService).isExist("test");
-//    }
+
+        param = "test test";
+        mvc.perform(MockMvcRequestBuilders.get("/user/judge")
+                .param("username",param)
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(UserForm.USERNAME_CONTAIN_SPACE));
+    }
 }

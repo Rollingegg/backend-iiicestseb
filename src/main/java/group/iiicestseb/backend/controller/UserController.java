@@ -1,5 +1,7 @@
 package group.iiicestseb.backend.controller;
 
+import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
+import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.service.UserService;
 import group.iiicestseb.backend.vo.Response;
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -30,7 +31,7 @@ public class UserController {
     public static final String IS_EXIST_ERROR = "用户查询出现未知错误";
     public static final String USERNAME_INVALID_LENGTH = "用户名长度要在6至20个字符之间";
     public static final String USERNAME_INVALID_SPACE = "用户名不能包含空格";
-    public static final String USNAME_EMPTY = "用户名不能为空";
+    public static final String USERNAME_EMPTY = "用户名不能为空";
 
     /**
      * 用户登录/注册界面 用户登录
@@ -42,8 +43,10 @@ public class UserController {
     public Response signIn(@RequestBody @Valid UserForm userForm) {
         try {
             return Response.buildSuccess(userService.signIn(userForm));
-        }catch (Exception ex){
-            return Response.buildFailure(SIGN_IN_ERROR);
+        }catch (WrongLoginInfoException ex){
+            throw ex;
+        } catch (Exception e) {
+            throw e;
         }
     }
 
@@ -55,11 +58,14 @@ public class UserController {
      */
     @PostMapping("/register")
     public Response register(@RequestBody @Valid UserForm userForm) {
+
         try {
             userService.register(userForm);
             return Response.buildSuccess();
+        } catch (UserAlreadyRegisterException ex){
+            throw ex;
         } catch (Exception e) {
-            return Response.buildFailure(REGISTER_IN_ERROR);
+            throw e;
         }
     }
 
@@ -71,15 +77,16 @@ public class UserController {
      */
     @GetMapping("/judge")
     @Valid
-    public Response isExist(@RequestParam(name = "username") @Size(min = 6,max = 20,message = USERNAME_INVALID_LENGTH)
-                                @Pattern(regexp = "\\S+",message = USERNAME_INVALID_SPACE)
-                                @NotBlank(message = USNAME_EMPTY)
+    public Response isExist(@RequestParam(name = "username") @Size(min = 4,max = 20,message = UserForm.USERNAME_LENGTH_INVALID)
+                                @Pattern(regexp = "\\S+",message = UserForm.USERNAME_CONTAIN_SPACE)
                                         String username) {
         try {
             userService.isExist(username);
             return Response.buildSuccess();
-        } catch (Exception e) {
-            return Response.buildFailure(IS_EXIST_ERROR);
+        } catch (UserAlreadyRegisterException ex) {
+            throw ex;
+        } catch (Exception ex){
+            throw ex;
         }
     }
 

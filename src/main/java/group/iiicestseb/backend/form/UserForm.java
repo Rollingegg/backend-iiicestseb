@@ -1,8 +1,8 @@
 package group.iiicestseb.backend.form;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -14,11 +14,12 @@ import javax.validation.constraints.Size;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserForm {
 
     public static final String USERNAME_EMPTY = "用户名不能为空";
     public static final String PASSWORD_EMPTY = "密码不能为空";
-    public static final String USERNAME_LENGTH_INVALID = "用户名长度要在6至20个字符之间";
+    public static final String USERNAME_LENGTH_INVALID = "用户名长度要在4至20个字符之间";
     public static final String PASSWORD_LENGTH_INVALID = "密码长度要在6至20个字符之间";
     public static final String USERNAME_CONTAIN_SPACE ="用户名不能含有空格";
     public static final String PASSWORD_CONTAIN_SPACE ="密码不能含有空格";
@@ -26,8 +27,7 @@ public class UserForm {
     /**
      * 用户登录用户名
      */
-    @Size(min = 6,max = 20,message = USERNAME_LENGTH_INVALID)
-    @NotNull(USERNAME_EMPTY)
+    @Size(min = 4,max = 20,message = USERNAME_LENGTH_INVALID)
     @Pattern(message = USERNAME_CONTAIN_SPACE,regexp = "\\S+")
     private String username;
 
@@ -35,7 +35,6 @@ public class UserForm {
      * 用户登录密码
      */
     @Size(min = 6,max = 20,message = PASSWORD_LENGTH_INVALID)
-    @NotNull("密码不能为空")
     @Pattern(message = PASSWORD_CONTAIN_SPACE,regexp = "\\S+")
     private String password;
 

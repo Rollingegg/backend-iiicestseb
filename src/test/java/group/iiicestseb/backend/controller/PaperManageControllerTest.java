@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.io.FileInputStream;
 
@@ -27,6 +29,8 @@ import java.io.FileInputStream;
 @RunWith(SpringRunner.class)
 @Transactional
 public class PaperManageControllerTest {
+    @Autowired
+    WebApplicationContext wac;
 
     private MockMvc mvc;
     private MockHttpSession session;
@@ -41,13 +45,13 @@ public class PaperManageControllerTest {
     public void setUp() {
         JSONUtil.loadTestData();
         MockitoAnnotations.initMocks(this);
-        mvc = MockMvcBuilders.standaloneSetup(paperManageController).build();
+        mvc = MockMvcBuilders.webAppContextSetup(wac).build();
         session = new MockHttpSession();
     }
 
 
     @Test
-    public void DeletePaper() throws Exception {
+    public void DeletePaperSuccess() throws Exception {
 
         Mockito.doNothing().when(paperManageService).deletePaperById(1);
         mvc.perform(MockMvcRequestBuilders.delete("/admin/paper/delete")
