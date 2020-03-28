@@ -1,6 +1,7 @@
 package group.iiicestseb.backend.mapper;
 
 import group.iiicestseb.backend.form.AdvancedSearchForm;
+import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.utils.JSONUtil;
 import group.iiicestseb.backend.vo.SearchResultVO;
 import org.junit.Before;
@@ -11,16 +12,22 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * @author jh
+ * @date 2020/3/28
+ */
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         TransactionalTestExecutionListener.class})
 @Transactional
+@WebAppConfiguration
 public class PaperMapperTest {
     @Resource
     private PaperMapper paperMapper;
@@ -52,4 +59,5 @@ public class PaperMapperTest {
         System.out.println("result_num"+re.size());
         System.out.println(re);
     }
+
 }
