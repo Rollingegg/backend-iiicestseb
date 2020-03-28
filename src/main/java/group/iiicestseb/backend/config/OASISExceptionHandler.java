@@ -19,26 +19,24 @@ import javax.validation.ConstraintViolationException;
  */
 @RestControllerAdvice
 public class OASISExceptionHandler {
+    public static final String UNKNOWN_EXCEPTION = "未知错误";
 
-    //validation异常
+    //validation get参数异常
     @ExceptionHandler(ConstraintViolationException.class)
     public Response handleConstraintViolationException(ConstraintViolationException ex) {
-
-        return Response.buildFailure(ex.getMessage());
+        String msg = ex.getMessage();
+        if (msg.indexOf(",")!=-1){
+            msg =msg.substring(0,msg.indexOf(","));
+        }
+        ex.printStackTrace();
+        return Response.buildFailure(msg.substring(msg.indexOf(":")+2));
     }
 
-
+    //validation post参数异常
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Response validateErrorException(MethodArgumentNotValidException ex) {
+    public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         // ex.getFieldError():随机返回一个对象属性的异常信息。如果要一次性返回所有对象属性异常信息，则调用ex.getAllErrors()
-//        FieldError error = ex.getFieldError();
-//        // 生成返回结果
-//        String errorMessage;
-//        if (error != null) {
-//            errorMessage = error.getDefaultMessage();
-//        } else {
-//            errorMessage = ex.getMessage();
-//        }
+        ex.printStackTrace();
         final FieldError error = ex.getBindingResult().getFieldError();
         String errorMessage;
         if (error != null) {
@@ -46,7 +44,11 @@ public class OASISExceptionHandler {
         } else {
             errorMessage = ex.getMessage();
         }
-        return Response.buildFailure(errorMessage);
+        String msg = errorMessage.substring(errorMessage.indexOf(":")+2);
+        if (msg.indexOf(",")!=-1){
+            msg =msg.substring(0,msg.indexOf(","));
+        }
+        return Response.buildFailure(msg);
     }
 
 //    @ExceptionHandler(CSVUtil.CSVException.class)
@@ -86,5 +88,13 @@ public class OASISExceptionHandler {
         return Response.buildFailure(ex.getMessage());
     }
 
+
+
+    //全局未知错误
+    @ExceptionHandler(Exception.class)
+    public Response handleException(Exception ex){
+        ex.printStackTrace();
+        return Response.buildFailure(ex.getMessage());
+    }
 
 }

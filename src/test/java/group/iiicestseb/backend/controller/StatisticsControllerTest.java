@@ -58,7 +58,7 @@ public class StatisticsControllerTest {
 
 
     @Test
-    public void getHotTermsParam() throws Exception {
+    public void getHotTermsParamSuccess() throws Exception {
         Integer param = 50;
         ArrayList<TermWithHotVO> termWithHotVOArrayList = new ArrayList<>();
         TermWithHotVO termWithHotVO_1 = new TermWithHotVO(1,"a",2);
@@ -80,7 +80,7 @@ public class StatisticsControllerTest {
     }
 
     @Test
-    public void getMaxPublishAuthor() throws Exception {
+    public void getMaxPublishAuthorSuccess() throws Exception {
         int param = 5;
         List<AuthorHotVO> authorHotVOList = new ArrayList<>();
         AuthorHotVO authorHotVO_1 = new AuthorHotVO(1,"jh","nju",100);

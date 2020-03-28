@@ -45,8 +45,6 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<SearchResultVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
 
-        //todo 需要等数据库重构完成才能写
-        //分夜
         advancedSearchForm.setPage(advancedSearchForm.getPage()*advancedSearchForm.getLimit());
         List<SearchResultVO> result = paperMapper.advancedSearch(advancedSearchForm);
         if (result.size()==0){

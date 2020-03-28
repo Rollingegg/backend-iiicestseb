@@ -52,7 +52,7 @@ public class SearchController {
             return Response.buildSuccess(searchResult);
         }
         catch (Exception e){
-            return Response.buildFailure(SEARCH_ERROR);
+            throw e;
         }
     }
 }

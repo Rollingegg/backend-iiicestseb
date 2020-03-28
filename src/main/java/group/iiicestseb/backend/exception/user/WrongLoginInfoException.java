@@ -11,14 +11,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class WrongLoginInfoException extends RuntimeException{
-
+    public static final String MSG = "用户名或密码错误";
     /**
      * 自定义异常码
      */
     private Integer code;
 
     public WrongLoginInfoException() {
-        super("用户名或密码错误");
+        super(MSG);
         this.code = 1002;
     }
 }

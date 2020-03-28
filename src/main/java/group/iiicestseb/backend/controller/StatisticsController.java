@@ -52,7 +52,7 @@ public class StatisticsController {
             }
             return Response.buildSuccess(termsHot);
         } catch (Exception e) {
-            return Response.buildFailure(GET_HOT_TERMS_ERROR);
+            throw e;
         }
     }
 
@@ -75,7 +75,7 @@ public class StatisticsController {
             }
             return Response.buildSuccess(authorHotVOList);
         } catch (Exception e) {
-            return Response.buildFailure(GET_MAX_PUBLISH_AUTHOR_ERROR);
+            throw e;
         }
     }
 

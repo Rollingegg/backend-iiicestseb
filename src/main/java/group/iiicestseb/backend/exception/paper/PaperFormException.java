@@ -9,7 +9,7 @@ public class PaperFormException extends RuntimeException{
     private Integer code;
 
     public PaperFormException() {
-        super("请输入搜索内容");
+        super(MSG);
         this.code = 2002;
     }
 }

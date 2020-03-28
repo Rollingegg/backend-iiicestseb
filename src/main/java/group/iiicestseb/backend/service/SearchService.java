@@ -11,16 +11,6 @@ import java.util.List;
  */
 public interface SearchService {
 
-//    /**
-//     * 论文低级检索
-//     *
-//     * @param type    类型 有 全部/标题/作者/摘要/DOI/机构名
-//     * @param keyword 搜索关键字
-//     * @param limit   搜索数
-//     * @return 论文列表
-//     */
-//    List<SearchResultVO> simpleSearchPaper(String type, String keyword, Integer limit);
-
     /**
      * 论文高级检索
      *

@@ -4,7 +4,6 @@ import group.iiicestseb.backend.service.PaperManageService;
 import group.iiicestseb.backend.utils.JSONUtil;
 import group.iiicestseb.backend.vo.Response;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,7 +44,7 @@ public class PaperManageController {
             paperManageService.deletePaperById(id);
             return Response.buildSuccess();
         }catch (Exception e){
-            return Response.buildFailure(DELETE_PAPER_ERROR);
+            throw e;
         }
     }
 

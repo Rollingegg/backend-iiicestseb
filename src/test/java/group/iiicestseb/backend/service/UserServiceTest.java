@@ -81,7 +81,7 @@ public class UserServiceTest extends EasyMockSupport {
             userService.register(userForm);
         }catch (Exception e){
             fail("注册失败");
-            throw e;
+            //throw e;
         }
         Mockito.verify(userMapper).findByUsername(userForm.getUsername());
         Mockito.verify(userMapper).insert(Mockito.any(User.class));
