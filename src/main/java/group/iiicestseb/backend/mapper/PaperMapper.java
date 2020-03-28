@@ -20,55 +20,17 @@ import java.util.List;
 @Mapper
 public interface PaperMapper extends BaseMapper<Paper> {
 
-    /**
-     * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询
-     *
-     * @param type     查询类型 适用于 DOI 标题 摘要 作者 机构
-     * @param keywords 搜索关键字
-     * @return 文献列表
-     */
-//    @Select("select p.id, conference_id, pa.author_id, pt.term_id " +
-//            "from paper p, paper_authors pa,paper_term pt " +
-//            "where pa.paper_id = p.id and pt.paper_id = p.id " +
-//            "group by p.id " +
-//            "order by p.citation_count_paper desc limit #{limit}")
-//    @Results(id = "PaperInfoVOResultMap",value = {
-//            @Result(column = "id",property = "paper",one = @One(select = "group.iiicestseb.backend.mapper.PaperMapper.selectById",fetchType = FetchType.LAZY) ),
-//            @Result(column = "conference_id",property = "conference",one = @One(select = "group.iiicestseb.backend.mapper.ConferenceMapper.selectById",fetchType = FetchType.LAZY) ),
-//            @Result(column = "author_id",property = "authorInfoList",many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId",fetchType = FetchType.LAZY) ),
-//            @Result(column = "term_id",property = "termList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.LAZY) )
-//    })
-
-//    @Select("<script>" +
-//            "select p.id,p.title,p.paper_abstract,p.pdf_url,p.citation_count_paper,p.id,p.id " +
-//            "from paper p " +
-//            "where 1=1 " +
-//            "<if test='type==\"doi\"'> " +
-//            " and p.doi like '%${keywords}%'" +
-//            "</if>" +
-//            "</script>")
-//    @Results(id = "SearchResultVOResultMap",value = {
-//            @Result(column = "id",property = "id",jdbcType = JdbcType.INTEGER),
-//            @Result(column = "title",property = "title",jdbcType = JdbcType.VARCHAR),
-//            @Result(column = "paper_abstract",property = "paperAbstract",jdbcType = JdbcType.VARCHAR),
-//            @Result(column = "pdf_url",property = "pdfUrl",jdbcType = JdbcType.VARCHAR),
-//            @Result(column = "citation_count_paper",property = "citationCountPaper",jdbcType = JdbcType.INTEGER),
-//            @Result(column = "id",property = "authorList",many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId",fetchType = FetchType.LAZY) ),
-//            @Result(column = "id",property = "termsList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.LAZY) )
-//    })
-//    List<SearchResultVO> simpleSearchPaperByType(String type, String keywords, Integer limit);
 
     @Select("select * from paper where article_id=#{articleId}")
     @ResultType(Paper.class)
     Paper selectByArticleId(@Param("articleId") Integer articleId);
-//
-//
-//    /**
-//     * 多字段高级检索
-//     *
-//     * @param advancedSearchForm 高级检索表单
-//     * @return 论文列表
-//     */
+
+    /**
+     * 多字段高级检索
+     *
+     * @param advancedSearchForm 高级检索表单
+     * @return 论文列表
+     */
     @Select("<script>" +
 
 
@@ -147,8 +109,8 @@ public interface PaperMapper extends BaseMapper<Paper> {
             @Result(column = "paper_abstract",property = "paperAbstract",jdbcType = JdbcType.VARCHAR),
             @Result(column = "pdf_url",property = "pdfUrl",jdbcType = JdbcType.VARCHAR),
             @Result(column = "citation_count_paper",property = "citationCountPaper",jdbcType = JdbcType.INTEGER),
-            @Result(column = "id",property = "authorList",many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId",fetchType = FetchType.LAZY) ),
-            @Result(column = "id",property = "termsList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.LAZY) )}
+            @Result(column = "id",property = "authorList",many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId",fetchType = FetchType.EAGER) ),
+            @Result(column = "id",property = "termsList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.EAGER) )}
     )
     List<SearchResultVO > advancedSearch(AdvancedSearchForm advancedSearchForm);
 

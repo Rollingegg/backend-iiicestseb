@@ -33,47 +33,47 @@ public class AdvancedSearchForm {
      * 页码
      */
     @Min(value = 0,message = PAGE_ERROR)
-    private Integer page;
+    private Integer page = 0;
 
     /**
      * 搜索类型
      */
-    private String type;
+    private String type = null;
 
     /**
      * all搜索关键字
      */
-    private String allKeyword;
+    private String allKeyword = null;
 
     /**
      * 文章标题关键字
      */
-    private String titleKeyword;
+    private String titleKeyword = null;
 
     /**
      * 文章摘要关键字
      */
-    private String paperAbstractKeyword;
+    private String paperAbstractKeyword = null;
 
     /**
      * doi关键字
      */
-    private String doiKeyword;
+    private String doiKeyword = null;
 
     /**
      * 作者关键字
      */
-    private String authorKeyword;
+    private String authorKeyword = null;
 
     /**
      * 机构关键字
      */
-    private String affiliationKeyword;
+    private String affiliationKeyword = null;
 
     /**
      * 术语
      */
-    private String termKeyword;
+    private String termKeyword = null;
 
     /**
      * 搜索个数
