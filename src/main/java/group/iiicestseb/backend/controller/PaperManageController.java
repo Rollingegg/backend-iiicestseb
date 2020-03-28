@@ -53,7 +53,7 @@ public class PaperManageController {
      * @return 无
      */
     @PostMapping("/loadJSON")
-    public Response analyzeCSV(@NotNull(message = PARAMETER_ERROR) @RequestParam("filename") String filename) {
+    public Response analyzeJSON(@NotNull(message = PARAMETER_ERROR) @RequestParam("filename") String filename) {
         return Response.buildSuccess(JSONUtil.analyzeExistedJsonFile(filename));
     }
 
@@ -64,7 +64,7 @@ public class PaperManageController {
      * @return 无
      */
     @PostMapping("/uploadJSON")
-    public Response uploadCSV(@NotNull(message = PARAMETER_ERROR) @RequestParam("file") MultipartFile file) {
+    public Response uploadJSON(@NotNull(message = PARAMETER_ERROR) @RequestParam("file") MultipartFile file) {
         return Response.buildSuccess(JSONUtil.analyzeUploadedJsonFile(file));
     }
 
@@ -81,7 +81,7 @@ public class PaperManageController {
         String headerValue = "attachment; filename=Standard.json";
         response.setHeader(headerKey, headerValue);
         response.setContentType("application/octet-stream");
-        ClassPathResource file = new ClassPathResource("json/Standard.csv");
+        ClassPathResource file = new ClassPathResource("json/Standard.json");
         try {
             response.getOutputStream().write(file.getInputStream().readAllBytes());
             response.setContentLength(Math.toIntExact(file.contentLength()));
