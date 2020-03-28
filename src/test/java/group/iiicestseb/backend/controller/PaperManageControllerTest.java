@@ -15,7 +15,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -27,13 +30,15 @@ import java.io.FileInputStream;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        TransactionalTestExecutionListener.class})
 @Transactional
 public class PaperManageControllerTest {
     @Autowired
     WebApplicationContext wac;
 
     private MockMvc mvc;
-    private MockMvc mvcStadalone;
+    private MockMvc mvcStandalone;
     private MockHttpSession session;
 
     @Mock
@@ -47,16 +52,14 @@ public class PaperManageControllerTest {
         JSONUtil.loadTestData();
         MockitoAnnotations.initMocks(this);
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
-        mvcStadalone = MockMvcBuilders.standaloneSetup(paperManageController).build();
+        mvcStandalone = MockMvcBuilders.standaloneSetup(paperManageController).build();
         session = new MockHttpSession();
     }
 
-
     @Test
     public void DeletePaperSuccess() throws Exception {
-
         Mockito.doNothing().when(paperManageService).deletePaperById(1);
-        mvcStadalone.perform(MockMvcRequestBuilders.delete("/admin/paper/delete")
+        mvcStandalone.perform(MockMvcRequestBuilders.delete("/admin/paper/delete")
                 .param("id", "1")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
@@ -117,7 +120,6 @@ public class PaperManageControllerTest {
 
     @Test
     public void uploadJSONSuccess() throws Exception {
-        String path = this.getClass().getResource("/").getPath();
         ClassPathResource file = new ClassPathResource("json/One.json");
         FileInputStream fileInput = new FileInputStream(file.getFile());
         MockMultipartFile multipartFile = new MockMultipartFile("file", "One.json", "text/plain", fileInput);
