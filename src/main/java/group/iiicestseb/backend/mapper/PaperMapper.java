@@ -31,9 +31,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
      * @return 论文列表
      */
     @Select("<script>" +
-
-
-            "select p.id,p.title,p.paper_abstract,p.pdf_url,p.citation_count_paper,p.id,p.id  " +
+            "select p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id  " +
             "from paper p " +
             //高级搜索
             "<if test='type==\"advanced\"'> " +
@@ -68,25 +66,25 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "or (p.doi like '%${allKeyword}%' and p.doi is not null)" +
             "</if>" +
             //简单搜索术语， 连接文献表
-            "<if test='type==\"affiliation\"'> " +
+            "<if test='type==\"term\"'> " +
             ", paper_term pt, term t " +
             "where p.id = pt.paper_id and t.id = pt.term_id " +
             "and t.name like '%${termKeyword}%'" +
             "</if>" +
             //简单搜索机构， 连接作者表、机构表
-            "<if test='type==\"affiliation\"'> " +
+            "<if test='type==\"affiliation_name\"'> " +
             ", author a, paper_authors pa,affiliation aff " +
             "where p.id = pa.paper_id and a.id = pa.author_id and a.affiliation_id = aff.id " +
             "and aff.name like '%${affiliationKeyword}%'" +
             "</if>" +
             //简单搜索搜索作者 只连接作者表
-            "<if test='type==\"author\"'> " +
+            "<if test='type==\"author_name\"'> " +
             ", author a, paper_authors pa " +
             "where p.id = pa.paper_id and a.id = pa.author_id  " +
             "and a.name like '%${authorKeyword}%'" +
             "</if>" +
             //简单搜索 论文的三个信息 无需提前链接
-            "<if test='type==\"doi\" or  type==\"title\" or type==\"paperAbstract\"'> " +
+            "<if test='type==\"doi\" or  type==\"title\" or type==\"paper_abstract\"'> " +
             "where 1=1 " +
             "<if test='type==\"doi\"'> " +
             " and p.doi like '%${doiKeyword}%'" +
@@ -98,6 +96,8 @@ public interface PaperMapper extends BaseMapper<Paper> {
             " and p.paper_abstract like '%${paperAbstractKeyword}%'" +
             "</if>" +
             "</if> " +
+            //年份
+            " and p.chron_date <![CDATA[>= ]]> str_to_date(#{chronDateMinKeyword},'%Y') and date_add(p.chron_date,interval -1 year) <![CDATA[<=]]>  str_to_date(#{chronDateMaxKeyword},'%Y')  " +
             "group by p.id " +
             "order by p.citation_count_paper desc " +
             "limit #{page},#{limit}" +
@@ -107,6 +107,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
             @Result(column = "title",property = "title",jdbcType = JdbcType.VARCHAR),
             @Result(column = "paper_abstract",property = "paperAbstract",jdbcType = JdbcType.VARCHAR),
             @Result(column = "pdf_url",property = "pdfUrl",jdbcType = JdbcType.VARCHAR),
+            @Result(column = "chron_date",property = "chronDate",jdbcType = JdbcType.VARCHAR),
             @Result(column = "citation_count_paper",property = "citationCountPaper",jdbcType = JdbcType.INTEGER),
             @Result(column = "id",property = "authorList",many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId",fetchType = FetchType.EAGER) ),
             @Result(column = "id",property = "termsList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.EAGER) )}
