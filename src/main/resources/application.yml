@@ -72,8 +72,16 @@ server:
   tomcat:
     uri-encoding: utf-8
   port: 4000
-
-
+#xd让我帮忙做的测试，先留着
+#---
+#spring:
+#  profiles: test_another_database
+#  datasource:
+#    type: com.mysql.cj.jdbc.MysqlDataSource
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://3.dwxh.xyz:12345/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
+#    username: IIICEStseB
+#    password: IIICEStseB
 ---
 spring:
   profiles: prod
@@ -111,7 +119,8 @@ spring:
   devtools:
     add-properties: true
   datasource:
-    username: root
+    url: jdbc:mysql://172.29.4.23:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
+    username: IIICEStseB
     password: IIICEStseB
 logging:
   level:

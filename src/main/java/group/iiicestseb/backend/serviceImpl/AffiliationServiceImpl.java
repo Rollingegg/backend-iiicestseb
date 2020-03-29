@@ -1,11 +1,11 @@
 package group.iiicestseb.backend.serviceImpl;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AffiliationService;
+import group.iiicestseb.backend.vo.AffiliationInfoVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,8 +39,13 @@ public class AffiliationServiceImpl extends ServiceImpl<AffiliationMapper, Affil
     public Collection<Affiliation> findAffiliationByIdBatch(Collection<Integer> ids) {
         return this.listByIds(ids);
     }
-//
-//
+
+    @Override
+    public AffiliationInfoVO selectBasicInfoByName(String name) {
+        return affiliationMapper.selectBasicInfoByName(name);
+    }
+
+    //
 //    @Override
 //    public AffiliationInfoVO getAffiliationInfo(String name) {
 //        AffiliationInfoVO affiliationInfoVO = new AffiliationInfoVO();

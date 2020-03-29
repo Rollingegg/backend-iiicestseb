@@ -4,7 +4,10 @@ import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.service.*;
+import group.iiicestseb.backend.vo.AffiliationInfoVO;
+import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
+import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
 import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import group.iiicestseb.backend.vo.user.UserVO;
 import org.springframework.context.annotation.Lazy;
@@ -60,6 +63,11 @@ public class RegeditImpl implements Regedit {
         return affiliationService.findAffiliationByIdBatch(ids);
     }
 
+    @Override
+    public AffiliationInfoVO selectBasicInfoByName(String name) {
+        return affiliationService.selectBasicInfoByName(name);
+    }
+
     //-----------------------------------------AuthorService------------------------------
 
     @Override
@@ -75,6 +83,16 @@ public class RegeditImpl implements Regedit {
     @Override
     public Collection<Author> findAuthorByIdBatch(Collection<Integer> ids) {
         return authorService.findAuthorByIdBatch(ids);
+    }
+
+    @Override
+    public List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationName(String name, Integer limit) {
+        return authorService.selectHotAuthorByAffiliationName(name,limit);
+    }
+
+    @Override
+    public List<AuthorInAffiliationVO> selectAllAuthorByAffiliationName(String name) {
+        return authorService.selectAllAuthorByAffiliationName(name);
     }
 
     @Override

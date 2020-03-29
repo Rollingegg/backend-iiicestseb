@@ -85,15 +85,16 @@ public class AdvancedSearchForm {
     /**
      * 出版年份最小值
      */
-    String chronDateMinKeyword = "1900";
+    String chronDateMinKeyword = "1900-01-01";
 
     /**
      * 出版年份最大值
      */
     //@DateTimeFormat(pattern = "yyyy")
-    String chronDateMaxKeyword = "2100";
+    String chronDateMaxKeyword = "2100-12-31";
 
     public void isValid(){
+
         if( !(ALL.equals(this.type) ||
                 AFFILIATION.equals(this.type) ||
                 AUTHOR.equals(this.type) ||
@@ -112,10 +113,8 @@ public class AdvancedSearchForm {
                 this.getTitleKeyword() == null &&
                 this.getPaperAbstractKeyword()== null &&
                 this.getAffiliationKeyword()== null  &&
-                this.getAllKeyword()==null &&
-                this.getChronDateMinKeyword() == null &&
-                this.getChronDateMaxKeyword() == null){
-            throw new PaperFormException();
+                this.getAllKeyword()==null){
+                throw new PaperFormException();
         }
 
     }

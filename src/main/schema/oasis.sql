@@ -44,7 +44,7 @@ CREATE TABLE paper
     title                 varchar(300) comment '文献标题',
     paper_abstract        text comment '摘要',
     doi                   varchar(40) comment 'DOI',
-    publication_title     varchar(100) comment '文献所属出版刊物名称',
+    publication_title     varchar(200) comment '文献所属出版刊物名称',
     citation_count_paper  int comment '文献被引次数',
     citation_count_patent int comment '专利被引次数',
     total_downloads       int comment '文献下载量',
@@ -62,6 +62,7 @@ CREATE TABLE paper
 ) ENGINE = InnoDB comment '文献表' ROW_FORMAT=DYNAMIC;
 create index paper_title_hash using hash on paper (title);
 create index idx_article_id using hash on paper (article_id);
+create index idx_chron_date  on paper (chron_date);
 
 
 ##创建发表文献关系表

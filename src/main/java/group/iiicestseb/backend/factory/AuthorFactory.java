@@ -1,13 +1,7 @@
 package group.iiicestseb.backend.factory;
 
-import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.entity.Author;
-import group.iiicestseb.backend.entity.Paper;
-import group.iiicestseb.backend.vo.author.AuthorInfoVO;
-import group.iiicestseb.backend.vo.paper.PaperOverview;
-
-import java.util.Collection;
-import java.util.LinkedList;
+import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
 
 /**
  * @author jh
@@ -15,5 +9,8 @@ import java.util.LinkedList;
  */
 public class AuthorFactory {
 
-
+    public static AuthorInAffiliationVO toAuthorVO(Author author){
+        AuthorInAffiliationVO result = new AuthorInAffiliationVO(author.getId(),author.getName());
+        return result;
+    }
 }

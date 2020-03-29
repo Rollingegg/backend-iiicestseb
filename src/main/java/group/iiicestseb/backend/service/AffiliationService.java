@@ -1,7 +1,7 @@
 package group.iiicestseb.backend.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import group.iiicestseb.backend.entity.Affiliation;
+import group.iiicestseb.backend.vo.AffiliationInfoVO;
 
 import java.util.Collection;
 
@@ -34,20 +34,14 @@ public interface AffiliationService {
      */
     Collection<Affiliation> findAffiliationByIdBatch(Collection<Integer> ids);
 
-//    /**
-//     * 获取机构页面的机构详细信息
-//     * @param name 机构名称
-//     * @return 机构详细信息
-//     */
-//    AffiliationInfoVO getAffiliationInfo(String name);
-//
-//
-//    /**
-//     * 通过id查找Affiliation
-//     * @param id 机构id
-//     * @return 机构实体
-//     */
-//    Affiliation selectAffiliationById(int id);
+    /**
+     * 根据机构名称查询其基本信息
+     * @param name 机构名称
+     * @return 机构基本信息
+     */
+    AffiliationInfoVO selectBasicInfoByName(String name);
+
+
 
 
 }
