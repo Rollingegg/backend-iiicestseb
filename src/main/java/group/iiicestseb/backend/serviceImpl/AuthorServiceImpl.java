@@ -6,6 +6,7 @@ import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.mapper.PaperAuthorMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AuthorService;
+import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,12 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
     public Collection<Author> findAuthorByIdBatch(Collection<Integer> ids) {
         return this.listByIds(ids);
     }
+
+    @Override
+    public Collection<AuthorInfoVO> findAuthorInfoByIdBatch(Collection<Integer> ids){
+        return authorMapper.selectAuthorInfoByIdBatch(ids);
+    }
+
 //
 //    @Override
 //    public AuthorInfoVO getAuthorInfo(String name) {

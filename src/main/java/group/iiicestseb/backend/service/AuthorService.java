@@ -2,6 +2,7 @@ package group.iiicestseb.backend.service;
 
 
 import group.iiicestseb.backend.entity.Author;
+import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,6 +34,14 @@ public interface AuthorService {
      * @return 作者集合
      */
     Collection<Author> findAuthorByIdBatch(Collection<Integer> ids);
+
+    /**
+     * 通过id批量查找作者
+     *
+     * @param ids id集合
+     * @return 作者集合
+     */
+    Collection<AuthorInfoVO> findAuthorInfoByIdBatch(Collection<Integer> ids);
 //    /**
 //     * 作者页面所需要的作者详细信息
 //     * @author wph

@@ -3,6 +3,8 @@ package group.iiicestseb.backend.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import group.iiicestseb.backend.entity.Affiliation;
 
+import java.util.Collection;
+
 /**
  * @author wph
  * @date 2020/03/01
@@ -23,6 +25,14 @@ public interface AffiliationService {
      * @param affiliation 机构PO
      */
     void saveAffiliation(Affiliation affiliation);
+
+    /**
+     * 通过id批量获取作者的机构
+     *
+     * @param ids id列表
+     * @return 机构集合
+     */
+    Collection<Affiliation> findAffiliationByIdBatch(Collection<Integer> ids);
 
 //    /**
 //     * 获取机构页面的机构详细信息

@@ -4,12 +4,14 @@ import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.service.*;
+import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import group.iiicestseb.backend.vo.user.UserVO;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -53,6 +55,11 @@ public class RegeditImpl implements Regedit {
         affiliationService.saveAffiliation(affiliation);
     }
 
+    @Override
+    public Collection<Affiliation> findAffiliationByIdBatch(Collection<Integer> ids) {
+        return affiliationService.findAffiliationByIdBatch(ids);
+    }
+
     //-----------------------------------------AuthorService------------------------------
 
     @Override
@@ -63,6 +70,16 @@ public class RegeditImpl implements Regedit {
     @Override
     public void insertAuthorList(List<Author> authorList) {
         authorService.insertAuthorList(authorList);
+    }
+
+    @Override
+    public Collection<Author> findAuthorByIdBatch(Collection<Integer> ids) {
+        return authorService.findAuthorByIdBatch(ids);
+    }
+
+    @Override
+    public Collection<AuthorInfoVO> findAuthorInfoByIdBatch(Collection<Integer> ids) {
+        return authorService.findAuthorInfoByIdBatch(ids);
     }
 
     //-----------------------------------------ConferenceService------------------------------

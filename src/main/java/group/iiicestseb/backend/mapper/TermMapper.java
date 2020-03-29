@@ -21,7 +21,7 @@ public interface TermMapper extends BaseMapper<Term> {
      */
     @Select("select t.id,t.name " +
             "from paper_term pt, term t " +
-            "where pt.paper_id = #{paperId} and t.id = pt.paper_id")
+            "where pt.paper_id = #{paperId} and t.id = pt.term_id")
     @Results(id = "TermResultMap",value = {
             @Result(column = "id",property = "id",javaType = Integer.class, jdbcType = JdbcType.INTEGER),
             @Result(column = "name",property = "name",javaType = String.class,jdbcType = JdbcType.VARCHAR),

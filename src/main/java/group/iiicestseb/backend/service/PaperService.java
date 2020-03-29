@@ -6,7 +6,6 @@ import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author jh
@@ -38,7 +37,7 @@ public interface PaperService {
      * @param num 最大数量
      * @return 相关作者概览
      */
-    List<AuthorInfoVO> getRecommendAuthors(Integer paperId, Integer num);
+    Collection<AuthorInfoVO> getRecommendAuthors(Integer paperId, Integer num);
 
     /**
      * 获取指定文献的相关机构
@@ -47,5 +46,5 @@ public interface PaperService {
      * @param num 最大数量
      * @return 相关机构概览
      */
-    List<Affiliation> getRecommendAffiliations(Integer paperId, Integer num);
+    Collection<Affiliation> getRecommendAffiliations(Integer paperId, Integer num);
 }

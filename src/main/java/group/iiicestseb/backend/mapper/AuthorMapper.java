@@ -6,6 +6,7 @@ import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -42,6 +43,22 @@ public interface AuthorMapper extends BaseMapper<Author> {
      */
     @Select("select * from author where name=#{name};")
     Author selectByName(@Param("name") String name);
+
+    /**
+     * 根据id查找批量作者
+     *
+     * @param ids id集合
+     * @return 作者集合
+     */
+    @Select("<script>" +
+            "select au.id,au.name,aff.id as affiliationId,aff.name as affiliationName " +
+            "from author au, affiliation aff " +
+            "where au.id in " +
+            "   <foreach collection='list' item='i' separator=',' open='(' close=')' >" +
+            "   #{i}" +
+            "   </foreach>" +
+            "</script>")
+    Collection<AuthorInfoVO> selectAuthorInfoByIdBatch(Collection<Integer> ids);
 
 //    /**
 //     * 根据学者名查找学者

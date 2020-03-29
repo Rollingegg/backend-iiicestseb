@@ -40,7 +40,7 @@ public interface StatisticsMapper {
      * @param num num个学者
      * @return 最热门的num个学者和其发表的论文
      */
-    @Select("select aut.id as id, aut.name as name, aff.name as aff_name, count(*) as publish_num" +
+    @Select("select aut.id as id, aut.name as name, aff.id as aff_id, aff.name as aff_name, count(*) as publish_num" +
             "   from paper_authors p, author aut, affiliation aff" +
             "       where aut.id = p.author_id and aut.affiliation_id = aff.id and aut.name<>''" +
             "           group by aut.id" +
@@ -49,6 +49,7 @@ public interface StatisticsMapper {
     @Results(id = "AuthorWithPublishResultMap", value = {
             @Result(column = "id", property = "id", javaType = Integer.class, jdbcType = JdbcType.INTEGER),
             @Result(column = "name", property = "name", javaType = String.class, jdbcType = JdbcType.VARCHAR),
+            @Result(column = "aff_id", property = "affiliationId", javaType = Integer.class, jdbcType = JdbcType.INTEGER),
             @Result(column = "aff_name", property = "affiliationName", javaType = String.class, jdbcType = JdbcType.VARCHAR),
             @Result(column = "publish_num", property = "publishNum", javaType = Integer.class, jdbcType = JdbcType.INTEGER)
     })

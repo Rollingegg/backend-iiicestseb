@@ -7,6 +7,7 @@ import group.iiicestseb.backend.entity.PaperAuthors;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,7 +32,8 @@ public interface PaperAuthorMapper extends BaseMapper<PaperAuthors> {
      */
     @Select("select a.id as id, name, first_name, last_name, affiliation_id " +
             "from author a, paper_authors pa where " +
-            "pa.paper_id=#{paperId, jdbcType=INTEGER}")
+            "pa.paper_id=#{paperId, jdbcType=INTEGER} " +
+            "and a.id=pa.author_id")
     @ResultType(Author.class)
     List<Author> findAuthorsByPaperId(@Param("paperId") Integer paperId);
 
@@ -47,4 +49,13 @@ public interface PaperAuthorMapper extends BaseMapper<PaperAuthors> {
     @ResultType(Paper.class)
     List<Paper> findPapersByAuthorId(Integer authorId);
 
+    /**
+     * 查找论文相关的其他作者，todo：暂时只返回论文原作者，等关系网构建完成再写
+     *
+     * @param paperId 论文id
+     * @param num 最大数量
+     * @return 作者id列表
+     */
+    @Select("select author_id from paper_authors order by author_order limit #{num}")
+    List<Integer> selectSimilarAuthorIdsByPaperId(Integer paperId, Integer num);
 }

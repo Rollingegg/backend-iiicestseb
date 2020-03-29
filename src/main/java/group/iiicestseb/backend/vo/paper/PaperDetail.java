@@ -31,7 +31,7 @@ public class PaperDetail {
     /**
      * 作者列表
      */
-    private Collection<Author> authorInfoList;
+    private Collection<Author> authorList;
 
     /**
      * 术语列表

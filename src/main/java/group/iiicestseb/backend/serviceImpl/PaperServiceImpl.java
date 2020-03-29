@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class PaperServiceImpl implements PaperService {
         Conference conference = ((ConferenceService) regedit).findConferenceById(paper.getConferenceId());
         List<Author> authorList = paperAuthorMapper.findAuthorsByPaperId(paperId);
         List<Term> termList = termMapper.selectByPaperId(paperId);
-        List<Reference> referenceList = referenceMapper.selectByArticleId(paperId);
+        List<Reference> referenceList = referenceMapper.selectByArticleId(paper.getArticleId());
         return PaperFactory.packageDetail(paper, authorList, conference, termList, referenceList);
     }
 
@@ -58,18 +59,26 @@ public class PaperServiceImpl implements PaperService {
         return PaperFactory.toPaperOverviewBatch(paperList);
     }
 
+    /**
+     * 这里先返回文章作者
+     */
     @Override
-    public List<AuthorInfoVO> getRecommendAuthors(Integer paperId, Integer num) {
-//        Collection<Integer> similarAuthorIDs = paperTermMapper.selectSimilarAuthorIdsByPaperId(paperId, num);
-//        Collection<Author> authors = ((AuthorService)regedit).findAuthorByIdBatch(similarAuthorIDs);
-//        Collection<Affiliation> affiliations = ((AffiliationService)regedit).findAfffiliationByIdBatch(similarAuthorIDs);
-//        return PaperFactory.toPaperOverviewBatch(authors);
-        return null;
+    public Collection<AuthorInfoVO> getRecommendAuthors(Integer paperId, Integer num) {
+        Collection<Integer> similarAuthorIDs = paperAuthorMapper.selectSimilarAuthorIdsByPaperId(paperId, num);
+        return ((AuthorService)regedit).findAuthorInfoByIdBatch(similarAuthorIDs);
     }
 
+    /**
+     * 这里先返回原文献作者的机构
+     */
     @Override
-    public List<Affiliation> getRecommendAffiliations(Integer paperId, Integer num) {
-        return null;
+    public Collection<Affiliation> getRecommendAffiliations(Integer paperId, Integer num) {
+        Collection<AuthorInfoVO> authors = getRecommendAuthors(paperId, num);
+        Collection<Integer> affiliationIds = new LinkedList<>();
+        for (AuthorInfoVO a : authors) {
+            affiliationIds.add(a.getAffiliationId());
+        }
+        return ((AffiliationService)regedit).findAffiliationByIdBatch(affiliationIds);
     }
 
 

@@ -83,8 +83,8 @@ public class StatisticsControllerTest {
     public void getMaxPublishAuthorSuccess() throws Exception {
         int param = 5;
         List<AuthorHotVO> authorHotVOList = new ArrayList<>();
-        AuthorHotVO authorHotVO_1 = new AuthorHotVO(1,"jh","nju",100);
-        AuthorHotVO authorHotVO_2 = new AuthorHotVO(2,"hxd","zju",200);
+        AuthorHotVO authorHotVO_1 = new AuthorHotVO(1,"jh",1,"nju",100);
+        AuthorHotVO authorHotVO_2 = new AuthorHotVO(2,"hxd",1,"zju",200);
         authorHotVOList.add(authorHotVO_1);
         authorHotVOList.add(authorHotVO_2);
         Mockito.when(statisticsService.calculateMaxPublishAuthor(param)).thenReturn(authorHotVOList);

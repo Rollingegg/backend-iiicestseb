@@ -15,21 +15,5 @@ import java.util.LinkedList;
  */
 public class AuthorFactory {
 
-    public static AuthorInfoVO packageAuthorInfo(Author author, Affiliation affiliation){
-        AuthorInfoVO info = new AuthorInfoVO();
-        info.setId(author.getId());
-        info.setName(author.getName());
-        info.setAffiliationId(author.getAffiliationId());
-        info.setAffiliationName(affiliation.getName());
-        return info;
-    }
-
-    public static Collection<PaperOverview> toPaperOverviewBatch(Collection<Paper> papers){
-        Collection<PaperOverview> result = new LinkedList<>();
-//        for (Paper p : papers) {
-//            result.add(toPaperOverview(p));
-//        }
-        return result;
-    }
 
 }

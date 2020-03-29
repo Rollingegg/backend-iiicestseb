@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 
 /**
  * @author wph
@@ -32,6 +33,11 @@ public class AffiliationServiceImpl extends ServiceImpl<AffiliationMapper, Affil
     @Override
     public void saveAffiliation(Affiliation affiliation) {
         save(affiliation);
+    }
+
+    @Override
+    public Collection<Affiliation> findAffiliationByIdBatch(Collection<Integer> ids) {
+        return this.listByIds(ids);
     }
 //
 //

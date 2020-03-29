@@ -6,7 +6,6 @@ import group.iiicestseb.backend.vo.paper.PaperOverview;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author jh
@@ -33,14 +32,13 @@ public class PaperFactory {
         return result;
     }
 
-
     public static PaperDetail packageDetail(Paper paper, Collection<Author> authors, Conference conference, Collection<Term> terms, Collection<Reference> references) {
         PaperDetail detail = new PaperDetail();
         detail.setPaper(paper);
-        detail.setAuthorInfoList(authors);
+        detail.setAuthorList(authors);
         detail.setConference(conference);
         detail.setTermList(terms);
         detail.setReferenceList(references);
-        return null;
+        return detail;
     }
 }

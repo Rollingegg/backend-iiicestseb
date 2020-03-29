@@ -24,6 +24,11 @@ public class AuthorHotVO {
     private String name;
 
     /**
+     * 机构id
+     */
+    private Integer affiliationId;
+
+    /**
      * 机构名
      */
     private String affiliationName;
