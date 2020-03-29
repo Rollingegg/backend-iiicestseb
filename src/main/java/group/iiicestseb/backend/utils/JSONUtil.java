@@ -617,6 +617,7 @@ public class JSONUtil {
             reference.setTitle(temp.getString(REF.Title.value()));
             reference.setReferenceOrder(temp.getInteger(REF.Order.value()));
             reference.setText(temp.getString(REF.Text.value()));
+            reference.setRefType(temp.getString(REF.RefType.value()));
             reference.setGoogleScholarLink(temp.getString(REF.GoogleScholarLink.value()));
             references.add(reference);
         }

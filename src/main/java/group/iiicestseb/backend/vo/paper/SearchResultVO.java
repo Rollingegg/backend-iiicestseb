@@ -1,4 +1,4 @@
-package group.iiicestseb.backend.vo;
+package group.iiicestseb.backend.vo.paper;
 
 
 import group.iiicestseb.backend.entity.Author;

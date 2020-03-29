@@ -2,8 +2,8 @@ package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.mapper.StatisticsMapper;
 import group.iiicestseb.backend.serviceImpl.StatisticsServiceImpl;
-import group.iiicestseb.backend.vo.AuthorHotVO;
-import group.iiicestseb.backend.vo.TermWithHotVO;
+import group.iiicestseb.backend.vo.author.AuthorHotVO;
+import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;

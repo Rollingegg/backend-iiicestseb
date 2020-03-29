@@ -9,7 +9,7 @@ import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.mapper.RecordMapper;
 import group.iiicestseb.backend.mapper.UserMapper;
 import group.iiicestseb.backend.serviceImpl.UserServiceImpl;
-import group.iiicestseb.backend.vo.UserVO;
+import group.iiicestseb.backend.vo.user.UserVO;
 import org.easymock.EasyMockSupport;
 import org.junit.Before;
 import org.junit.Test;

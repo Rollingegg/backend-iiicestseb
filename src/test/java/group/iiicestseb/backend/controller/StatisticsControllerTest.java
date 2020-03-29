@@ -2,8 +2,8 @@ package group.iiicestseb.backend.controller;
 
 
 import group.iiicestseb.backend.service.StatisticsService;
-import group.iiicestseb.backend.vo.AuthorHotVO;
-import group.iiicestseb.backend.vo.TermWithHotVO;
+import group.iiicestseb.backend.vo.author.AuthorHotVO;
+import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

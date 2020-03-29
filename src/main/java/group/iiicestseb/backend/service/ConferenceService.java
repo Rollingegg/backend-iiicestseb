@@ -21,4 +21,11 @@ public interface ConferenceService {
      */
     void insertConference(Conference c);
 
+    /**
+     * 通过id查找会议
+     *
+     * @param conferenceId 会议id
+     * @return 会议
+     */
+    Conference findConferenceById(Integer conferenceId);
 }

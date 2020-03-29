@@ -1,4 +1,4 @@
-package group.iiicestseb.backend.vo;
+package group.iiicestseb.backend.vo.user;
 
 import group.iiicestseb.backend.entity.Record;
 import group.iiicestseb.backend.entity.User;

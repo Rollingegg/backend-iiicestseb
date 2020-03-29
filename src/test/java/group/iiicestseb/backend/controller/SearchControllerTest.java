@@ -6,7 +6,7 @@ import group.iiicestseb.backend.exception.paper.PaperFormException;
 import group.iiicestseb.backend.exception.paper.PaperTypeException;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.service.SearchService;
-import group.iiicestseb.backend.vo.SearchResultVO;
+import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

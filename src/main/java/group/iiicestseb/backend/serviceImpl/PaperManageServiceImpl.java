@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 
-@Service("Paper")
+@Service("PaperManage")
 @Transactional(rollbackFor = Exception.class)
 public class PaperManageServiceImpl extends ServiceImpl<PaperMapper, Paper> implements PaperManageService {
 

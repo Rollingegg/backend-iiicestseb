@@ -2,9 +2,9 @@ package group.iiicestseb.backend.controller;
 
 
 import group.iiicestseb.backend.service.StatisticsService;
-import group.iiicestseb.backend.vo.AuthorHotVO;
+import group.iiicestseb.backend.vo.author.AuthorHotVO;
 import group.iiicestseb.backend.vo.Response;
-import group.iiicestseb.backend.vo.TermWithHotVO;
+import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

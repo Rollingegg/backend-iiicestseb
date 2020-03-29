@@ -2,7 +2,7 @@ package group.iiicestseb.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Author;
-import group.iiicestseb.backend.vo.AuthorInfoVO;
+import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 

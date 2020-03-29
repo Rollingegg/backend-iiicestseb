@@ -3,8 +3,8 @@ package group.iiicestseb.backend.serviceImpl;
 import group.iiicestseb.backend.mapper.StatisticsMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.StatisticsService;
-import group.iiicestseb.backend.vo.AuthorHotVO;
-import group.iiicestseb.backend.vo.TermWithHotVO;
+import group.iiicestseb.backend.vo.author.AuthorHotVO;
+import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -31,4 +31,9 @@ public class ConferenceServiceImpl extends ServiceImpl<BaseMapper<Conference>,Co
     public void insertConference(Conference c) {
         conferenceMapper.insert(c);
     }
+
+    @Override
+    public Conference findConferenceById(Integer conferenceId) {
+        return conferenceMapper.selectById(conferenceId);
+    }
 }

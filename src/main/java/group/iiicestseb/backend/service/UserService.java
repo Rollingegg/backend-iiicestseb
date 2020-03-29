@@ -2,7 +2,7 @@ package group.iiicestseb.backend.service;
 
 
 import group.iiicestseb.backend.form.UserForm;
-import group.iiicestseb.backend.vo.UserVO;
+import group.iiicestseb.backend.vo.user.UserVO;
 
 /**
  * @author jh

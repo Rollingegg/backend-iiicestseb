@@ -3,16 +3,15 @@ package group.iiicestseb.backend.serviceImpl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.mapper.AuthorMapper;
+import group.iiicestseb.backend.mapper.PaperAuthorMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AuthorService;
-import group.iiicestseb.backend.vo.AuthorInfoVO;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author wph
@@ -26,6 +25,8 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
     private Regedit regedit;
     @Resource
     private AuthorMapper authorMapper;
+    @Resource
+    private PaperAuthorMapper paperAuthorMapper;
 
     @Override
     public Author findAuthorByName(String name) {
@@ -38,6 +39,11 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
             return;
         }
         saveBatch(authorList);
+    }
+
+    @Override
+    public Collection<Author> findAuthorByIdBatch(Collection<Integer> ids) {
+        return this.listByIds(ids);
     }
 //
 //    @Override

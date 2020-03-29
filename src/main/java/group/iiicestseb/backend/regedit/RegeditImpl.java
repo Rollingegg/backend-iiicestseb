@@ -4,8 +4,8 @@ import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.service.*;
-import group.iiicestseb.backend.vo.SearchResultVO;
-import group.iiicestseb.backend.vo.UserVO;
+import group.iiicestseb.backend.vo.paper.SearchResultVO;
+import group.iiicestseb.backend.vo.user.UserVO;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,7 @@ public class RegeditImpl implements Regedit {
     @Resource(name = "User")
     private UserService userService;
     @Lazy
-    @Resource(name = "Paper")
+    @Resource(name = "PaperManage")
     private PaperManageService paperManageService;
     @Lazy
     @Resource(name = "Search")
@@ -75,6 +75,11 @@ public class RegeditImpl implements Regedit {
     @Override
     public void insertConference(Conference conference) {
         conferenceService.insertConference(conference);
+    }
+
+    @Override
+    public Conference findConferenceById(Integer conferenceId) {
+        return conferenceService.findConferenceById(conferenceId);
     }
 
 

@@ -22,7 +22,7 @@ import java.io.IOException;
 @CrossOrigin
 @RequestMapping("/admin/paper")
 public class PaperManageController {
-    @Resource(name = "Paper")
+    @Resource(name = "Regedit")
     private PaperManageService paperManageService;
 
     public static final String DELETE_PAPER_ERROR = "删除文献出现位置错误";

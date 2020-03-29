@@ -2,7 +2,7 @@
 //
 //import group.iiicestseb.backend.mapper.AuthorMapper;
 //import group.iiicestseb.backend.serviceImpl.AuthorServiceImpl;
-//import group.iiicestseb.backend.vo.AuthorInfoVO;
+//import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 //import org.easymock.*;
 //import org.junit.Rule;
 //import org.junit.Test;

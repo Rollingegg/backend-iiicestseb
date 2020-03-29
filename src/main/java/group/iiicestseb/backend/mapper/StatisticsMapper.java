@@ -1,8 +1,8 @@
 package group.iiicestseb.backend.mapper;
 
 
-import group.iiicestseb.backend.vo.AuthorHotVO;
-import group.iiicestseb.backend.vo.TermWithHotVO;
+import group.iiicestseb.backend.vo.author.AuthorHotVO;
+import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 

@@ -1,7 +1,7 @@
 package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.form.AdvancedSearchForm;
-import group.iiicestseb.backend.vo.SearchResultVO;
+import group.iiicestseb.backend.vo.paper.SearchResultVO;
 
 import java.util.List;
 

@@ -3,7 +3,7 @@ package group.iiicestseb.backend.controller;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.service.SearchService;
 import group.iiicestseb.backend.vo.Response;
-import group.iiicestseb.backend.vo.SearchResultVO;
+import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

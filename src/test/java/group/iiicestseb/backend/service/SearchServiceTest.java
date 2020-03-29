@@ -4,7 +4,7 @@ import group.iiicestseb.backend.exception.paper.NoPaperFoundException;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.serviceImpl.SearchServiceImpl;
-import group.iiicestseb.backend.vo.SearchResultVO;
+import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.easymock.*;
 import org.junit.Rule;
 import org.junit.Test;
