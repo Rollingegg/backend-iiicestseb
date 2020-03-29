@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -46,7 +45,7 @@ public class SearchResultVO {
     /**
      * 出版日期
      */
-    private LocalDateTime publicationYear;
+    private String chronDate;
 
     /**
      * 作者资料列表

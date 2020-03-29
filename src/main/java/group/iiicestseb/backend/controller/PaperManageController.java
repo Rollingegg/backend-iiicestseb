@@ -1,6 +1,5 @@
 package group.iiicestseb.backend.controller;
 
-import group.iiicestseb.backend.exception.paper.JSONAnalyzeException;
 import group.iiicestseb.backend.service.PaperManageService;
 import group.iiicestseb.backend.utils.JSONUtil;
 import group.iiicestseb.backend.vo.Response;
@@ -24,9 +23,7 @@ import java.io.IOException;
 public class PaperManageController {
     @Resource(name = "Regedit")
     private PaperManageService paperManageService;
-
     public static final String DELETE_PAPER_ERROR = "删除文献出现位置错误";
-
     public static final String CSV_ANALYZE_ERROR = "CSV解析错误，请查阅日志";
     public static final String SHOULD_BE_POSITIVE = "参数应该大于0";
     public static final String PARAM_TOO_LARGE = "参数太大";

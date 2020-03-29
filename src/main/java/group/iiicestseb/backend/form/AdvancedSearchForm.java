@@ -17,6 +17,7 @@ import javax.validation.constraints.Min;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdvancedSearchForm {
+    public static final String CHRON_DATE = "chron_date";
     public static final String ALL = "all";
     public static final String AFFILIATION ="affiliation_name";
     public static final String TITLE ="title";
@@ -27,7 +28,6 @@ public class AdvancedSearchForm {
     public static final String ADVANCED ="advanced";
     public static final String LIMIT_ERROR= "limit必须大于0，不超过200";
     public static final String PAGE_ERROR= "页码必须大于等于0";
-
 
     /**
      * 页码
@@ -82,8 +82,16 @@ public class AdvancedSearchForm {
     @Max(value = 200,message = LIMIT_ERROR)
     private Integer limit = 50;
 
+    /**
+     * 出版年份最小值
+     */
+    String chronDateMinKeyword = "1900";
 
-
+    /**
+     * 出版年份最大值
+     */
+    //@DateTimeFormat(pattern = "yyyy")
+    String chronDateMaxKeyword = "2100";
 
     public void isValid(){
         if( !(ALL.equals(this.type) ||
@@ -93,7 +101,8 @@ public class AdvancedSearchForm {
                 TITLE.equals(this.type) ||
                 TERM.equals(this.type) ||
                 DOI.equals(this.type) ||
-                ADVANCED.equals(this.type)
+                ADVANCED.equals(this.type) ||
+                CHRON_DATE.equals(this.type)
                 )){
             throw new PaperTypeException();
         }
@@ -103,7 +112,9 @@ public class AdvancedSearchForm {
                 this.getTitleKeyword() == null &&
                 this.getPaperAbstractKeyword()== null &&
                 this.getAffiliationKeyword()== null  &&
-                this.getAllKeyword()==null){
+                this.getAllKeyword()==null &&
+                this.getChronDateMinKeyword() == null &&
+                this.getChronDateMaxKeyword() == null){
             throw new PaperFormException();
         }
 
