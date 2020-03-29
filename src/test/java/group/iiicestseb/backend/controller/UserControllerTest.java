@@ -33,8 +33,6 @@ import org.springframework.web.util.NestedServletException;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-//使用这个Annotate会在跑单元测试的时候真实的启一个web服务，然后开始调用Controller的Rest API，待单元测试跑完之后再将web服务停掉;
-@WebAppConfiguration
 public class UserControllerTest{
     @Autowired
     public WebApplicationContext wac;

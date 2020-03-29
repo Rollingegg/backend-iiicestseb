@@ -1,4 +1,4 @@
-package group.iiicestseb.backend;
+package group.iiicestseb.backend.config;
 
 
 import javax.servlet.*;

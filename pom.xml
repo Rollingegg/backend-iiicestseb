@@ -238,6 +238,18 @@
 				<profileActive>local</profileActive>
 			</properties>
 		</profile>
+		<profile>
+			<id>jh</id>
+			<properties>
+				<profileActive>jh</profileActive>
+			</properties>
+		</profile>
+		<profile>
+			<id>wph</id>
+			<properties>
+				<profileActive>wph</profileActive>
+			</properties>
+		</profile>
 	</profiles>
 
 </project>

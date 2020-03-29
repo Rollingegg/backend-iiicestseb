@@ -1,9 +1,11 @@
 package group.iiicestseb.backend.controller;
 
+import group.iiicestseb.backend.exception.paper.JSONAnalyzeException;
 import group.iiicestseb.backend.service.PaperManageService;
 import group.iiicestseb.backend.utils.JSONUtil;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,12 +32,12 @@ import java.io.FileInputStream;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
-        TransactionalTestExecutionListener.class})
 @Transactional
 public class PaperManageControllerTest {
     @Autowired
     WebApplicationContext wac;
+
+    ExpectedException thrown = ExpectedException.none();
 
     private MockMvc mvc;
     private MockMvc mvcStandalone;
@@ -79,7 +81,8 @@ public class PaperManageControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(0));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.totalCount").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.successCount").value(1));
     }
 
     @Test
@@ -90,8 +93,8 @@ public class PaperManageControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").value(JSONUtil.FILE_NOT_FOUND + param));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(JSONUtil.FILE_NOT_FOUND + param));
     }
 
     @Test
@@ -103,7 +106,9 @@ public class PaperManageControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").value("第1行：" + JSONUtil.PAPER_EXISTED));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.errorLogs[0]").value("第1行：" + JSONUtil.PAPER_EXISTED))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.totalCount").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.existedCount").value(1));
     }
 
     @Test
@@ -115,7 +120,9 @@ public class PaperManageControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").value("第1行：" + JSONUtil.JSON_PARSE_ERROR));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.errorLogs[0]").value("第1行：" + JSONUtil.JSON_PARSE_ERROR))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.totalCount").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.errorCount").value(1));
     }
 
     @Test
@@ -131,7 +138,8 @@ public class PaperManageControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(0));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.totalCount").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.successCount").value(1));
     }
 
     @Test
@@ -147,7 +155,9 @@ public class PaperManageControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").value("第1行：" + JSONUtil.PAPER_EXISTED));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.errorLogs[0]").value("第1行：" + JSONUtil.PAPER_EXISTED))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.totalCount").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.existedCount").value(1));
     }
 
     @Test
@@ -163,7 +173,9 @@ public class PaperManageControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").value("第1行：" + JSONUtil.JSON_PARSE_ERROR));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.errorLogs[0]").value("第1行：" + JSONUtil.JSON_PARSE_ERROR))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.totalCount").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.errorCount").value(1));
     }
 
 }

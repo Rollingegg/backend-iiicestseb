@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import group.iiicestseb.backend.entity.*;
+import group.iiicestseb.backend.exception.paper.JSONAnalyzeException;
 import group.iiicestseb.backend.service.AffiliationService;
 import group.iiicestseb.backend.service.AuthorService;
 import group.iiicestseb.backend.service.ConferenceService;
 import group.iiicestseb.backend.service.PaperManageService;
+import group.iiicestseb.backend.vo.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
 
@@ -43,6 +46,7 @@ public class JSONUtil {
     public static final String EXISTED_COUNT_INFO = "已存在：";
     public static final String ERROR_COUNT_INFO = "请查看日志，发生未知错误数：";
     public static final String STANDARD_JSON_FILE = "Standard.json";
+    public static final String GET_STANDARD_JSON_FILE_ERROR = "获取标准json文件模板失败，请查看日志";
 
     @Resource(name = "Regedit")
     private PaperManageService paperManageService;
@@ -241,11 +245,11 @@ public class JSONUtil {
      * @param filename 数据源文件名
      * @return 解析日志
      */
-    public static List<String> analyzeExistedJsonFile(String filename) {
+    public static JSONObject analyzeExistedJsonFile(String filename) {
         return Instance.analyzeExistedJsonFileInner(filename);
     }
 
-    private List<String> analyzeExistedJsonFileInner(String filename) {
+    private JSONObject analyzeExistedJsonFileInner(String filename) {
         ClassPathResource file = new ClassPathResource("json/" + filename);
         List<JSONObject> jsonObjects = new LinkedList<>();
         List<String> logs = new LinkedList<>();
@@ -255,14 +259,11 @@ public class JSONUtil {
             ReadLines(jsonObjects, br, logs);
             br.close();
         } catch (FileNotFoundException e) {
-            logs.add(FILE_NOT_FOUND + filename);
-            return logs;
+            throw new JSONAnalyzeException(FILE_NOT_FOUND + filename);
         } catch (IOException e) {
-            logs.add(INPUT_STREAM_CLOSE_ERROR);
-            return logs;
+            throw new JSONAnalyzeException(INPUT_STREAM_CLOSE_ERROR);
         }
-        analyze(jsonObjects, logs);
-        return logs;
+        return analyze(jsonObjects, logs);
     }
 
     /**
@@ -271,11 +272,11 @@ public class JSONUtil {
      * @param file 上传的数据源文件
      * @return 解析日志
      */
-    public static List<String> analyzeUploadedJsonFile(MultipartFile file) {
+    public static JSONObject analyzeUploadedJsonFile(MultipartFile file) {
         return Instance.analyzeUploadedJsonFileInner(file);
     }
 
-    private List<String> analyzeUploadedJsonFileInner(MultipartFile file) {
+    private JSONObject analyzeUploadedJsonFileInner(MultipartFile file) {
         List<JSONObject> jsonObjects = new LinkedList<>();
         List<String> logs = new LinkedList<>();
         BufferedReader br;
@@ -284,11 +285,30 @@ public class JSONUtil {
             ReadLines(jsonObjects, br, logs);
             br.close();
         } catch (IOException e) {
-            logs.add(INPUT_STREAM_CLOSE_ERROR);
-            return logs;
+            throw new JSONAnalyzeException(INPUT_STREAM_CLOSE_ERROR);
         }
-        analyze(jsonObjects, logs);
-        return logs;
+        return analyze(jsonObjects, logs);
+    }
+
+    /**
+     * 获取JSON模板
+     *
+     * @param response 请求的回答
+     */
+    public static void getStandardJSON(HttpServletResponse response) {
+        response.setHeader("content-type", "application/octet-stream; charset=utf-8");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=Standard.json";
+        response.setHeader(headerKey, headerValue);
+        response.setContentType("application/octet-stream");
+        ClassPathResource file = new ClassPathResource("json/Standard.json");
+        try {
+            response.getOutputStream().write(file.getInputStream().readAllBytes());
+            response.setContentLength(Math.toIntExact(file.contentLength()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new JSONAnalyzeException(GET_STANDARD_JSON_FILE_ERROR);
+        }
     }
 
     private void ReadLines(List<JSONObject> jsonObjects, BufferedReader br, List<String> logs) {
@@ -314,7 +334,8 @@ public class JSONUtil {
         }
     }
 
-    private void analyze(List<JSONObject> jsonObjects, List<String> logs) {
+    private JSONObject analyze(List<JSONObject> jsonObjects, List<String> logs) {
+        JSONObject result = new JSONObject();
         Map<Class<?>, Map<?, ?>> ExistedMaps = new HashMap<>();
         ExistedMaps.put(Conference.class, new HashMap<String, Conference>());
         ExistedMaps.put(Term.class, new HashMap<String, Term>());
@@ -338,7 +359,7 @@ public class JSONUtil {
             try {
                 analyzeOne(jo, ExistedMaps, NewLists);
                 success++;
-            } catch (JSONException e) {
+            } catch (JSONAnalyzeException e) {
                 LOGGER.warn(jo.getString("line") + e.getMessage());
                 logs.add(jo.getString("line") + e.getMessage());
                 existed++;
@@ -357,10 +378,18 @@ public class JSONUtil {
         LOGGER.info(SUCCESS_COUNT_INFO + success);
         LOGGER.info(EXISTED_COUNT_INFO + existed);
         LOGGER.info(ERROR_COUNT_INFO + error);
+
+        result.put("totalCount", count);
+        result.put("successCount", success);
+        result.put("existedCount", existed);
+        result.put("errorCount", error);
+        result.put("errorLogs", logs);
+        result.put("papers", NewLists.get(Paper.class));
+        return result;
     }
 
-    @Transactional(rollbackFor = {JSONException.class, Exception.class})
-    public void analyzeOne(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) throws JSONException {
+    @Transactional(rollbackFor = {JSONAnalyzeException.class, Exception.class})
+    public void analyzeOne(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) throws JSONAnalyzeException {
         Conference conference = analyzeConference(jo, existedMaps, newLists);
         Paper paper = analyzePaper(jo, existedMaps, newLists);
         paper.setConferenceId(conference.getId());
@@ -388,12 +417,12 @@ public class JSONUtil {
         Map<Integer, Paper> existed = (Map<Integer, Paper>) existedMaps.get(Paper.class);
         List<Paper> news = (List<Paper>) newLists.get(Paper.class);
         if (existed.containsKey(articleId)) {
-            throw new JSONException(PAPER_EXISTED);
+            throw new JSONAnalyzeException(PAPER_EXISTED);
         }
         paper = paperManageService.findPaperByArticleId(articleId);
         if (paper != null) {
             existed.put(articleId, paper);
-            throw new JSONException(PAPER_EXISTED);
+            throw new JSONAnalyzeException(PAPER_EXISTED);
         }
         paper = new Paper();
         paper.setPdfUrl(jo.getString(KEY.PdfLink.value()));
@@ -592,12 +621,6 @@ public class JSONUtil {
             references.add(reference);
         }
         return references;
-    }
-
-    public static class JSONException extends RuntimeException {
-        public JSONException(String msg) {
-            super(msg);
-        }
     }
 
 }

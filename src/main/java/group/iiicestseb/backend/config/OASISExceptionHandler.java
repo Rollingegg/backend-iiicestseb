@@ -1,10 +1,12 @@
 package group.iiicestseb.backend.config;
 
+import group.iiicestseb.backend.exception.paper.JSONAnalyzeException;
 import group.iiicestseb.backend.exception.paper.NoPaperFoundException;
 import group.iiicestseb.backend.exception.paper.PaperFormException;
 import group.iiicestseb.backend.exception.paper.PaperTypeException;
 import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
 import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
+import group.iiicestseb.backend.utils.CSVUtil;
 import group.iiicestseb.backend.vo.Response;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -51,12 +53,10 @@ public class OASISExceptionHandler {
         return Response.buildFailure(msg);
     }
 
-//    @ExceptionHandler(CSVUtil.CSVException.class)
-//    public Response CSVErrorException(CSVUtil.CSVException ex){
-//        return Response.buildFailure(ex.getMessage());
-//    }
-
-
+    @ExceptionHandler(JSONAnalyzeException.class)
+    public Response CSVErrorException(JSONAnalyzeException ex){
+        return Response.buildFailure(ex.getMessage());
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public Response assertErrorException(IllegalArgumentException ex) {
