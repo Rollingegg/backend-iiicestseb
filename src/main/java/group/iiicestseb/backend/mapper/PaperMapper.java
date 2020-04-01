@@ -140,6 +140,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "from paper p, paper_authors pa, author au, affiliation aff " +
             "where aff.id = #{id} and pa.paper_id = p.id and pa.author_id = au.id and aff.id = au.affiliation_id " +
             "order by p.citation_count_paper desc")
+    @ResultMap(value = "SearchResultVOResultMap")
     Collection<SearchResultVO> selectAllPaperByAffiliationId(Integer id);
 
 
@@ -152,6 +153,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "from paper p, paper_authors pa, author au " +
             "where au.id = #{id} and pa.paper_id = p.id and pa.author_id = au.id " +
             "order by p.citation_count_paper desc")
+    @ResultMap(value = "SearchResultVOResultMap")
     Collection<SearchResultVO> selectAllPaperByAuthorId(Integer id);
 
     /**

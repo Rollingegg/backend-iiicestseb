@@ -20,7 +20,7 @@ public class AuthorController {
     private AuthorService authorService;
 
     /**
-     * 根据机构id搜索该机构的热门作者
+     * 根据机构id搜索该机构的所有作者
      * @param id 机构id
      * @return 作者列表
      */
@@ -30,7 +30,7 @@ public class AuthorController {
     }
 
     /**
-     * 根据机构id搜索该机构所有作者
+     * 根据机构id搜索该机构热门作者
      * @param id 机构id
      * @return 作者列表
      */
@@ -44,7 +44,7 @@ public class AuthorController {
 
     @GetMapping("/partner")
     public Response getAuthorPartner(@RequestParam("id") Integer id,@RequestParam("limit") Integer limit){
-        return Response.buildSuccess(authorService.selectHotAuthorByAffiliationId(id,limit));
+        return Response.buildSuccess(authorService.getAuthorPartner(id,limit));
     }
 
 

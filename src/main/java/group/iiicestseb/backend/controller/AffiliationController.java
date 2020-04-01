@@ -6,7 +6,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotBlank;
 
 /**
  * @author wph
@@ -29,7 +28,7 @@ public class AffiliationController {
      * @return 机构基本信息
      */
     @GetMapping("/info")
-    public Response getAffiliationBasicInfo( @RequestParam("affiliation_id") @NotBlank(message = PARAMETER_ERROR)Integer id){
+    public Response getAffiliationBasicInfo( @RequestParam("affiliation_id") Integer id){
         return  Response.buildSuccess(affiliationService.selectBasicInfoByAffiliationId(id));
     }
 
