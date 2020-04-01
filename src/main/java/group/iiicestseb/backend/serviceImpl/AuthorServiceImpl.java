@@ -9,8 +9,8 @@ import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AuthorService;
 import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
-import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
+import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,8 +74,16 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
         return authorInAffiliationVOList;
     }
 
+
+
     @Override
     public AuthorBasicInfoVO getAuthorBasicInfoByAuthorId(Integer id) {
         return authorMapper.selectAuthorBasicInfoById(id);
+    }
+
+
+    @Override
+    public Collection<AuthorInfoVO> getAuthorPartner(Integer id, Integer limit) {
+        return authorMapper.selectPartnerById(id,limit);
     }
 }

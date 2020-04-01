@@ -75,4 +75,16 @@ public interface AuthorService {
      * @return 作者详情页面基本信息
      */
     AuthorBasicInfoVO getAuthorBasicInfoByAuthorId(Integer id);
+
+
+    /**
+     * 获取作者合作伙伴
+     * @param id 作者id
+     * @param limit 搜索数
+     * @return 合作伙伴列表
+     */
+    Collection<AuthorInfoVO> getAuthorPartner(Integer id,Integer limit);
+
+
+
 }

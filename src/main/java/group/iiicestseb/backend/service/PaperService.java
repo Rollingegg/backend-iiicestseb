@@ -4,7 +4,7 @@ import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.vo.PaperDetail;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
-import group.iiicestseb.backend.vo.paper.PaperRecentInAffiliationVO;
+import group.iiicestseb.backend.vo.paper.PaperBasicVO;
 import group.iiicestseb.backend.vo.paper.SearchResultVO;
 
 import java.util.Collection;
@@ -56,7 +56,7 @@ public interface PaperService {
      * @param limit 搜索个数
      * @return 机构最近发表的文献列表
      */
-    Collection<PaperRecentInAffiliationVO> getAffiliationRecentlyPublish(Integer id,Integer limit);
+    Collection<PaperBasicVO> getAffiliationRecentlyPublish(Integer id, Integer limit);
 
 
     /**
@@ -65,4 +65,20 @@ public interface PaperService {
      * @return 机构所有发表的文献列表
      */
     Collection<SearchResultVO> getAffiliationAllPublish(Integer id);
+
+    /**
+     * 获取作者最近所有文献
+     * @param id 作者id
+     * @param limit 搜索数
+     * @return 作者最近论文
+     */
+    Collection<PaperBasicVO> getAuthorRecentPaper(Integer id,int limit);
+
+
+    /**
+     * 获取作者所有文献
+     * @param id 作者id
+     * @return 作者所有文献
+     */
+    Collection<SearchResultVO> getAuthorAllPaper(Integer id);
 }

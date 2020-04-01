@@ -11,7 +11,7 @@ import group.iiicestseb.backend.vo.PaperDetail;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.factory.PaperFactory;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
-import group.iiicestseb.backend.vo.paper.PaperRecentInAffiliationVO;
+import group.iiicestseb.backend.vo.paper.PaperBasicVO;
 import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.springframework.stereotype.Service;
 
@@ -82,18 +82,34 @@ public class PaperServiceImpl implements PaperService {
     }
 
     @Override
-    public Collection<PaperRecentInAffiliationVO> getAffiliationRecentlyPublish(Integer id, Integer limit) {
+    public Collection<PaperBasicVO> getAffiliationRecentlyPublish(Integer id, Integer limit) {
         List<Paper> paperList = paperMapper.selectRecentPaperByAffiliationId(id,limit);
-        List<PaperRecentInAffiliationVO> paperRecentInAffiliationVOList = new ArrayList<>();
+        List<PaperBasicVO> paperBasicVOList = new ArrayList<>();
         for (Iterator<Paper> iterator = paperList.iterator(); iterator.hasNext(); ) {
             Paper next =  iterator.next();
-            paperRecentInAffiliationVOList.add(PaperFactory.toPaperRecentInAffiliationVO(next));
+            paperBasicVOList.add(PaperFactory.toPaperBasicVO(next));
         }
-        return paperRecentInAffiliationVOList;
+        return paperBasicVOList;
     }
 
     @Override
     public Collection<SearchResultVO> getAffiliationAllPublish(Integer id) {
         return paperMapper.selectAllPaperByAffiliationId(id);
+    }
+
+    @Override
+    public Collection<PaperBasicVO> getAuthorRecentPaper(Integer id, int limit) {
+        Collection<Paper> paperCollection = paperMapper.selectRecentPaperByAuthorId(id,limit);
+        Collection<PaperBasicVO> paperBasicVOCollection = new ArrayList<>();
+        for (Iterator<Paper> iterator = paperCollection.iterator(); iterator.hasNext(); ) {
+            Paper next =  iterator.next();
+            paperBasicVOCollection.add(PaperFactory.toPaperBasicVO(next));
+        }
+        return paperBasicVOCollection;
+    }
+
+    @Override
+    public Collection<SearchResultVO> getAuthorAllPaper(Integer id) {
+        return paperMapper.selectAllPaperByAuthorId(id);
     }
 }

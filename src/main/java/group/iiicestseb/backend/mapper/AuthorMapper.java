@@ -103,4 +103,25 @@ public interface AuthorMapper extends BaseMapper<Author> {
     @ResultType(AuthorBasicInfoVO.class)
     AuthorBasicInfoVO selectAuthorBasicInfoById(int id);
 
+
+    /**
+     * 获取作者合作伙伴
+     * @param id 作者id
+     * @param limit 搜索数
+     * @return 合作伙伴列表
+     */
+    @Select("select au.id as id,au.name,aff.id as affiliationId,aff.name as affiliationName  " +
+            "from author au, affiliation aff, " +
+            "(select  pa2.author_id as aid ,count(*) as coop_times " +
+            "from paper_authors pa1,paper_authors pa2 " +
+            "where pa1.author_id = #{id} and pa1.paper_id = pa2.paper_id and pa1.author_id <> pa2.author_id " +
+            "group by pa2.author_id " +
+            "limit #{limit})as x " +
+            "where x.aid = au.id and aff.id = au.affiliation_id " +
+            "order by x.coop_times " +
+            "limit #{limit}" +
+            "")
+    @ResultType(AuthorInfoVO.class)
+    Collection<AuthorInfoVO> selectPartnerById(int id,int limit);
+
 }

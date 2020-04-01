@@ -21,7 +21,7 @@ public class PaperController {
 
     public static final String PARAMETER_ERROR = "参数无效或不合法";
 
-    @Resource
+    @Resource(name = "Paper")
     private PaperService paperService;
 
     @GetMapping("/detail")
@@ -65,6 +65,29 @@ public class PaperController {
     @GetMapping("/affiliation/all/publish")
     public Response getAffiliationsAllPublish(@RequestParam("id")@NotNull(message = PARAMETER_ERROR)Integer id) {
         return Response.buildSuccess(paperService.getAffiliationAllPublish(id));
+    }
+
+    /**
+     * 作者详情页面 获取作者最近论文
+     * @param id 作者id
+     * @param limit 搜索数
+     * @return 作者最近发表论文列表
+     */
+    @GetMapping("/author/recently/publish")
+    public Response getAuthorRecentlyPublish(@RequestParam("id")@NotNull(message = PARAMETER_ERROR)Integer id,
+                                                   @RequestParam("limit")@Min(value = 1,message = PARAMETER_ERROR)Integer limit) {
+        return Response.buildSuccess(paperService.getAuthorRecentPaper(id,limit));
+    }
+
+
+    /**
+     * 作者详情页面 获取作者所有论文
+     * @param id 作者id
+     * @return 作者所有论文
+     */
+    @GetMapping("/author/all/publish")
+    public Response getAuthorAllPublish(@RequestParam("id")@NotNull(message = PARAMETER_ERROR)Integer id) {
+        return Response.buildSuccess(paperService.getAuthorAllPaper(id));
     }
 
 }

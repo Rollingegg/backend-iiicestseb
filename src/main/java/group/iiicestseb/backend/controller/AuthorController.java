@@ -41,4 +41,12 @@ public class AuthorController {
 
 
 
+
+    @GetMapping("/partner")
+    public Response getAuthorPartner(@RequestParam("id") Integer id,@RequestParam("limit") Integer limit){
+        return Response.buildSuccess(authorService.selectHotAuthorByAffiliationId(id,limit));
+    }
+
+
+
 }

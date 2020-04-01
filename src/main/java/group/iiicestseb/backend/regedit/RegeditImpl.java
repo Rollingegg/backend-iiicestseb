@@ -11,7 +11,7 @@ import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
-import group.iiicestseb.backend.vo.paper.PaperRecentInAffiliationVO;
+import group.iiicestseb.backend.vo.paper.PaperBasicVO;
 import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import group.iiicestseb.backend.vo.user.UserVO;
 import org.springframework.context.annotation.Lazy;
@@ -112,6 +112,11 @@ public class RegeditImpl implements Regedit {
         return authorService.getAuthorBasicInfoByAuthorId(id);
     }
 
+    @Override
+    public Collection<AuthorInfoVO> getAuthorPartner(Integer id, Integer limit) {
+        return authorService.getAuthorPartner(id,limit);
+    }
+
     //-----------------------------------------ConferenceService------------------------------
 
     @Override
@@ -172,6 +177,16 @@ public class RegeditImpl implements Regedit {
         paperManageService.saveTermList(termList);
     }
 
+    @Override
+    public Collection<PaperBasicVO> getAuthorRecentPaper(Integer id, int limit) {
+        return paperService.getAuthorRecentPaper(id,limit);
+    }
+
+    @Override
+    public Collection<SearchResultVO> getAuthorAllPaper(Integer id) {
+        return paperService.getAuthorAllPaper(id);
+    }
+
     //---------------------------SearchService-------------------------------
 
 
@@ -223,7 +238,7 @@ public class RegeditImpl implements Regedit {
     }
 
     @Override
-    public Collection<PaperRecentInAffiliationVO> getAffiliationRecentlyPublish(Integer id, Integer limit) {
+    public Collection<PaperBasicVO> getAffiliationRecentlyPublish(Integer id, Integer limit) {
         return paperService.getAffiliationRecentlyPublish(id,limit);
     }
 
