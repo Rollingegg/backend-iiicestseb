@@ -41,8 +41,8 @@ public class AffiliationServiceImpl extends ServiceImpl<AffiliationMapper, Affil
     }
 
     @Override
-    public AffiliationInfoVO selectBasicInfoByName(String name) {
-        return affiliationMapper.selectBasicInfoByName(name);
+    public AffiliationInfoVO selectBasicInfoByAffiliationId(Integer id) {
+        return affiliationMapper.selectBasicInfoById(id);
     }
 
     //

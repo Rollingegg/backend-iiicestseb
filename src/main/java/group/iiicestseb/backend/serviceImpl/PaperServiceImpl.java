@@ -11,12 +11,12 @@ import group.iiicestseb.backend.vo.PaperDetail;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.factory.PaperFactory;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
+import group.iiicestseb.backend.vo.paper.PaperRecentInAffiliationVO;
+import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author jh
@@ -65,7 +65,7 @@ public class PaperServiceImpl implements PaperService {
     @Override
     public Collection<AuthorInfoVO> getRecommendAuthors(Integer paperId, Integer num) {
         Collection<Integer> similarAuthorIDs = paperAuthorMapper.selectSimilarAuthorIdsByPaperId(paperId, num);
-        return ((AuthorService)regedit).findAuthorInfoByIdBatch(similarAuthorIDs);
+        return ((AuthorService) regedit).findAuthorInfoByIdBatch(similarAuthorIDs);
     }
 
     /**
@@ -78,8 +78,22 @@ public class PaperServiceImpl implements PaperService {
         for (AuthorInfoVO a : authors) {
             affiliationIds.add(a.getAffiliationId());
         }
-        return ((AffiliationService)regedit).findAffiliationByIdBatch(affiliationIds);
+        return ((AffiliationService) regedit).findAffiliationByIdBatch(affiliationIds);
     }
 
+    @Override
+    public Collection<PaperRecentInAffiliationVO> getAffiliationRecentlyPublish(Integer id, Integer limit) {
+        List<Paper> paperList = paperMapper.selectRecentPaperByAffiliationId(id,limit);
+        List<PaperRecentInAffiliationVO> paperRecentInAffiliationVOList = new ArrayList<>();
+        for (Iterator<Paper> iterator = paperList.iterator(); iterator.hasNext(); ) {
+            Paper next =  iterator.next();
+            paperRecentInAffiliationVOList.add(PaperFactory.toPaperRecentInAffiliationVO(next));
+        }
+        return paperRecentInAffiliationVOList;
+    }
 
+    @Override
+    public Collection<SearchResultVO> getAffiliationAllPublish(Integer id) {
+        return paperMapper.selectAllPaperByAffiliationId(id);
+    }
 }

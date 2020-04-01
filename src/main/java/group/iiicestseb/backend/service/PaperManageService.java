@@ -65,5 +65,4 @@ public interface PaperManageService {
     void saveTermList(List<Term> termList);
 
 
-    //todo 等数据库好了要重新增加获取PaperInfoVO的方法
 }

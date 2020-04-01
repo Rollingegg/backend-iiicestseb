@@ -5,9 +5,13 @@ import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.service.*;
 import group.iiicestseb.backend.vo.AffiliationInfoVO;
+import group.iiicestseb.backend.vo.PaperDetail;
+import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
+import group.iiicestseb.backend.vo.paper.PaperOverview;
+import group.iiicestseb.backend.vo.paper.PaperRecentInAffiliationVO;
 import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import group.iiicestseb.backend.vo.user.UserVO;
 import org.springframework.context.annotation.Lazy;
@@ -45,6 +49,9 @@ public class RegeditImpl implements Regedit {
     @Lazy
     @Resource(name = "Statistics")
     private StatisticsService statisticsService;
+    @Lazy
+    @Resource(name = "Paper")
+    private PaperService paperService;
 
     //------------------------AffiliationService---------------------------------
 
@@ -64,8 +71,8 @@ public class RegeditImpl implements Regedit {
     }
 
     @Override
-    public AffiliationInfoVO selectBasicInfoByName(String name) {
-        return affiliationService.selectBasicInfoByName(name);
+    public AffiliationInfoVO selectBasicInfoByAffiliationId(Integer id) {
+        return affiliationService.selectBasicInfoByAffiliationId(id);
     }
 
     //-----------------------------------------AuthorService------------------------------
@@ -86,18 +93,23 @@ public class RegeditImpl implements Regedit {
     }
 
     @Override
-    public List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationName(String name, Integer limit) {
-        return authorService.selectHotAuthorByAffiliationName(name,limit);
+    public List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit) {
+        return authorService.selectHotAuthorByAffiliationId(id,limit);
     }
 
     @Override
-    public List<AuthorInAffiliationVO> selectAllAuthorByAffiliationName(String name) {
-        return authorService.selectAllAuthorByAffiliationName(name);
+    public List<AuthorInAffiliationVO> selectAllAuthorByAffiliationId(Integer id) {
+        return authorService.selectAllAuthorByAffiliationId(id);
     }
 
     @Override
     public Collection<AuthorInfoVO> findAuthorInfoByIdBatch(Collection<Integer> ids) {
         return authorService.findAuthorInfoByIdBatch(ids);
+    }
+
+    @Override
+    public AuthorBasicInfoVO getAuthorBasicInfoByAuthorId(Integer id) {
+        return authorService.getAuthorBasicInfoByAuthorId(id);
     }
 
     //-----------------------------------------ConferenceService------------------------------
@@ -186,4 +198,37 @@ public class RegeditImpl implements Regedit {
     }
 
 
+
+    //---------------------------paperService-----------------------
+
+
+    @Override
+    public PaperDetail findPaperDetail(Integer paperId) {
+        return paperService.findPaperDetail(paperId);
+    }
+
+    @Override
+    public Collection<PaperOverview> getRecommendPapers(Integer paperId, Integer num) {
+        return paperService.getRecommendPapers(paperId,num);
+    }
+
+    @Override
+    public Collection<AuthorInfoVO> getRecommendAuthors(Integer paperId, Integer num) {
+        return paperService.getRecommendAuthors(paperId,num);
+    }
+
+    @Override
+    public Collection<Affiliation> getRecommendAffiliations(Integer paperId, Integer num) {
+        return paperService.getRecommendAffiliations(paperId,num);
+    }
+
+    @Override
+    public Collection<PaperRecentInAffiliationVO> getAffiliationRecentlyPublish(Integer id, Integer limit) {
+        return paperService.getAffiliationRecentlyPublish(id,limit);
+    }
+
+    @Override
+    public Collection<SearchResultVO> getAffiliationAllPublish(Integer id) {
+        return paperService.getAffiliationAllPublish(id);
+    }
 }

@@ -3,6 +3,7 @@ package group.iiicestseb.backend.factory;
 import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.vo.PaperDetail;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
+import group.iiicestseb.backend.vo.paper.PaperRecentInAffiliationVO;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -40,5 +41,13 @@ public class PaperFactory {
         detail.setTermList(terms);
         detail.setReferenceList(references);
         return detail;
+    }
+
+    public static PaperRecentInAffiliationVO toPaperRecentInAffiliationVO(Paper paper) {
+        PaperRecentInAffiliationVO paperRecentInAffiliationVO = new PaperRecentInAffiliationVO();
+        paperRecentInAffiliationVO.setChronDate(paper.getChronDate());
+        paperRecentInAffiliationVO.setId(paper.getId());
+        paperRecentInAffiliationVO.setTitle(paper.getTitle());
+        return paperRecentInAffiliationVO;
     }
 }

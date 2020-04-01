@@ -34,12 +34,12 @@ public interface AffiliationMapper extends BaseMapper<Affiliation> {
             "from " +
             "(select aff.id, aff.name ,count(*) as author_num, au.id as au_id " +
             "from affiliation aff, author au " +
-            "where aff.id = au.affiliation_id and aff.name = #{name}) as x, " +
+            "where aff.id = au.affiliation_id and aff.id = #{id}) as x, " +
             "paper_authors pa " +
             "where pa.author_id = x.au_id" +
             " ")
     @ResultType(AffiliationInfoVO.class)
-    AffiliationInfoVO selectBasicInfoByName(String name);
+    AffiliationInfoVO selectBasicInfoById(Integer id);
 
 
 

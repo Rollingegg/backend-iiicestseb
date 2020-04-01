@@ -7,6 +7,7 @@ import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.mapper.PaperAuthorMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AuthorService;
+import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
@@ -58,18 +59,23 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
     }
 
     @Override
-    public List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationName(String name, Integer limit) {
-        return authorMapper.selectHotAuthorByAffiliationName(name,limit);
+    public List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit) {
+        return authorMapper.selectHotAuthorByAffiliationId(id,limit);
     }
 
     @Override
-    public List<AuthorInAffiliationVO> selectAllAuthorByAffiliationName(String name) {
-        List<Author> authorList= authorMapper.selectAllAuthorByAffiliationName(name);
+    public List<AuthorInAffiliationVO> selectAllAuthorByAffiliationId(Integer id) {
+        List<Author> authorList= authorMapper.selectAllAuthorByAffiliationId(id);
         List<AuthorInAffiliationVO> authorInAffiliationVOList = new ArrayList<>();
         for (Iterator<Author> iterator = authorList.iterator(); iterator.hasNext(); ) {
             Author next =  iterator.next();
             authorInAffiliationVOList.add(AuthorFactory.toAuthorVO(next));
         }
         return authorInAffiliationVOList;
+    }
+
+    @Override
+    public AuthorBasicInfoVO getAuthorBasicInfoByAuthorId(Integer id) {
+        return authorMapper.selectAuthorBasicInfoById(id);
     }
 }

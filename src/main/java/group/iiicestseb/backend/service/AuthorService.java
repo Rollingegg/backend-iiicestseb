@@ -2,9 +2,10 @@ package group.iiicestseb.backend.service;
 
 
 import group.iiicestseb.backend.entity.Author;
+import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
-import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
+import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 
 import java.util.Collection;
 import java.util.List;
@@ -47,17 +48,31 @@ public interface AuthorService {
 
 
     /**
-     * 根据机构名搜索该机构的热门作者
-     * @param name 机构类
+     * 根据机构id搜索该机构的热门作者
+     * @param id 机构id
      * @return 作者列表
      */
-    List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationName(String name, Integer limit);
+    /**
+     * 根据机构id搜索该机构的热门作者
+     * @param id 机构id
+     * @param limit 搜索个数
+     * @return 作者列表
+     * todo 更改了热度计算公式，等jh写完要重写
+     */
+    List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit);
 
 
     /**
-     * 根据机构名搜索该机构所有作者
-     * @param name 机构名
+     * 根据机构id搜索该机构所有作者
+     * @param id 机构id
      * @return 作者列表
      */
-    List<AuthorInAffiliationVO> selectAllAuthorByAffiliationName(String name);
+    List<AuthorInAffiliationVO> selectAllAuthorByAffiliationId(Integer id);
+
+    /**
+     * 作者详情页面获取作者基本信息
+     * @param id 作者id
+     * @return 作者详情页面基本信息
+     */
+    AuthorBasicInfoVO getAuthorBasicInfoByAuthorId(Integer id);
 }

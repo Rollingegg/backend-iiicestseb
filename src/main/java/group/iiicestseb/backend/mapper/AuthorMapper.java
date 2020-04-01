@@ -2,6 +2,7 @@ package group.iiicestseb.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Author;
+import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import org.apache.ibatis.annotations.*;
@@ -39,32 +40,32 @@ public interface AuthorMapper extends BaseMapper<Author> {
 
     /**
      * 根据机构名搜索该机构的热门作者
-     * @param name 机构类
+     * @param id 机构id
      * @param limit 搜索限制数
      * @return 作者列表
      */
     @Select("select id,name,publishNum  from" +
             "(select au.id,au.name,au.first_name,au.last_name,count(*) as publishNum " +
             "from author au, affiliation aff,paper_authors pa " +
-            "where aff.name=#{name} and aff.id = au.affiliation_id and pa.author_id = au.id " +
+            "where aff.id=#{id} and aff.id = au.affiliation_id and pa.author_id = au.id " +
             "group by au.id) as x " +
             "order by publishNum desc " +
             "limit #{limit}" +
             "")
     @ResultType(AuthorHotInAffiliationVO.class)
-    List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationName(String name, Integer limit);
+    List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit);
 
 
     /**
      * 根据机构名搜索该机构所有作者
-     * @param name 机构名
+     * @param id 机构id
      * @return 作者列表
      */
     @Select("select au.id,au.name,au.first_name,au.last_name " +
             "from author au, affiliation aff " +
-            "where aff.name=#{name} and aff.id = au.affiliation_id")
+            "where aff.id=#{id} and aff.id = au.affiliation_id")
     @ResultType(Author.class)
-    List<Author> selectAllAuthorByAffiliationName(String name);
+    List<Author> selectAllAuthorByAffiliationId(Integer id);
 
 
 
@@ -94,5 +95,12 @@ public interface AuthorMapper extends BaseMapper<Author> {
 
 
 
+    @Select("select au.id,au.name, aff.id as affiliationId,aff.name as affiliationName, " +
+            "count(*) as paperCount, sum(p.citation_count_paper) as citationCount  " +
+            "from author au, paper_authors pa, paper p,affiliation aff " +
+            "where au.id = #{id} and au.id = pa.author_id and pa.paper_id = p.id and aff.id = au.affiliation_id " +
+            "group by author_id")
+    @ResultType(AuthorBasicInfoVO.class)
+    AuthorBasicInfoVO selectAuthorBasicInfoById(int id);
 
 }

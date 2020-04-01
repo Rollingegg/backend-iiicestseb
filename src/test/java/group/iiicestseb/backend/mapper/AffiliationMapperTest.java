@@ -25,7 +25,7 @@ public class AffiliationMapperTest {
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");
-        System.out.println(affiliationMapper.selectBasicInfoByName("Chinese Academy of Sciences, Beijing, China"));
+        //System.out.println(affiliationMapper.selectBasicInfoByName("Chinese Academy of Sciences, Beijing, China"));
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");

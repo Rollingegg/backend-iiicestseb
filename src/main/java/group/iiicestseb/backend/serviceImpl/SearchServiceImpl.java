@@ -32,15 +32,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Resource
     private PaperMapper paperMapper;
-//    @Override
-//    public List<SearchResultVO> simpleSearchPaper(String  type, String keyword, Integer limit){
-//        //todo 需要等数据库重构完成才能写
-//        List<SearchResultVO> searchResultVOList = paperMapper.simpleSearchPaperByType(type,keyword,limit);
-//        if (searchResultVOList.size()==0){
-//            throw  new NoPaperFoundException();
-//        }
-//        return searchResultVOList;
-//    }
+
 
     @Override
     public List<SearchResultVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {

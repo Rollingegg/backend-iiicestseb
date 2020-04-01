@@ -36,12 +36,12 @@ public interface AffiliationService {
 
     /**
      * 根据机构名称查询其基本信息
-     * @param name 机构名称
+     * @param id 机构id
      * @return 机构基本信息
      */
-    AffiliationInfoVO selectBasicInfoByName(String name);
+    AffiliationInfoVO selectBasicInfoByAffiliationId(Integer id);
 
-
+    //todo 机构详情页面活跃度
 
 
 }

@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import javax.validation.constraints.NotNull;
+
 import javax.annotation.Resource;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author jh
@@ -41,6 +42,29 @@ public class PaperController {
     @GetMapping("/recommend/affiliations")
     public Response getAffiliations(@NotNull(message = PARAMETER_ERROR) @RequestParam("paperId") Integer paperId, @Min(value = 1, message = PARAMETER_ERROR) @RequestParam(value = "num", defaultValue = "10") Integer num) {
         return Response.buildSuccess(paperService.getRecommendAffiliations(paperId, num));
+    }
+
+    /**
+     * 搜索机构最近发表的文献
+     * @param id 机构id
+     * @param limit 搜索个数
+     * @return 机构最近发表的文献列表
+     */
+    @GetMapping("/affiliation/recently/publish")
+    public Response getAffiliationsRecentlyPublish(@RequestParam("id")@NotNull(message = PARAMETER_ERROR)Integer id,
+                                                   @RequestParam("limit")@Min(value = 1,message = PARAMETER_ERROR)Integer limit) {
+        return Response.buildSuccess(paperService.getAffiliationRecentlyPublish(id,limit));
+    }
+
+
+    /**
+     * 搜索机构发表的所有文献
+     * @param id 机构id
+     * @return 机构所有发表的文献列表
+     */
+    @GetMapping("/affiliation/all/publish")
+    public Response getAffiliationsAllPublish(@RequestParam("id")@NotNull(message = PARAMETER_ERROR)Integer id) {
+        return Response.buildSuccess(paperService.getAffiliationAllPublish(id));
     }
 
 }

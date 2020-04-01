@@ -30,7 +30,7 @@ public class AuthorMapperTest {
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");
-        System.out.println(authorMapper.selectHotAuthorByAffiliationName("Chinese Academy of Sciences, Beijing, China",10));
+        //System.out.println(authorMapper.selectHotAuthorByAffiliationName("Chinese Academy of Sciences, Beijing, China",10));
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");
@@ -41,7 +41,7 @@ public class AuthorMapperTest {
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");
-        System.out.println(authorMapper.selectAllAuthorByAffiliationName("Chinese Academy of Sciences, Beijing, China"));
+        //System.out.println(authorMapper.selectAllAuthorByAffiliationName("Chinese Academy of Sciences, Beijing, China"));
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");
         System.out.println("------------------------------testtestst");
