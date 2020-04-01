@@ -2,7 +2,6 @@ package group.iiicestseb.backend.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.vo.paper.SearchResultVO;
@@ -10,6 +9,7 @@ import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 import org.apache.ibatis.type.JdbcType;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -123,6 +123,14 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "order by chron_date desc " +
             "limit #{limit}")
     @ResultType(Paper.class)
-    List<Paper> selectRecentPaperByAffiliationName(String name,Integer limit);
+    List<Paper> selectRecentPaperByAffiliationId(Integer id,Integer limit);
 
+
+
+    @Select("select p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id  " +
+            "from paper p, paper_authors pa, author au, affiliation aff " +
+            "where p.id = #{id} and pa.paper_id = p.id and pa.author_id = au.id and aff.id = au.affiliation_id "+
+            "")
+    @Results(id="SearchResultVOResultMap")
+    Collection<SearchResultVO> selectAllPaperByAffiliationId(Integer id);
 }
