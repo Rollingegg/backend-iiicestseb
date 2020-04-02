@@ -28,7 +28,7 @@ public class AffiliationController {
      * @return 机构基本信息
      */
     @GetMapping("/info")
-    public Response getAffiliationBasicInfo( @RequestParam("affiliation_id") Integer id){
+    public Response getAffiliationBasicInfo( @RequestParam("id") Integer id){
         return  Response.buildSuccess(affiliationService.selectBasicInfoByAffiliationId(id));
     }
 

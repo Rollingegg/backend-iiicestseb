@@ -45,20 +45,5 @@ public class AffiliationServiceImpl extends ServiceImpl<AffiliationMapper, Affil
         return affiliationMapper.selectBasicInfoById(id);
     }
 
-    //
-//    @Override
-//    public AffiliationInfoVO getAffiliationInfo(String name) {
-//        AffiliationInfoVO affiliationInfoVO = new AffiliationInfoVO();
-//        //获取机构信息
-//        Affiliation affiliation = affiliationMapper.selectByName(name);
-//        System.out.println(affiliation.getId());
-//        affiliationInfoVO.setId(affiliation.getId());
-//        affiliationInfoVO.setName(affiliation.getName());
-//        return affiliationInfoVO;
-//    }
-//
-//    @Override
-//    public Affiliation selectAffiliationById(int id) {
-//        return affiliationMapper.selectByPrimaryKey(id);
-//    }
+
 }
