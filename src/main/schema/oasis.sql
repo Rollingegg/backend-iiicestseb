@@ -117,7 +117,7 @@ CREATE TABLE user
     id              INT PRIMARY KEY auto_increment comment '用户id',
     username        varchar(32) comment '用户名' unique,
     password        varchar(32) comment '密码',
-    privilege_level varchar(20) comment '权限等级'
+    privilege_level varchar(16) comment '权限等级'
 ) ENGINE = InnoDB comment '用户表';
 create index username_hash using hash on user (username);
 insert into user value (1, 'root', '123456', '管理员');
