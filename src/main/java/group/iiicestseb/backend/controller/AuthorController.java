@@ -89,7 +89,7 @@ public class AuthorController {
      *
      * @return 计算行数
      */
-    @GetMapping("/statistics/reCompute")
+    @PostMapping("/statistics/reCompute")
     public Response reComputeAuthorStatistics() {
         return Response.buildSuccess(authorService.reComputeAuthorStatistics());
     }
