@@ -1,7 +1,7 @@
 package group.iiicestseb.backend.factory;
 
 import group.iiicestseb.backend.entity.*;
-import group.iiicestseb.backend.vo.PaperDetail;
+import group.iiicestseb.backend.vo.paper.PaperDetail;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
 import group.iiicestseb.backend.vo.paper.PaperBasicVO;
 

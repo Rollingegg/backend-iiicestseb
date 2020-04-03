@@ -2,7 +2,7 @@ package group.iiicestseb.backend.mapper;
 
 import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.utils.JSONUtil;
-import group.iiicestseb.backend.vo.AffiliationInfoVO;
+import group.iiicestseb.backend.vo.affiliation.AffiliationInfoVO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -5,7 +5,7 @@ import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AffiliationService;
-import group.iiicestseb.backend.vo.AffiliationInfoVO;
+import group.iiicestseb.backend.vo.affiliation.AffiliationInfoVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

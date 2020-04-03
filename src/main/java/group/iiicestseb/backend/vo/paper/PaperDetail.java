@@ -1,13 +1,11 @@
-package group.iiicestseb.backend.vo;
+package group.iiicestseb.backend.vo.paper;
 
 import group.iiicestseb.backend.entity.*;
-import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * 文献管理页面 文献的详细信息

@@ -1,7 +1,7 @@
 package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.entity.Affiliation;
-import group.iiicestseb.backend.vo.AffiliationInfoVO;
+import group.iiicestseb.backend.vo.affiliation.AffiliationInfoVO;
 
 import java.util.Collection;
 

@@ -7,7 +7,7 @@ import group.iiicestseb.backend.service.AffiliationService;
 import group.iiicestseb.backend.service.AuthorService;
 import group.iiicestseb.backend.service.ConferenceService;
 import group.iiicestseb.backend.service.PaperService;
-import group.iiicestseb.backend.vo.PaperDetail;
+import group.iiicestseb.backend.vo.paper.PaperDetail;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.factory.PaperFactory;
 import group.iiicestseb.backend.vo.paper.PaperOverview;

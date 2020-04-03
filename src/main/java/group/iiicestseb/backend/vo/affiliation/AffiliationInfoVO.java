@@ -1,4 +1,4 @@
-package group.iiicestseb.backend.vo;
+package group.iiicestseb.backend.vo.affiliation;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;

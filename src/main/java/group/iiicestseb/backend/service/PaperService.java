@@ -3,7 +3,7 @@ package group.iiicestseb.backend.service;
 import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.entity.Term;
-import group.iiicestseb.backend.vo.PaperDetail;
+import group.iiicestseb.backend.vo.paper.PaperDetail;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
 import group.iiicestseb.backend.vo.paper.PaperBasicVO;

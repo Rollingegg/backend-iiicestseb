@@ -2,7 +2,7 @@
 //
 //import group.iiicestseb.backend.mapper.AffiliationMapper;
 //import group.iiicestseb.backend.serviceImpl.AffiliationServiceImpl;
-//import group.iiicestseb.backend.vo.AffiliationInfoVO;
+//import group.iiicestseb.backend.vo.affiliation.AffiliationInfoVO;
 //import org.easymock.*;
 //import org.junit.*;
 //import org.springframework.transaction.annotation.Transactional;

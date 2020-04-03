@@ -2,7 +2,7 @@ package group.iiicestseb.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Affiliation;
-import group.iiicestseb.backend.vo.AffiliationInfoVO;
+import group.iiicestseb.backend.vo.affiliation.AffiliationInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultType;
