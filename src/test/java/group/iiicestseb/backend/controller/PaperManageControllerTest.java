@@ -1,7 +1,9 @@
 package group.iiicestseb.backend.controller;
 
-import group.iiicestseb.backend.exception.paper.JSONAnalyzeException;
+import com.alibaba.fastjson.JSON;
+import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.service.PaperManageService;
+import group.iiicestseb.backend.service.PaperService;
 import group.iiicestseb.backend.utils.JSONUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,10 +19,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -28,7 +27,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.annotation.Resource;
 import java.io.FileInputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -44,10 +46,13 @@ public class PaperManageControllerTest {
     private MockHttpSession session;
 
     @Mock
-    PaperManageService paperManageService;
+    PaperManageService paperManageServiceMock;
 
     @InjectMocks
     PaperManageController paperManageController;
+
+    @Resource(name = "Regedit")
+    PaperManageService paperManageService;
 
     @Before
     public void setUp() {
@@ -60,7 +65,7 @@ public class PaperManageControllerTest {
 
     @Test
     public void DeletePaperSuccess() throws Exception {
-        Mockito.doNothing().when(paperManageService).deletePaperById(1);
+        Mockito.doNothing().when(paperManageServiceMock).deletePaperById(1);
         mvcStandalone.perform(MockMvcRequestBuilders.delete("/admin/paper/delete")
                 .param("id", "1")
                 .accept(MediaType.APPLICATION_JSON)
@@ -69,7 +74,7 @@ public class PaperManageControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
-        Mockito.verify(paperManageService).deletePaperById(1);
+        Mockito.verify(paperManageServiceMock).deletePaperById(1);
     }
 
     @Test
@@ -94,7 +99,7 @@ public class PaperManageControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(JSONUtil.FILE_NOT_FOUND + param));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(JSONUtil.FILE_NOT_FOUND + param));
     }
 
     @Test
@@ -177,5 +182,62 @@ public class PaperManageControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.totalCount").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.errorCount").value(1));
     }
+
+    @Test
+    public void reComputeScoreSuccess() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/computeNewPaperScore")
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"));
+    }
+
+    @Test
+    public void findPaperStatisticsSuccess() throws Exception {
+        Paper p = paperManageService.findPaperByArticleId(111111111);
+        mvc.perform(MockMvcRequestBuilders.get("/admin/paper/paperScore")
+                .param("paperId", String.valueOf(p.getId()))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.paperId").value(p.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.score").value(-0.06662));
+    }
+
+    @Test
+    public void updatePaperStatisticsSuccess() throws Exception {
+        Paper p = paperManageService.findPaperByArticleId(111111111);
+        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/paperScore")
+                .param("paperId", String.valueOf(p.getId()))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.paperId").value(p.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.score").value(-0.066616666));
+    }
+
+    @Test
+    public void updatePaperStatisticsBatchSuccess() throws Exception {
+        Paper p1 = paperManageService.findPaperByArticleId(111111111);
+        Paper p2 = paperManageService.findPaperByArticleId(333333333);
+        List<Integer> list = new LinkedList<>() {{
+            add(p1.getId());
+            add(p2.getId());
+        }};
+        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/paperScoreBatch")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSON.toJSONString(list))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].paperId").value(p1.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].score").value(-0.066616666))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].paperId").value(p2.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].score").value(-0.053183333));
+    }
+
 
 }

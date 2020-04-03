@@ -87,9 +87,10 @@ public interface AuthorMapper extends BaseMapper<Author> {
             "select au.id,au.name,aff.id as affiliationId,aff.name as affiliationName " +
             "from author au, affiliation aff " +
             "where au.id in " +
-            "   <foreach collection='list' item='i' separator=',' open='(' close=')' >" +
+            "   (<foreach collection='list' item='i' separator=',' >" +
             "   #{i}" +
-            "   </foreach>" +
+            "   </foreach>) " +
+            "and au.affiliation_id = aff.id " +
             "</script>")
     Collection<AuthorInfoVO> selectAuthorInfoByIdBatch(Collection<Integer> ids);
 

@@ -1,9 +1,14 @@
 package group.iiicestseb.backend.controller;
 
 
+import group.iiicestseb.backend.entity.Affiliation;
+import group.iiicestseb.backend.entity.PaperStatistics;
+import group.iiicestseb.backend.entity.Term;
 import group.iiicestseb.backend.service.StatisticsService;
 import group.iiicestseb.backend.vo.author.AuthorHotVO;
 import group.iiicestseb.backend.vo.Response;
+import group.iiicestseb.backend.vo.author.AuthorInfoVO;
+import group.iiicestseb.backend.vo.paper.PaperOverview;
 import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -45,15 +52,85 @@ public class StatisticsController {
                                 @Max(value = 500, message = PARAM_TOO_LARGE)
                                 @Min(value = 1, message = SHOULD_BE_POSITIVE)
                                         Integer num) {
-
-        List<TermWithHotVO> termsHot = statisticsService.calculateHotTerms(num);
+        List<TermWithHotVO> termsHot = statisticsService.findHotTerms(num);
         if (termsHot == null) {
             return Response.buildSuccess();
         }
         return Response.buildSuccess(termsHot);
-
     }
 
+    /**
+     *
+     *
+     * @param termId 术语id
+     * @param max    数量上限
+     * @return 相关术语集合
+     */
+    @GetMapping("relativeTermsOfTerm")
+    public Response getRelativeTermsOfTerm(@RequestParam("termId")
+                                               @NotNull(message = PARAMETER_ERROR)
+                                                       Integer termId,
+                                           @RequestParam(value = "max", defaultValue = "10")
+                                               @Max(value = 100, message = PARAM_TOO_LARGE)
+                                               @Min(value = 1, message = SHOULD_BE_POSITIVE)
+                                                   Integer max) {
+        Collection<Term> terms = statisticsService.findRelativeTermsOfTerm(termId, max);
+        return Response.buildSuccess(terms);
+    }
+
+    /**
+     * 获得指定术语的相关的论文
+     *
+     * @param termId 术语id
+     * @param max    数量上限
+     * @return 相关论文集合
+     */
+    @GetMapping("relativePapersOfTerm")
+    Response getPapersByTermIdInScoreOrder(@RequestParam("termId")
+                                           @NotNull(message = PARAMETER_ERROR)
+                                                   Integer termId,
+                                           @RequestParam(value = "max", defaultValue = "10")
+                                           @Max(value = 100, message = PARAM_TOO_LARGE)
+                                           @Min(value = 1, message = SHOULD_BE_POSITIVE)
+                                                   Integer max) {
+        return Response.buildSuccess(statisticsService.findPapersByTermIdInScoreOrder(termId, max));
+    }
+
+    /**
+     * 获得指定术语的相关作者
+     *
+     * @param termId 术语id
+     * @param max    数量上限
+     * @return 相关作者集合
+     */
+    @GetMapping("activeAuthorsOfTerm")
+    Response getActiveAuthorsOfTerm(@RequestParam("termId")
+                                    @NotNull(message = PARAMETER_ERROR)
+                                            Integer termId,
+                                    @RequestParam(value = "max", defaultValue = "10")
+                                    @Max(value = 100, message = PARAM_TOO_LARGE)
+                                    @Min(value = 1, message = SHOULD_BE_POSITIVE)
+                                            Integer max) {
+        return Response.buildSuccess(statisticsService.findActiveAuthorsOfTerm(termId, max));
+    }
+
+    /**
+     * 获得指定术语的相关的机构
+     *
+     * @param termId 术语id
+     * @param max    数量上限
+     * @return 相关机构集合
+     */
+    @GetMapping("activeAffiliationOfTerm")
+    Response getActiveAffiliationOfTerm(@RequestParam("termId")
+                                        @NotNull(message = PARAMETER_ERROR)
+                                                Integer termId,
+                                        @RequestParam(value = "max", defaultValue = "10")
+                                        @Max(value = 100, message = PARAM_TOO_LARGE)
+                                        @Min(value = 1, message = SHOULD_BE_POSITIVE)
+                                                Integer max) {
+        return Response.buildSuccess(statisticsService.findActiveAffiliationOfTerm(termId, max));
+    }
 
     /**
      * 计算并返回发表论文最多的的num个学者和其发表的论文
@@ -66,7 +143,6 @@ public class StatisticsController {
                                         @Max(value = 500, message = PARAM_TOO_LARGE)
                                         @Min(value = 1, message = SHOULD_BE_POSITIVE)
                                                 int num) {
-
         List<AuthorHotVO> authorHotVOList = statisticsService.calculateMaxPublishAuthor(num);
         if (authorHotVOList == null) {
             return Response.buildSuccess();

@@ -1,7 +1,10 @@
 package group.iiicestseb.backend.controller;
 
 
+import group.iiicestseb.backend.entity.Term;
+import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.StatisticsService;
+import group.iiicestseb.backend.utils.JSONUtil;
 import group.iiicestseb.backend.vo.author.AuthorHotVO;
 import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.junit.Before;
@@ -13,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
@@ -22,8 +26,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -41,7 +49,14 @@ public class StatisticsControllerTest {
     @InjectMocks
     StatisticsController statisticsController = new StatisticsController();
 
+    @Resource(name = "Regedit")
+    Regedit regedit;
+
+    @Autowired
+    WebApplicationContext wac;
+
     private MockMvc mvc;
+    private MockMvc mvcStandAlone;
     private MockHttpSession session;
 
     @Rule
@@ -49,11 +64,11 @@ public class StatisticsControllerTest {
 
     @Before
     public void setUp() {
+        JSONUtil.loadTestData();
         MockitoAnnotations.initMocks(this);
-        mvc = MockMvcBuilders.standaloneSetup(statisticsController).build();
+        mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mvcStandAlone = MockMvcBuilders.standaloneSetup(statisticsController).build();
         session = new MockHttpSession();
-
-
     }
 
 
@@ -61,13 +76,13 @@ public class StatisticsControllerTest {
     public void getHotTermsParamSuccess() throws Exception {
         Integer param = 50;
         ArrayList<TermWithHotVO> termWithHotVOArrayList = new ArrayList<>();
-        TermWithHotVO termWithHotVO_1 = new TermWithHotVO(1,"a",2);
-        TermWithHotVO termWithHotVO_2 = new TermWithHotVO(2,"b",555);
+        TermWithHotVO termWithHotVO_1 = new TermWithHotVO(1, "a", 2);
+        TermWithHotVO termWithHotVO_2 = new TermWithHotVO(2, "b", 555);
         termWithHotVOArrayList.add(termWithHotVO_1);
         termWithHotVOArrayList.add(termWithHotVO_2);
 
-        Mockito.when(statisticsService.calculateHotTerms(param)).thenReturn(termWithHotVOArrayList);
-        mvc.perform(MockMvcRequestBuilders.get("/statistics/hotTerms")
+        Mockito.when(statisticsService.findHotTerms(param)).thenReturn(termWithHotVOArrayList);
+        mvcStandAlone.perform(MockMvcRequestBuilders.get("/statistics/hotTerms")
                 .param("num", Integer.toString(param))
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
@@ -76,19 +91,19 @@ public class StatisticsControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].id").value(2));
-        Mockito.verify(statisticsService).calculateHotTerms(param);
+        Mockito.verify(statisticsService).findHotTerms(param);
     }
 
     @Test
     public void getMaxPublishAuthorSuccess() throws Exception {
         int param = 5;
         List<AuthorHotVO> authorHotVOList = new ArrayList<>();
-        AuthorHotVO authorHotVO_1 = new AuthorHotVO(1,"jh",1,"nju",100);
-        AuthorHotVO authorHotVO_2 = new AuthorHotVO(2,"hxd",1,"zju",200);
+        AuthorHotVO authorHotVO_1 = new AuthorHotVO(1, "jh", 1, "nju", 100);
+        AuthorHotVO authorHotVO_2 = new AuthorHotVO(2, "hxd", 1, "zju", 200);
         authorHotVOList.add(authorHotVO_1);
         authorHotVOList.add(authorHotVO_2);
         Mockito.when(statisticsService.calculateMaxPublishAuthor(param)).thenReturn(authorHotVOList);
-        mvc.perform(MockMvcRequestBuilders.get("/statistics/maxPublishAuthor")
+        mvcStandAlone.perform(MockMvcRequestBuilders.get("/statistics/maxPublishAuthor")
                 .param("num", Integer.toString(param))
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
@@ -97,6 +112,84 @@ public class StatisticsControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].id").value(2));
         Mockito.verify(statisticsService).calculateMaxPublishAuthor(param);
+    }
+
+    @Test
+    public void getRelativeTermsOfTermSuccess() throws Exception {
+        Term term2 = regedit.findTermByName("Control2");
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/relativeTermsOfTerm")
+                .param("termId", Integer.toString(term2.getId()))
+                .param("max", Integer.toString(5))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(5));
+    }
+
+    @Test
+    public void getPapersByTermIdInScoreOrderSuccess() throws Exception {
+        Term term1 = regedit.findTermByName("Control5");
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/relativePapersOfTerm")
+                .param("termId", Integer.toString(term1.getId()))
+                .param("max", Integer.toString(5))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(1));
+        Term term2 = regedit.findTermByName("Control2");
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/relativePapersOfTerm")
+                .param("termId", Integer.toString(term2.getId()))
+                .param("max", Integer.toString(5))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(2));
+    }
+
+    @Test
+    public void getActiveAuthorsOfTermSuccess() throws Exception {
+        Term term1 = regedit.findTermByName("Control5");
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/activeAuthorsOfTerm")
+                .param("termId", Integer.toString(term1.getId()))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(2));
+        Term term2 = regedit.findTermByName("Control2");
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/activeAuthorsOfTerm")
+                .param("termId", Integer.toString(term2.getId()))
+                .param("max", Integer.toString(5))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(3));
+    }
+
+    @Test
+    public void getActiveAffiliationOfTermSuccess() throws Exception {
+        Term term1 = regedit.findTermByName("Control5");
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/activeAffiliationOfTerm")
+                .param("termId", Integer.toString(term1.getId()))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(1));
+        Term term2 = regedit.findTermByName("Control2");
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/activeAffiliationOfTerm")
+                .param("termId", Integer.toString(term2.getId()))
+                .param("max", Integer.toString(5))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(3));
+
     }
 
 //    /**
@@ -146,8 +239,6 @@ public class StatisticsControllerTest {
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(StatisticsController.GET_MAX_PUBLISH_AUTHOR_ERROR));
 //        Mockito.verify(statisticsService).calculateMaxPublishAuthor(param);
 //    }
-
-
 
 
 //    @Test

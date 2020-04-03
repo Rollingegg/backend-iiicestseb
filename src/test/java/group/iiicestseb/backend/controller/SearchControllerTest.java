@@ -124,9 +124,9 @@ public class SearchControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").isArray())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperFormException.MSG))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.result").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperFormException.MSG))
         ;
         //Mockito.verify(searchService).advancedSearchPaper(advancedSearchForm);
 

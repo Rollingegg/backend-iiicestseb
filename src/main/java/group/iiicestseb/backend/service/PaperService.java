@@ -1,6 +1,8 @@
 package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.entity.Affiliation;
+import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.entity.Term;
 import group.iiicestseb.backend.vo.PaperDetail;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
@@ -22,6 +24,13 @@ public interface PaperService {
      * @return 文献详情
      */
     PaperDetail findPaperDetail(Integer paperId);
+
+    /**
+     * 批量查找论文
+     * @param paperIds 论文id集合
+     * @return 论文实体集合
+     */
+    Collection<Paper> findPapersByIdBatch(Collection<Integer> paperIds);
 
     /**
      * 获取指定文献的相关文献
@@ -81,4 +90,13 @@ public interface PaperService {
      * @return 作者所有文献
      */
     Collection<SearchResultVO> getAuthorAllPaper(Integer id);
+
+
+    /**
+     * 通过id批量查找术语
+     *
+     * @param termIds 术语id集合
+     * @return 术语id
+     */
+    Collection<Term> findTermByIdBatch(Collection<Integer> termIds);
 }

@@ -3,6 +3,7 @@ package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.entity.*;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -64,5 +65,33 @@ public interface PaperManageService {
      */
     void saveTermList(List<Term> termList);
 
+    /**
+     * 启动计算新论文的评分
+     * @return 计算的行数
+     */
+    Integer reComputePapersScore();
+
+    /**
+     * 获取论文的评分信息
+     *
+     * @param paperId 论文id
+     * @return 论文评分
+     */
+    PaperStatistics findPaperStatistics(Integer paperId);
+
+    /**
+     * 更新指定论文的评分
+     * @param id 论文id
+     * @return
+     */
+    PaperStatistics updatePaperScore(Integer id);
+
+    /**
+     * 批量更新论文的评分
+     *
+     * @param ids 论文id集合
+     * @return
+     */
+    Collection<PaperStatistics> updatePaperScoreBatch(Collection<Integer> ids);
 
 }

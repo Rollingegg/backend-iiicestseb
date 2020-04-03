@@ -44,14 +44,16 @@ public class RegeditImpl implements Regedit {
     @Resource(name = "PaperManage")
     private PaperManageService paperManageService;
     @Lazy
+    @Resource(name = "Paper")
+    private PaperService paperService;
+    @Lazy
     @Resource(name = "Search")
     private SearchService searchService;
     @Lazy
     @Resource(name = "Statistics")
     private StatisticsService statisticsService;
     @Lazy
-    @Resource(name = "Paper")
-    private PaperService paperService;
+
 
     //------------------------AffiliationService---------------------------------
 
@@ -68,6 +70,12 @@ public class RegeditImpl implements Regedit {
     @Override
     public Collection<Affiliation> findAffiliationByIdBatch(Collection<Integer> ids) {
         return affiliationService.findAffiliationByIdBatch(ids);
+    }
+
+
+    @Override
+    public Collection<AffiliationInfoVO> findAffiliationInfoByIdBatch(Collection<Integer> ids) {
+        return affiliationService.findAffiliationInfoByIdBatch(ids);
     }
 
     @Override
@@ -187,6 +195,26 @@ public class RegeditImpl implements Regedit {
         return paperService.getAuthorAllPaper(id);
     }
 
+    @Override
+    public Integer reComputePapersScore() {
+        return paperManageService.reComputePapersScore();
+    }
+
+    @Override
+    public PaperStatistics findPaperStatistics(Integer paperId) {
+        return paperManageService.findPaperStatistics(paperId);
+    }
+
+    @Override
+    public PaperStatistics updatePaperScore(Integer id) {
+        return paperManageService.updatePaperScore(id);
+    }
+
+    @Override
+    public Collection<PaperStatistics> updatePaperScoreBatch(Collection<Integer> ids) {
+        return paperManageService.updatePaperScoreBatch(ids);
+    }
+
     //---------------------------SearchService-------------------------------
 
 
@@ -214,7 +242,7 @@ public class RegeditImpl implements Regedit {
 
 
 
-    //---------------------------paperService-----------------------
+    //-----------------------------------------PaperService--------------------------------------
 
 
     @Override
@@ -222,20 +250,20 @@ public class RegeditImpl implements Regedit {
         return paperService.findPaperDetail(paperId);
     }
 
-    @Override
-    public Collection<PaperOverview> getRecommendPapers(Integer paperId, Integer num) {
-        return paperService.getRecommendPapers(paperId,num);
-    }
-
-    @Override
-    public Collection<AuthorInfoVO> getRecommendAuthors(Integer paperId, Integer num) {
-        return paperService.getRecommendAuthors(paperId,num);
-    }
-
-    @Override
-    public Collection<Affiliation> getRecommendAffiliations(Integer paperId, Integer num) {
-        return paperService.getRecommendAffiliations(paperId,num);
-    }
+//    @Override
+//    public Collection<PaperOverview> getRecommendPapers(Integer paperId, Integer num) {
+//        return paperService.getRecommendPapers(paperId,num);
+//    }
+//
+//    @Override
+//    public Collection<AuthorInfoVO> getRecommendAuthors(Integer paperId, Integer num) {
+//        return paperService.getRecommendAuthors(paperId,num);
+//    }
+//
+//    @Override
+//    public Collection<Affiliation> getRecommendAffiliations(Integer paperId, Integer num) {
+//        return paperService.getRecommendAffiliations(paperId,num);
+//    }
 
     @Override
     public Collection<PaperBasicVO> getAffiliationRecentlyPublish(Integer id, Integer limit) {
@@ -245,5 +273,29 @@ public class RegeditImpl implements Regedit {
     @Override
     public Collection<SearchResultVO> getAffiliationAllPublish(Integer id) {
         return paperService.getAffiliationAllPublish(id);
+    }
+    @Override
+    public Collection<Paper> findPapersByIdBatch(Collection<Integer> paperIds) {
+        return paperService.findPapersByIdBatch(paperIds);
+    }
+
+    @Override
+    public Collection<PaperOverview> getRecommendPapers(Integer paperId, Integer num) {
+        return paperService.getRecommendPapers(paperId, num);
+    }
+
+    @Override
+    public Collection<AuthorInfoVO> getRecommendAuthors(Integer paperId, Integer num) {
+        return paperService.getRecommendAuthors(paperId, num);
+    }
+
+    @Override
+    public Collection<Affiliation> getRecommendAffiliations(Integer paperId, Integer num) {
+        return paperService.getRecommendAffiliations(paperId, num);
+    }
+
+    @Override
+    public Collection<Term> findTermByIdBatch(Collection<Integer> termIds) {
+        return paperService.findTermByIdBatch(termIds);
     }
 }

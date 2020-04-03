@@ -5,11 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.exception.paper.JSONAnalyzeException;
-import group.iiicestseb.backend.service.AffiliationService;
-import group.iiicestseb.backend.service.AuthorService;
-import group.iiicestseb.backend.service.ConferenceService;
-import group.iiicestseb.backend.service.PaperManageService;
-import group.iiicestseb.backend.vo.Response;
+import group.iiicestseb.backend.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -236,7 +232,7 @@ public class JSONUtil {
      */
     public static void loadTestData() {
         analyzeExistedJsonFile(STANDARD_JSON_FILE);
-        //analyzeExistedJsonFile("icse15_19(50)");
+        Instance.paperManageService.reComputePapersScore();
     }
 
     /**
