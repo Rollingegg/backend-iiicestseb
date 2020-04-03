@@ -67,10 +67,10 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "from paper_term pt, term t " +
             "where t.id = pt.term_id " +
             "and (LOCATE(#{allKeyword}, t.name)>0))) as x " +
-            "where p.id = x.key_id  " +
+            "where (p.id = x.key_id  " +
             "or (LOCATE(#{allKeyword}, p.title)>0)" +
             "or (LOCATE(#{allKeyword}, p.paper_abstract)>0)" +
-            "or (LOCATE(#{allKeyword}, p.doi)>0)" +
+            "or (LOCATE(#{allKeyword}, p.doi)>0))" +
             "</if>" +
             //简单搜索术语， 连接文献表
             "<if test='type==\"term\"'> " +
@@ -104,10 +104,9 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "</if>" +
             "</if> " +
             //年份
-            " <![CDATA[ and p.chron_date >= str_to_date(#{chronDateMinKeyword},'%Y-%m-%d') and p.chron_date <= str_to_date(#{chronDateMaxKeyword},'%Y-%m-%d') ]]>  " +
+            " and (p.chron_date between #{chronDateMinKeyword} and #{chronDateMaxKeyword})  " +
             "group by p.id " +
-            "order by p.citation_count_paper desc " +
-            "limit #{page},#{limit}" +
+            "order by p.citation_count_paper desc "+
             "</script>")
     @ResultType(Integer.class)
     Collection<Integer> advancedSearch(AdvancedSearchForm advancedSearchForm);
@@ -124,7 +123,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
     @Select("<script>" +
             "select p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id " +
             "from paper p " +
-            "where p.id = " +
+            "where p.id in " +
             "(<foreach collection='idList' item='i' separator=','> " +
             "#{i}" +
             "</foreach>)" +
@@ -140,7 +139,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
             @Result(column = "id", property = "authorList", many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId", fetchType = FetchType.EAGER)),
             @Result(column = "id", property = "termsList", many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId", fetchType = FetchType.EAGER))}
     )
-    Collection<SearchResultVO> getSearchResult(Collection<Integer> idList, int page, int limit);
+    Collection<SearchResultVO> getSearchResult(@Param("idList") Collection<Integer> idList, int page, int limit);
 
     /**
      * 查找机构最近文章
