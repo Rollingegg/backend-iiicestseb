@@ -2,8 +2,12 @@ package group.iiicestseb.backend.serviceImpl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import group.iiicestseb.backend.entity.Author;
+import group.iiicestseb.backend.entity.AuthorStatistics;
+import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.entity.PaperStatistics.AuthorPaperCites;
 import group.iiicestseb.backend.factory.AuthorFactory;
 import group.iiicestseb.backend.mapper.AuthorMapper;
+import group.iiicestseb.backend.mapper.AuthorStatisticsMapper;
 import group.iiicestseb.backend.mapper.PaperAuthorMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AuthorService;
@@ -11,14 +15,12 @@ import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
+import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author wph
@@ -34,6 +36,8 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
     private AuthorMapper authorMapper;
     @Resource
     private PaperAuthorMapper paperAuthorMapper;
+    @Resource
+    private AuthorStatisticsMapper authorStatisticsMapper;
 
     @Override
     public Author findAuthorByName(String name) {
@@ -54,36 +58,64 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
     }
 
     @Override
-    public Collection<AuthorInfoVO> findAuthorInfoByIdBatch(Collection<Integer> ids){
+    public Collection<AuthorInfoVO> findAuthorInfoByIdBatch(Collection<Integer> ids) {
         return authorMapper.selectAuthorInfoByIdBatch(ids);
     }
 
     @Override
     public List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit) {
-        return authorMapper.selectHotAuthorByAffiliationId(id,limit);
+        return authorMapper.selectHotAuthorByAffiliationId(id, limit);
     }
 
     @Override
     public List<AuthorInAffiliationVO> selectAllAuthorByAffiliationId(Integer id) {
-        List<Author> authorList= authorMapper.selectAllAuthorByAffiliationId(id);
+        List<Author> authorList = authorMapper.selectAllAuthorByAffiliationId(id);
         List<AuthorInAffiliationVO> authorInAffiliationVOList = new ArrayList<>();
-        for (Iterator<Author> iterator = authorList.iterator(); iterator.hasNext(); ) {
-            Author next =  iterator.next();
+        for (Author next : authorList) {
             authorInAffiliationVOList.add(AuthorFactory.toAuthorVO(next));
         }
         return authorInAffiliationVOList;
     }
-
-
 
     @Override
     public AuthorBasicInfoVO getAuthorBasicInfoByAuthorId(Integer id) {
         return authorMapper.selectAuthorBasicInfoById(id);
     }
 
-
     @Override
     public Collection<AuthorInfoVO> getAuthorPartner(Integer id, Integer limit) {
-        return authorMapper.selectPartnerById(id,limit);
+        return authorMapper.selectPartnerById(id, limit);
     }
+
+    @Override
+    public AuthorStatistics getAuthorStatisticsByAuthorId(Integer authorId) {
+        return authorStatisticsMapper.selectByAuthorId(authorId);
+    }
+
+    @Override
+    public Integer reComputeAuthorStatistics() {
+        Collection<AuthorPaperCites> authorCites = authorStatisticsMapper.selectAllAuthorPaperCites();
+        Map<Integer, List<Integer>> values = new HashMap<>();
+        List<Integer> cites;
+        for (AuthorPaperCites apc : authorCites) {
+            cites = values.computeIfAbsent(apc.getAuthorId(), k -> new LinkedList<>());
+            cites.add(apc.getCite());
+        }
+        Collection<AuthorStatistics> authorStatistics = new LinkedList<>();
+        for (Integer key : values.keySet()) {
+            cites = values.get(key);
+            int i = 1, total = 0;
+            int h = 0, g = 0;
+            for (Integer cite : cites) {
+                h = cite >= i ? h + 1 : h;
+                total += cite;
+                g = (i ^ 2) <= total ? g + 1 : g;
+                i++;
+            }
+            authorStatistics.add(new AuthorStatistics(key, h, g, ((double) total) / cites.size(), cites.size()));
+        }
+        return authorStatisticsMapper.insertOrUpdateBatch(authorStatistics);
+    }
+
+
 }

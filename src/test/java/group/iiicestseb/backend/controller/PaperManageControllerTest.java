@@ -201,7 +201,7 @@ public class PaperManageControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.paperId").value(p.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result.score").value(-0.06662));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.score").value(-0.06067));
     }
 
     @Test
@@ -214,7 +214,7 @@ public class PaperManageControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.paperId").value(p.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result.score").value(-0.066616666));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.score").value(-0.060666666));
     }
 
     @Test
@@ -234,9 +234,9 @@ public class PaperManageControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].paperId").value(p1.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].score").value(-0.066616666))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].score").value(-0.060666666))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].paperId").value(p2.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].score").value(-0.053183333));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].score").value(0.009166667));
     }
 
 

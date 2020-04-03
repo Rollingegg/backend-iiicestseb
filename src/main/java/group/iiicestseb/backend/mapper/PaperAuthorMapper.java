@@ -28,14 +28,13 @@ public interface PaperAuthorMapper extends BaseMapper<PaperAuthors> {
      * 根据文献id查找作者列表
      *
      * @param paperId 文献id
-     * @return 作者列表
+     * @return 作者id列表
      */
-    @Select("select a.id as id, name, first_name, last_name, affiliation_id " +
+    @Select("select a.id " +
             "from author a, paper_authors pa where " +
             "pa.paper_id=#{paperId, jdbcType=INTEGER} " +
             "and a.id=pa.author_id")
-    @ResultType(Author.class)
-    List<Author> findAuthorsByPaperId(@Param("paperId") Integer paperId);
+    List<Integer> findAuthorsByPaperId(@Param("paperId") Integer paperId);
 
     /**
      * 根据作者id查找作者列表

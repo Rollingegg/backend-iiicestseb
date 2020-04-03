@@ -2,6 +2,7 @@ package group.iiicestseb.backend.service;
 
 
 import group.iiicestseb.backend.entity.Author;
+import group.iiicestseb.backend.entity.AuthorStatistics;
 import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
@@ -18,6 +19,7 @@ public interface AuthorService {
 
     /**
      * 根据作者名查询作者
+     *
      * @param name 作者名
      * @return 作者PO
      */
@@ -49,7 +51,8 @@ public interface AuthorService {
 
     /**
      * 根据机构id搜索该机构的热门作者
-     * @param id 机构id
+     *
+     * @param id    机构id
      * @param limit 搜索个数
      * @return 作者列表
      * todo 更改了热度计算公式，等jh写完要重写
@@ -59,6 +62,7 @@ public interface AuthorService {
 
     /**
      * 根据机构id搜索该机构所有作者
+     *
      * @param id 机构id
      * @return 作者列表
      */
@@ -66,6 +70,7 @@ public interface AuthorService {
 
     /**
      * 作者详情页面获取作者基本信息
+     *
      * @param id 作者id
      * @return 作者详情页面基本信息
      */
@@ -74,12 +79,26 @@ public interface AuthorService {
 
     /**
      * 获取作者合作伙伴
-     * @param id 作者id
+     *
+     * @param id    作者id
      * @param limit 搜索数
      * @return 合作伙伴列表
      */
-    Collection<AuthorInfoVO> getAuthorPartner(Integer id,Integer limit);
+    Collection<AuthorInfoVO> getAuthorPartner(Integer id, Integer limit);
 
+    /**
+     * 根据作者id获取作者统计信息
+     *
+     * @param authorId 作者id
+     * @return 作者统计信息
+     */
+    AuthorStatistics getAuthorStatisticsByAuthorId(Integer authorId);
 
+    /**
+     * 重算所有作者的统计信息
+     *
+     * @return 更新行数
+     */
+    Integer reComputeAuthorStatistics();
 
 }

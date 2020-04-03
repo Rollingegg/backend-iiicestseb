@@ -38,4 +38,12 @@ public class PaperStatistics {
         return Objects.hash(paperId, score);
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AuthorPaperCites {
+        Integer authorId;
+        Integer cite;
+    }
+
 }

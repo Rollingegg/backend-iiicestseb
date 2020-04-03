@@ -125,6 +125,16 @@ public class RegeditImpl implements Regedit {
         return authorService.getAuthorPartner(id,limit);
     }
 
+    @Override
+    public AuthorStatistics getAuthorStatisticsByAuthorId(Integer authorId) {
+        return authorService.getAuthorStatisticsByAuthorId(authorId);
+    }
+
+    @Override
+    public Integer reComputeAuthorStatistics() {
+        return authorService.reComputeAuthorStatistics();
+    }
+
     //-----------------------------------------ConferenceService------------------------------
 
     @Override

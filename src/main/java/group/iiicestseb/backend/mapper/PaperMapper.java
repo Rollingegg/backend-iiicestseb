@@ -119,12 +119,13 @@ public interface PaperMapper extends BaseMapper<Paper> {
             @Result(column = "id", property = "authorList", many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId", fetchType = FetchType.EAGER)),
             @Result(column = "id", property = "termsList", many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId", fetchType = FetchType.EAGER))}
     )
-    List<SearchResultVO > advancedSearch(AdvancedSearchForm advancedSearchForm);
+    List<SearchResultVO> advancedSearch(AdvancedSearchForm advancedSearchForm);
 
 
     /**
      * 查找机构最近文章
-     * @param id 机构id
+     *
+     * @param id    机构id
      * @param limit 搜索数
      * @return 机构最近文章列表
      */
@@ -134,11 +135,12 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "order by chron_date desc " +
             "limit #{limit}")
     @ResultType(Paper.class)
-    List<Paper> selectRecentPaperByAffiliationId(Integer id,Integer limit);
+    List<Paper> selectRecentPaperByAffiliationId(Integer id, Integer limit);
 
 
     /**
      * 查找机构所有文章
+     *
      * @param id 机构id
      * @return 机构文章列表
      */
@@ -152,6 +154,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
 
     /**
      * 查找作者的所有文献
+     *
      * @param id 作者id
      * @return 作者所有文献
      */
@@ -164,7 +167,8 @@ public interface PaperMapper extends BaseMapper<Paper> {
 
     /**
      * 查找作者最近发表文献
-     * @param id 作者id
+     *
+     * @param id    作者id
      * @param limit 搜索数
      * @return 作者最近发表文献列表
      */
@@ -174,7 +178,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "order by chron_date desc " +
             "limit #{limit}")
     @ResultType(Paper.class)
-    List<Paper> selectRecentPaperByAuthorId(Integer id,Integer limit);
+    List<Paper> selectRecentPaperByAuthorId(Integer id, Integer limit);
 
     /**
      * 计算所有新论文的评分

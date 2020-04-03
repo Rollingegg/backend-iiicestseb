@@ -1,6 +1,7 @@
 package group.iiicestseb.backend.factory;
 
 import group.iiicestseb.backend.entity.*;
+import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.PaperDetail;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
 import group.iiicestseb.backend.vo.paper.PaperBasicVO;
@@ -33,7 +34,7 @@ public class PaperFactory {
         return result;
     }
 
-    public static PaperDetail packageDetail(Paper paper, Collection<Author> authors, Conference conference, Collection<Term> terms, Collection<Reference> references) {
+    public static PaperDetail packageDetail(Paper paper, Collection<AuthorInfoVO> authors, Conference conference, Collection<Term> terms, Collection<Reference> references) {
         PaperDetail detail = new PaperDetail();
         detail.setPaper(paper);
         detail.setAuthorList(authors);

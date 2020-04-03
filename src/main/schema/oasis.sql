@@ -136,16 +136,18 @@ CREATE TABLE record
 create table author_statistics
 (
     author_id INT not null unique,
-    h_index   double,
-    g_index   double,
+    h_index   int    default 0 comment 'h指数',
+    g_index   int    default 0 comment 'g指数',
+    avg_cite  double default 0 comment '篇均被引',
+    paper_num int    default 0 comment '论文数',
     foreign key (author_id) references author (id) on delete Cascade
 ) ENGINE = InnoDB comment '作者统计信息';
 
 ##创建论文统计信息表
 create table paper_statistics
 (
-    paper_id INT not null unique,
-    score    double,
+    paper_id INT not null unique comment '论文id',
+    score    double comment '论文评分',
     foreign key (paper_id) references paper (id) on delete Cascade
 ) ENGINE = InnoDB comment '论文统计信息';
 

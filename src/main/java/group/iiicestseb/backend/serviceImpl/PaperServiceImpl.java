@@ -43,9 +43,10 @@ public class PaperServiceImpl implements PaperService {
     public PaperDetail findPaperDetail(Integer paperId) {
         Paper paper = paperMapper.selectById(paperId);
         Conference conference = ((ConferenceService) regedit).findConferenceById(paper.getConferenceId());
-        List<Author> authorList = paperAuthorMapper.findAuthorsByPaperId(paperId);
-        List<Term> termList = termMapper.selectByPaperId(paperId);
-        List<Reference> referenceList = referenceMapper.selectByArticleId(paper.getArticleId());
+        Collection<Integer> authorIdList = paperAuthorMapper.findAuthorsByPaperId(paperId);
+        Collection<AuthorInfoVO> authorList = ((AuthorService) regedit).findAuthorInfoByIdBatch(authorIdList);
+        Collection<Term> termList = termMapper.selectByPaperId(paperId);
+        Collection<Reference> referenceList = referenceMapper.selectByArticleId(paper.getArticleId());
         return PaperFactory.packageDetail(paper, authorList, conference, termList, referenceList);
     }
 
@@ -88,10 +89,10 @@ public class PaperServiceImpl implements PaperService {
 
     @Override
     public Collection<PaperBasicVO> getAffiliationRecentlyPublish(Integer id, Integer limit) {
-        List<Paper> paperList = paperMapper.selectRecentPaperByAffiliationId(id,limit);
+        List<Paper> paperList = paperMapper.selectRecentPaperByAffiliationId(id, limit);
         List<PaperBasicVO> paperBasicVOList = new ArrayList<>();
         for (Iterator<Paper> iterator = paperList.iterator(); iterator.hasNext(); ) {
-            Paper next =  iterator.next();
+            Paper next = iterator.next();
             paperBasicVOList.add(PaperFactory.toPaperBasicVO(next));
         }
         return paperBasicVOList;
@@ -110,10 +111,10 @@ public class PaperServiceImpl implements PaperService {
 
     @Override
     public Collection<PaperBasicVO> getAuthorRecentPaper(Integer id, int limit) {
-        Collection<Paper> paperCollection = paperMapper.selectRecentPaperByAuthorId(id,limit);
+        Collection<Paper> paperCollection = paperMapper.selectRecentPaperByAuthorId(id, limit);
         Collection<PaperBasicVO> paperBasicVOCollection = new ArrayList<>();
         for (Iterator<Paper> iterator = paperCollection.iterator(); iterator.hasNext(); ) {
-            Paper next =  iterator.next();
+            Paper next = iterator.next();
             paperBasicVOCollection.add(PaperFactory.toPaperBasicVO(next));
         }
         return paperBasicVOCollection;

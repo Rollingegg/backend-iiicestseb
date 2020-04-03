@@ -18,12 +18,13 @@ import javax.annotation.Resource;
 public class AuthorMapperTest {
     @Resource
     private AuthorMapper authorMapper;
+    @Resource
+    private AuthorStatisticsMapper authorStatisticsMapper;
 
     @Before
     public void setUp() throws Exception {
 
     }
-
 
     @Test
     public void selectHotAuthorByAffiliationName() {
