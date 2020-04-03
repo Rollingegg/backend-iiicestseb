@@ -29,7 +29,7 @@ public class AffiliationController {
      */
     @GetMapping("/info")
     public Response getAffiliationBasicInfo( @RequestParam("id") Integer id){
-        return  Response.buildSuccess(affiliationService.selectBasicInfoByAffiliationId(id));
+        return  Response.buildSuccess(affiliationService.selectAffiliationBasicInfoByAffiliationId(id));
     }
 
 

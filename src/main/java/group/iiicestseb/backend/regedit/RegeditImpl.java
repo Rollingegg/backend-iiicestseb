@@ -79,8 +79,8 @@ public class RegeditImpl implements Regedit {
     }
 
     @Override
-    public AffiliationInfoVO selectBasicInfoByAffiliationId(Integer id) {
-        return affiliationService.selectBasicInfoByAffiliationId(id);
+    public AffiliationInfoVO selectAffiliationBasicInfoByAffiliationId(Integer id) {
+        return affiliationService.selectAffiliationBasicInfoByAffiliationId(id);
     }
 
     //-----------------------------------------AuthorService------------------------------
