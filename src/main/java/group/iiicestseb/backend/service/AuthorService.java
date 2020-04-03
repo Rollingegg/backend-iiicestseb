@@ -50,11 +50,6 @@ public interface AuthorService {
     /**
      * 根据机构id搜索该机构的热门作者
      * @param id 机构id
-     * @return 作者列表
-     */
-    /**
-     * 根据机构id搜索该机构的热门作者
-     * @param id 机构id
      * @param limit 搜索个数
      * @return 作者列表
      * todo 更改了热度计算公式，等jh写完要重写

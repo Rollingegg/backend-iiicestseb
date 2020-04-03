@@ -36,17 +36,32 @@ public class AuthorController {
      */
     @GetMapping("/hotin/affilation")
     public Response getHotAuthorInAffiliation(@RequestParam("id") Integer id,@RequestParam("limit") Integer limit){
+        //todo 评分
         return Response.buildSuccess(authorService.selectHotAuthorByAffiliationId(id,limit));
     }
 
 
 
-
+    /**
+     * 获取作者合作伙伴
+     * @param id 作者id
+     * @param limit 搜索数
+     * @return 合作伙伴列表
+     */
     @GetMapping("/partner")
     public Response getAuthorPartner(@RequestParam("id") Integer id,@RequestParam("limit") Integer limit){
         return Response.buildSuccess(authorService.getAuthorPartner(id,limit));
     }
 
 
+    /**
+     * 作者详情页面获取作者基本信息
+     * @param id 作者id
+     * @return 作者详情页面基本信息
+     */
+    @GetMapping("/info")
+    public Response getAuthorBasicInfo(@RequestParam("id") Integer id){
+        return Response.buildSuccess(authorService.getAuthorBasicInfoByAuthorId(id));
+    }
 
 }
