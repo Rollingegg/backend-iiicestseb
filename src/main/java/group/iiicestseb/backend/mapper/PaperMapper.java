@@ -32,13 +32,13 @@ public interface PaperMapper extends BaseMapper<Paper> {
     Paper selectByArticleId(@Param("articleId") Integer articleId);
 
     /**
-     * 多字段高级检索
+     * 根据搜索表单搜索符合条件的论文id
      *
-     * @param advancedSearchForm 高级检索表单
-     * @return 论文列表
+     * @param advancedSearchForm 搜索表单
+     * @return 论文id列表
      */
     @Select("<script>" +
-            "select p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id  " +
+            "select p.id  " +
             "from paper p " +
             //高级搜索
             "<if test='type==\"advanced\"'> " +
@@ -109,6 +109,27 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "order by p.citation_count_paper desc " +
             "limit #{page},#{limit}" +
             "</script>")
+    @ResultType(Integer.class)
+    Collection<Integer> advancedSearch(AdvancedSearchForm advancedSearchForm);
+
+
+    /**
+     * 根据论文id 生成搜搜结果
+     *
+     * @param idList 论文id列表
+     * @param page   页数
+     * @param limit  每页搜索数
+     * @return 搜索结果
+     */
+    @Select("<script>" +
+            "select p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id " +
+            "from paper p " +
+            "where p.id = " +
+            "(<foreach collection='idList' item='i' separator=','> " +
+            "#{i}" +
+            "</foreach>)" +
+            "limit #{page},#{limit}" +
+            "</script>")
     @Results(id = "SearchResultVOResultMap", value = {
             @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER),
             @Result(column = "title", property = "title", jdbcType = JdbcType.VARCHAR),
@@ -119,30 +140,31 @@ public interface PaperMapper extends BaseMapper<Paper> {
             @Result(column = "id", property = "authorList", many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId", fetchType = FetchType.EAGER)),
             @Result(column = "id", property = "termsList", many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId", fetchType = FetchType.EAGER))}
     )
-    List<SearchResultVO > advancedSearch(AdvancedSearchForm advancedSearchForm);
-
+    Collection<SearchResultVO> getSearchResult(Collection<Integer> idList, int page, int limit);
 
     /**
      * 查找机构最近文章
-     * @param id 机构id
+     *
+     * @param id    机构id
      * @param limit 搜索数
      * @return 机构最近文章列表
      */
-    @Select("select p.* " +
+    @Select("select distinct p.* " +
             "from paper p,author au, affiliation aff,paper_authors pa " +
             "where aff.id=#{id} and aff.id = au.affiliation_id and au.id = pa.author_id and p.id = pa.paper_id " +
             "order by chron_date desc " +
             "limit #{limit}")
     @ResultType(Paper.class)
-    List<Paper> selectRecentPaperByAffiliationId(Integer id,Integer limit);
+    List<Paper> selectRecentPaperByAffiliationId(Integer id, Integer limit);
 
 
     /**
      * 查找机构所有文章
+     *
      * @param id 机构id
      * @return 机构文章列表
      */
-    @Select("select p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id  " +
+    @Select("select distinct p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id  " +
             "from paper p, paper_authors pa, author au, affiliation aff " +
             "where aff.id = #{id} and pa.paper_id = p.id and pa.author_id = au.id and aff.id = au.affiliation_id " +
             "order by p.citation_count_paper desc")
@@ -152,6 +174,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
 
     /**
      * 查找作者的所有文献
+     *
      * @param id 作者id
      * @return 作者所有文献
      */
@@ -164,7 +187,8 @@ public interface PaperMapper extends BaseMapper<Paper> {
 
     /**
      * 查找作者最近发表文献
-     * @param id 作者id
+     *
+     * @param id    作者id
      * @param limit 搜索数
      * @return 作者最近发表文献列表
      */
@@ -174,7 +198,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "order by chron_date desc " +
             "limit #{limit}")
     @ResultType(Paper.class)
-    List<Paper> selectRecentPaperByAuthorId(Integer id,Integer limit);
+    List<Paper> selectRecentPaperByAuthorId(Integer id, Integer limit);
 
     /**
      * 计算所有新论文的评分

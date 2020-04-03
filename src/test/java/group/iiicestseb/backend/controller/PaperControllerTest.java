@@ -128,10 +128,6 @@ public class PaperControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[3]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[4]").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[5]").doesNotExist());
 
     }
@@ -146,11 +142,7 @@ public class PaperControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[3]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[4]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[5]").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1]").doesNotExist());
     }
 
     @Test

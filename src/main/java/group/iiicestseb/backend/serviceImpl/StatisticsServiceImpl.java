@@ -2,7 +2,6 @@ package group.iiicestseb.backend.serviceImpl;
 
 import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.entity.Paper;
-import group.iiicestseb.backend.entity.PaperStatistics;
 import group.iiicestseb.backend.entity.Term;
 import group.iiicestseb.backend.factory.PaperFactory;
 import group.iiicestseb.backend.mapper.StatisticsMapper;
@@ -14,6 +13,8 @@ import group.iiicestseb.backend.service.StatisticsService;
 import group.iiicestseb.backend.vo.author.AuthorHotVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
+import group.iiicestseb.backend.vo.statistics.PaperCountPerYearVO;
+import group.iiicestseb.backend.vo.term.TermWithCountVO;
 import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,28 +78,28 @@ public class StatisticsServiceImpl implements StatisticsService {
         return statisticsMapper.selectMaxPublishAuthorLimit(num);
     }
 
+    @Override
+    public Collection<TermWithCountVO> getAuthorHotTerm(int id, int limit) {
+        //todo 测试没写
+        return statisticsMapper.getAuthorHotTerm(id,limit);
+    }
 
+    @Override
+    public Collection<TermWithCountVO> getAffiliationHotTerm(int id, int limit) {
+        //todo 测试没写
+        return statisticsMapper.getAffiliationHotTerm(id,limit);
+    }
 
+    @Override
+    public Collection<PaperCountPerYearVO> getAffiliationPublishCountPerYear(int id) {
+        //todo 测试没写
+        return statisticsMapper.getAffiliationPublishCountPerYear(id);
+    }
 
-//
-//    @Override
-//    @Transactional(rollbackFor = RuntimeException.class)
-//    public void loadExistedCSV(String filename) {
-//        CSVUtil.analyzeExistedCSV(filename);
-//    }
-//
-//    @Override
-//    public int createUserRecord(Record record) {
-//        return statisticsMapper.insertUserRecord(record);
-//    }
-//
-//    @Override
-//    @Transactional(rollbackFor = RuntimeException.class)
-//    public Map<String, Object> analyzeUploadedCSV(MultipartFile file) {
-//        return CSVUtil.analyzeUploadedCSV(file);
-//    }
-//
-
-//
+    @Override
+    public Collection<PaperCountPerYearVO> getAuthorPublishCountPerYear(int id) {
+        //todo 测试没写
+        return statisticsMapper.getAuthorPublishCountPerYear(id);
+    }
 
 }

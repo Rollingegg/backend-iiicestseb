@@ -1,9 +1,7 @@
 package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.form.AdvancedSearchForm;
-import group.iiicestseb.backend.vo.paper.SearchResultVO;
-
-import java.util.List;
+import group.iiicestseb.backend.vo.paper.SearchVO;
 
 /**
  * @author jh
@@ -17,7 +15,7 @@ public interface SearchService {
      * @param advancedSearchForm 所有搜索关键词表单
      * @return 论文列表
      */
-    List<SearchResultVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm);
+    SearchVO advancedSearchPaper(AdvancedSearchForm advancedSearchForm);
 //
 
 }

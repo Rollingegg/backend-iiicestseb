@@ -49,7 +49,6 @@ public interface AffiliationService {
      */
     AffiliationInfoVO selectAffiliationBasicInfoByAffiliationId(Integer id);
 
-    //todo 机构详情页面活跃度
 
 
 }

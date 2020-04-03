@@ -2,11 +2,12 @@ package group.iiicestseb.backend.service;
 
 
 import group.iiicestseb.backend.entity.Affiliation;
-import group.iiicestseb.backend.entity.PaperStatistics;
 import group.iiicestseb.backend.entity.Term;
 import group.iiicestseb.backend.vo.author.AuthorHotVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
+import group.iiicestseb.backend.vo.statistics.PaperCountPerYearVO;
+import group.iiicestseb.backend.vo.term.TermWithCountVO;
 import group.iiicestseb.backend.vo.term.TermWithHotVO;
 
 import java.util.Collection;
@@ -80,27 +81,37 @@ public interface StatisticsService {
     List<AuthorHotVO> calculateMaxPublishAuthor(Integer num);
 
 
-//    /**
-//     * 加载已存在的csv文件，解析数据并存入数据库，
-//     *
-//     * @param filename 文件名
-//     */
-//    void loadExistedCSV(String filename);
-//
-//    /**
-//     * 创建用户记录
-//     * @param record 用户记录
-//     * @return 插入记录主键
-//     */
-//    int createUserRecord(Record record);
-//
-//    /**
-//     * 解析上传的csv文件
-//     *
-//     * @param file 文件
-//     * @return 解析后的数据
-//     */
-//    Map<String, Object> analyzeUploadedCSV(MultipartFile file);
-//
 
+    /**
+     * 获取作者的热度研究方向、词云
+     * @param id 作者id
+     * @param limit 搜索数
+     * @return 研究方向热度列表
+     */
+    public Collection<TermWithCountVO> getAuthorHotTerm(int id, int limit);
+
+
+    /**
+     * 获取机构的热度研究方向、词云
+     * @param id 机构id
+     * @param limit 搜索数
+     * @return 研究方向热度列表
+     */
+    public Collection<TermWithCountVO> getAffiliationHotTerm(int id, int limit);
+
+
+    /**
+     * 获取机构每年发表数
+     * @param id 机构id
+     * @return 机构
+     */
+    public Collection<PaperCountPerYearVO> getAffiliationPublishCountPerYear(int id);
+
+
+    /**
+     * 获取作者每年发表数
+     * @param id 作者id
+     * @return 作者每年发表数列表
+     */
+    public Collection<PaperCountPerYearVO> getAuthorPublishCountPerYear(int id);
 }

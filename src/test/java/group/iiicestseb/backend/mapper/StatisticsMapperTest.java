@@ -8,7 +8,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.LinkedList;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -20,13 +19,17 @@ public class StatisticsMapperTest {
 
     @Before
     public void setUp(){
-        //todo 统计mapper需要生成测试数据库方法,才能进行测试
+
     }
+
+
 
 
     @Test
     public void selectTermsWithHotLimit() {
-        //assertEquals(10, statisticsMapper.selectTermsWithHotLimit(10).size());
+        System.out.println("ttttttttttttttttttttttttttttttttttttttt");
+        System.out.println(statisticsMapper.getAffiliationPublishCountPerYear(1));
+
     }
 
     @Test
