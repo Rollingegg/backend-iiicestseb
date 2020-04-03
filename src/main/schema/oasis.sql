@@ -106,7 +106,7 @@ create table reference
     text                text comment '被引内容',
     title               varchar(300) comment '被引文章标题',
     google_scholar_link text comment '被引文献url',
-    ref_type            varchar(20) comment '引用类型',
+    ref_type            varchar(16) comment '引用类型',
     article_id          int comment '引用文章的ieee id',
     foreign key (article_id) references paper (article_id)
 );
