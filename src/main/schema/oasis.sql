@@ -12,7 +12,8 @@ CREATE TABLE affiliation
 (
     id   INT PRIMARY KEY auto_increment comment '机构id',
     name varchar(300) comment '机构名'
-) ENGINE = InnoDB comment '机构表' ROW_FORMAT=DYNAMIC;
+) ENGINE = InnoDB comment '机构表'
+  ROW_FORMAT = DYNAMIC;
 create index affiliation_name_hash using hash on affiliation (name);
 
 ##创建作者表
@@ -59,10 +60,11 @@ CREATE TABLE paper
 #外键
     conference_id         int comment '文献所属会议id',
     foreign key (conference_id) references conference (id)
-) ENGINE = InnoDB comment '文献表' ROW_FORMAT=DYNAMIC;
+) ENGINE = InnoDB comment '文献表'
+  ROW_FORMAT = DYNAMIC;
 create index paper_title_hash using hash on paper (title);
 create index idx_article_id using hash on paper (article_id);
-create index idx_chron_date  on paper (chron_date);
+create index idx_chron_date on paper (chron_date);
 
 
 ##创建发表文献关系表
@@ -71,7 +73,7 @@ CREATE TABLE paper_authors
     author_id    int comment '作者id',
     paper_id     int comment '文献id',
     author_order int comment '发表作者次序',
-    foreign key (author_id) references author(id),
+    foreign key (author_id) references author (id),
     foreign key (paper_id) references paper (id),
     primary key (author_id, paper_id)
 ) ENGINE = InnoDB comment '作者发表文献_关系表';
@@ -106,7 +108,7 @@ create table reference
     google_scholar_link text comment '被引文献url',
     ref_type            varchar(20) comment '引用类型',
     article_id          int comment '引用文章的ieee id',
-    foreign key (article_id) references paper(article_id)
+    foreign key (article_id) references paper (article_id)
 );
 
 ##创建用户表
@@ -127,5 +129,23 @@ CREATE TABLE record
     id            INT PRIMARY KEY auto_increment comment '历史记录id',
     search_record text comment '搜索记录字段',
     user_id       int,
-    foreign key (user_id) references user (id)
+    foreign key (user_id) references user (id) on delete Cascade
 ) ENGINE = InnoDB comment '历史记录';
+
+##创建作者统计信息表
+create table author_statistics
+(
+    author_id INT not null unique,
+    h_index   double,
+    g_index   double,
+    foreign key (author_id) references author (id) on delete Cascade
+) ENGINE = InnoDB comment '作者统计信息';
+
+##创建论文统计信息表
+create table paper_statistics
+(
+    paper_id INT not null unique,
+    score    double,
+    foreign key (paper_id) references paper (id) on delete Cascade
+) ENGINE = InnoDB comment '论文统计信息';
+

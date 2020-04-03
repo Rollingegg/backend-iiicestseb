@@ -4,12 +4,14 @@ package group.iiicestseb.backend.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.entity.PaperStatistics;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 import org.apache.ibatis.type.JdbcType;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -20,7 +22,12 @@ import java.util.List;
 @Mapper
 public interface PaperMapper extends BaseMapper<Paper> {
 
-
+    /**
+     * 根据IEEE的articleId查找论文
+     *
+     * @param articleId IEEE的articleId
+     * @return 论文
+     */
     @Select("select * from paper where article_id=#{articleId}")
     @ResultType(Paper.class)
     Paper selectByArticleId(@Param("articleId") Integer articleId);
@@ -103,19 +110,17 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "order by p.citation_count_paper desc " +
             "limit #{page},#{limit}" +
             "</script>")
-    @Results(id = "SearchResultVOResultMap",value = {
-            @Result(column = "id",property = "id",jdbcType = JdbcType.INTEGER),
-            @Result(column = "title",property = "title",jdbcType = JdbcType.VARCHAR),
-            @Result(column = "paper_abstract",property = "paperAbstract",jdbcType = JdbcType.VARCHAR),
-            @Result(column = "pdf_url",property = "pdfUrl",jdbcType = JdbcType.VARCHAR),
-            @Result(column = "chron_date",property = "chronDate",jdbcType = JdbcType.VARCHAR),
-            @Result(column = "citation_count_paper",property = "citationCountPaper",jdbcType = JdbcType.INTEGER),
-            @Result(column = "id",property = "authorList",many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId",fetchType = FetchType.EAGER) ),
-            @Result(column = "id",property = "termsList",many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId",fetchType = FetchType.EAGER) )}
+    @Results(id = "SearchResultVOResultMap", value = {
+            @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER),
+            @Result(column = "title", property = "title", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "paper_abstract", property = "paperAbstract", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "pdf_url", property = "pdfUrl", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "chron_date", property = "chronDate", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "citation_count_paper", property = "citationCountPaper", jdbcType = JdbcType.INTEGER),
+            @Result(column = "id", property = "authorList", many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId", fetchType = FetchType.EAGER)),
+            @Result(column = "id", property = "termsList", many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId", fetchType = FetchType.EAGER))}
     )
-    List<SearchResultVO > advancedSearch(AdvancedSearchForm advancedSearchForm);
-
-
+    List<SearchResultVO> advancedSearch(AdvancedSearchForm advancedSearchForm);
 
     @Select("select p.* " +
             "from paper p,author au, affiliation aff,paper_authors pa " +
@@ -123,6 +128,81 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "order by chron_date desc " +
             "limit #{limit}")
     @ResultType(Paper.class)
-    List<Paper> selectRecentPaperByAffiliationName(String name,Integer limit);
+    List<Paper> selectRecentPaperByAffiliationName(String name, Integer limit);
 
+    /**
+     * 计算所有新论文的评分
+     * 公式：+0.7 / 200引用数 + 0.1 / 2000下载量(0-2000) - 0.1 / 15论文年份久远(1年为单位，区间[0, 15])
+     *
+     * @return 计算的行数
+     */
+    @Insert("insert into paper_statistics(paper_id, score) " +
+            "   select p.id as paper_id, p.citation_count_paper*0.7/200 " +
+            "       + total_downloads*0.1/2000 " +
+            "       - (year(now())-year(p.chron_date))*0.1/15 as score " +
+            "   from paper p " +
+            "   where p.id not in (" +
+            "       select ps.paper_id from paper_statistics ps " +
+            "   )")
+    int reComputePapersScore();
+
+    /**
+     * 计算指定id论文的评分
+     * 公式：+0.7 / 200引用数 + 0.1 / 2000下载量(0-2000) - 0.1 / 15论文年份久远(1年为单位，区间[0, 15])
+     *
+     * @param id 论文id
+     */
+    @Update("insert into paper_statistics(paper_id, score) " +
+            "   select p.id, " +
+            "       p.citation_count_paper*0.7/200 " +
+            "       + p.total_downloads*0.1/2000" +
+            "       - (year(now())-year(p.chron_date))*0.1/15 " +
+            "   from paper p where p.id=#{id} " +
+            "   on duplicate key update " +
+            "   score=values(score)")
+    void updatePaperScore(@Param("id") Integer id);
+
+    /**
+     * 批量计算指定id论文的评分
+     * 公式：+0.7 / 200引用数 + 0.1 / 2000下载量(0-2000) - 0.1 / 15论文年份久远(1年为单位，区间[0, 15])
+     *
+     * @param ids 论文id的集合
+     */
+    @Update("<script>" +
+            "insert into paper_statistics(paper_id, score) " +
+            "   select p.id, " +
+            "       p.citation_count_paper*0.7/200 " +
+            "       + p.total_downloads*0.1/2000" +
+            "       - (year(now())-year(p.chron_date))*0.1/15 " +
+            "   from paper p where p.id in " +
+            "   (<foreach collection='ids' item='i' separator=',' >" +
+            "   #{i}" +
+            "   </foreach>) " +
+            "   on duplicate key update " +
+            "   score=values(score)" +
+            "</script>")
+    void updatePaperScoreBatch(@Param("ids") Collection<Integer> ids);
+
+    /**
+     * 获取论文的评分
+     *
+     * @param paperId 论文id
+     * @return 论文评分
+     */
+    @Select("select paper_id as paperId, score from paper_statistics where paper_id=#{paperId}")
+    PaperStatistics selectPaperStatisticsByPaperId(@Param("paperId") Integer paperId);
+
+    /**
+     * 批量获取论文的评分
+     *
+     * @param ids 论文id
+     * @return 论文评分集合
+     */
+    @Select("<script>" +
+            "select paper_id as paperId, score from paper_statistics where paper_id in (" +
+            "   <foreach collection='ids' item='i' separator=',' >" +
+            "   #{i}" +
+            "   </foreach>)" +
+            "</script>")
+    Collection<PaperStatistics> selectPaperStatisticsByPaperIdBatch(@Param("ids") Collection<Integer> ids);
 }

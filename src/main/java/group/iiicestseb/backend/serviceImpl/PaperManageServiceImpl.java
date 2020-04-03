@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -86,5 +87,26 @@ public class PaperManageServiceImpl extends ServiceImpl<PaperMapper, Paper> impl
         termMapper.insertTermList(termList);
     }
 
+    @Override
+    public Integer reComputePapersScore(){
+        return paperMapper.reComputePapersScore();
+    }
+
+    @Override
+    public PaperStatistics findPaperStatistics(Integer paperId){
+        return paperMapper.selectPaperStatisticsByPaperId(paperId);
+    }
+
+    @Override
+    public PaperStatistics updatePaperScore(Integer id){
+        paperMapper.updatePaperScore(id);
+        return paperMapper.selectPaperStatisticsByPaperId(id);
+    }
+
+    @Override
+    public Collection<PaperStatistics> updatePaperScoreBatch(Collection<Integer> ids){
+        paperMapper.updatePaperScoreBatch(ids);
+        return paperMapper.selectPaperStatisticsByPaperIdBatch(ids);
+    }
 
 }

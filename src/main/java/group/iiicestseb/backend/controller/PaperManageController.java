@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * @author jh
@@ -80,6 +81,7 @@ public class PaperManageController {
 
     /**
      * 下载标准CSV数据源样例
+     * 该接口已废弃
      *
      * @param response 无
      * @return 无
@@ -100,5 +102,55 @@ public class PaperManageController {
             Response.buildFailure(UNKNOWN_ERROR);
         }
         return Response.buildSuccess();
+    }
+
+    /**
+     * 启动计算新论文的评分
+     *
+     * @return 计算的行数
+     */
+    @PostMapping("computeNewPaperScore")
+    public Response reComputePapersScore() {
+        return Response.buildSuccess(paperManageService.reComputePapersScore());
+    }
+
+    /**
+     * 获取论文的评分信息
+     *
+     * @param paperId 论文id
+     * @return 论文评分
+     */
+    @GetMapping("paperScore")
+    public Response findPaperStatistics(
+            @RequestParam("paperId")
+            @NotNull(message = PARAMETER_ERROR)
+                    Integer paperId) {
+        return Response.buildSuccess(paperManageService.findPaperStatistics(paperId));
+    }
+
+    /**
+     * 更新指定论文的评分
+     *
+     * @param id 论文id
+     */
+    @PostMapping("paperScore")
+    public Response updatePaperScore(
+            @NotNull(message = PARAMETER_ERROR)
+            @RequestParam("paperId")
+                    Integer id) {
+        return Response.buildSuccess(paperManageService.updatePaperScore(id));
+    }
+
+    /**
+     * 批量更新论文的评分
+     *
+     * @param ids 论文id集合
+     */
+    @PostMapping("paperScoreBatch")
+    public Response updatePaperScoreBatch(
+            @RequestBody
+            @NotNull(message = PARAMETER_ERROR)
+                    Collection<Integer> ids) {
+        return Response.buildSuccess(paperManageService.updatePaperScoreBatch(ids));
     }
 }

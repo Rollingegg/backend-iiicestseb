@@ -49,6 +49,11 @@ public class PaperServiceImpl implements PaperService {
         return PaperFactory.packageDetail(paper, authorList, conference, termList, referenceList);
     }
 
+    @Override
+    public Collection<Paper> findPapersByIdBatch(Collection<Integer> paperIds) {
+        return paperMapper.selectBatchIds(paperIds);
+    }
+
     /**
      * 这里用相同受控关键词的数量来排序
      */
@@ -79,6 +84,11 @@ public class PaperServiceImpl implements PaperService {
             affiliationIds.add(a.getAffiliationId());
         }
         return ((AffiliationService)regedit).findAffiliationByIdBatch(affiliationIds);
+    }
+
+    @Override
+    public Collection<Term> findTermByIdBatch(Collection<Integer> termIds) {
+        return termMapper.selectBatchIds(termIds);
     }
 
 

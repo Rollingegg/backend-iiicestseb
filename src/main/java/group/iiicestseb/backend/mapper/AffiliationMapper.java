@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.vo.AffiliationInfoVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.Collection;
 
 /**
  * @author wph
@@ -27,6 +30,7 @@ public interface AffiliationMapper extends BaseMapper<Affiliation> {
 
     /**
      * 根据机构名称查询其基本信息
+     *
      * @param name 机构名称
      * @return 机构基本信息
      */
@@ -39,8 +43,7 @@ public interface AffiliationMapper extends BaseMapper<Affiliation> {
             "where pa.author_id = x.au_id" +
             " ")
     @ResultType(AffiliationInfoVO.class)
-    AffiliationInfoVO selectBasicInfoByName(String name);
-
+    AffiliationInfoVO selectAffiliationInfoByName(String name);
 
 
     @Select("select x.id, x.name,author_num as authorNum, count(*) as paperNum " +
@@ -54,7 +57,38 @@ public interface AffiliationMapper extends BaseMapper<Affiliation> {
     @ResultType(AffiliationInfoVO.class)
     AffiliationInfoVO selectRecentByName(String name);
 
-
+    /**
+     * 批量查询机构详情
+     *
+     * @param ids 机构id集合
+     * @return 机构详情集合
+     */
+    @Select("<script>" +
+            "select x.affid as id, x.affname as name, x.an as authorNum, y.pn as paperNum " +
+            "from ( " +
+            "   select aff1.id as affid, aff1.name as affname, count(*) as an " +
+            "   from affiliation aff1, author aut1 " +
+            "   where aff1.id in " +
+            "   (<foreach collection='ids' item='i' separator=','>" +
+            "   #{i}" +
+            "   </foreach>) " +
+            "   and aff1.id = aut1.affiliation_id " +
+            "   group by aff1.id " +
+            ") x, " +
+            "   (select aff2.id as affid, count(distinct aff2.id, pa.paper_id) as pn " +
+            "   from affiliation aff2, author aut2, paper_authors pa " +
+            "   where aff2.id in " +
+            "   (<foreach collection='ids' item='i' separator=','>" +
+            "   #{i}" +
+            "   </foreach>) " +
+            "   and aff2.id = aut2.affiliation_id " +
+            "   and aut2.id = pa.author_id " +
+            "   group by aff2.id " +
+            ") y " +
+            "where x.affid = y.affid " +
+            "</script>")
+    @ResultType(AffiliationInfoVO.class)
+    Collection<AffiliationInfoVO> selectAffiliationInfoByIdBatch(@Param("ids") Collection<Integer> ids);
 
 
 //

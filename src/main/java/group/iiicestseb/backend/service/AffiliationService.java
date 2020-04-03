@@ -35,6 +35,14 @@ public interface AffiliationService {
     Collection<Affiliation> findAffiliationByIdBatch(Collection<Integer> ids);
 
     /**
+     * 批量查询机构详情
+     *
+     * @param ids 机构id集合
+     * @return 机构详情集合
+     */
+    Collection<AffiliationInfoVO> findAffiliationInfoByIdBatch(Collection<Integer> ids);
+
+    /**
      * 根据机构名称查询其基本信息
      * @param name 机构名称
      * @return 机构基本信息

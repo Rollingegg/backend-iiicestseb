@@ -5,9 +5,11 @@ import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.UserForm;
 import group.iiicestseb.backend.service.*;
 import group.iiicestseb.backend.vo.AffiliationInfoVO;
+import group.iiicestseb.backend.vo.PaperDetail;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
+import group.iiicestseb.backend.vo.paper.PaperOverview;
 import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import group.iiicestseb.backend.vo.user.UserVO;
 import org.springframework.context.annotation.Lazy;
@@ -40,6 +42,9 @@ public class RegeditImpl implements Regedit {
     @Resource(name = "PaperManage")
     private PaperManageService paperManageService;
     @Lazy
+    @Resource(name = "Paper")
+    private PaperService paperService;
+    @Lazy
     @Resource(name = "Search")
     private SearchService searchService;
     @Lazy
@@ -61,6 +66,12 @@ public class RegeditImpl implements Regedit {
     @Override
     public Collection<Affiliation> findAffiliationByIdBatch(Collection<Integer> ids) {
         return affiliationService.findAffiliationByIdBatch(ids);
+    }
+
+
+    @Override
+    public Collection<AffiliationInfoVO> findAffiliationInfoByIdBatch(Collection<Integer> ids) {
+        return affiliationService.findAffiliationInfoByIdBatch(ids);
     }
 
     @Override
@@ -160,6 +171,26 @@ public class RegeditImpl implements Regedit {
         paperManageService.saveTermList(termList);
     }
 
+    @Override
+    public Integer reComputePapersScore() {
+        return paperManageService.reComputePapersScore();
+    }
+
+    @Override
+    public PaperStatistics findPaperStatistics(Integer paperId) {
+        return paperManageService.findPaperStatistics(paperId);
+    }
+
+    @Override
+    public PaperStatistics updatePaperScore(Integer id) {
+        return paperManageService.updatePaperScore(id);
+    }
+
+    @Override
+    public Collection<PaperStatistics> updatePaperScoreBatch(Collection<Integer> ids) {
+        return paperManageService.updatePaperScoreBatch(ids);
+    }
+
     //---------------------------SearchService-------------------------------
 
 
@@ -186,4 +217,36 @@ public class RegeditImpl implements Regedit {
     }
 
 
+
+    @Override
+    public PaperDetail findPaperDetail(Integer paperId) {
+        return paperService.findPaperDetail(paperId);
+    }
+
+    //-----------------------------------------PaperService--------------------------------------
+
+    @Override
+    public Collection<Paper> findPapersByIdBatch(Collection<Integer> paperIds) {
+        return paperService.findPapersByIdBatch(paperIds);
+    }
+
+    @Override
+    public Collection<PaperOverview> getRecommendPapers(Integer paperId, Integer num) {
+        return paperService.getRecommendPapers(paperId, num);
+    }
+
+    @Override
+    public Collection<AuthorInfoVO> getRecommendAuthors(Integer paperId, Integer num) {
+        return paperService.getRecommendAuthors(paperId, num);
+    }
+
+    @Override
+    public Collection<Affiliation> getRecommendAffiliations(Integer paperId, Integer num) {
+        return paperService.getRecommendAffiliations(paperId, num);
+    }
+
+    @Override
+    public Collection<Term> findTermByIdBatch(Collection<Integer> termIds) {
+        return paperService.findTermByIdBatch(termIds);
+    }
 }

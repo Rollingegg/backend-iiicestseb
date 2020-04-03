@@ -20,7 +20,7 @@ public class PaperController {
 
     public static final String PARAMETER_ERROR = "参数无效或不合法";
 
-    @Resource
+    @Resource(name = "Paper")
     private PaperService paperService;
 
     @GetMapping("/detail")

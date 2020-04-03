@@ -8,6 +8,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.LinkedList;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -32,4 +33,6 @@ public class StatisticsMapperTest {
     public void selectMaxPublishAuthorLimit() {
         //assertEquals(10, statisticsMapper.selectTermsWithHotLimit(10).size());
     }
+
+
 }

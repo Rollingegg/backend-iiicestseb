@@ -1,42 +1,41 @@
 package group.iiicestseb.backend.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
 /**
  * @author jh
- * @date 2020/3/25
+ * @date 2020/4/1
  */
-@TableName(value = "term")
 @Data
+@TableName("paper_statistics")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Term {
+public class PaperStatistics {
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private int id;
+    @TableField("paper_id")
+    private Integer paperId;
 
-    @TableField("name")
-    private String name;
+    @TableField("score")
+    private Double score;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Term that = (Term) o;
-        return id == that.id &&
-                Objects.equals(name, that.name);
+        PaperStatistics that = (PaperStatistics) o;
+        return paperId.equals(that.paperId) &&
+                score.equals(that.score);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(paperId, score);
     }
-
 
 }
