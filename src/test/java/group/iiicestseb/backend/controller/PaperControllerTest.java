@@ -72,7 +72,7 @@ public class PaperControllerTest {
         mvcStandalone = MockMvcBuilders.standaloneSetup(paperController).build();
         session = new MockHttpSession();
         paper = paperMapper.selectByArticleId(111111111);
-        JSONUtil.analyzeExistedJsonFile("icse15_19(50).json");
+        //JSONUtil.analyzeExistedJsonFile("icse15_19(50).json");
     }
 
     @Test
@@ -119,7 +119,7 @@ public class PaperControllerTest {
 
     @Test
     public void getAffiliationsRecentlyPublish() throws Exception{
-        Affiliation affiliation = affiliationService.findAffiliationByName("Beihang University, China; Beijing Advanced Innovation Center for Big Data and Brain Computing, China");
+        Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
         mvc.perform(MockMvcRequestBuilders.get("/paper/affiliation/recently/publish")
                 .param("id", String.valueOf(affiliation.getId()))
                 .param("limit", "10")
@@ -127,27 +127,29 @@ public class PaperControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[5]").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].title").value("Standard3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].title").value("Standard1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").doesNotExist());
 
     }
 
     @Test
     public void getAffiliationsAllPublish() throws Exception{
-        Affiliation affiliation = affiliationService.findAffiliationByName("Beihang University, China; Beijing Advanced Innovation Center for Big Data and Brain Computing, China");
+        Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
         mvc.perform(MockMvcRequestBuilders.get("/paper/affiliation/all/publish")
                 .param("id", String.valueOf(affiliation.getId()))
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1]").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].title").value("Standard1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].title").value("Standard3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").doesNotExist());
     }
 
     @Test
     public void getAuthorRecentlyPublish() throws  Exception{
-        Author author = authorService.findAuthorByName("Jian Zhang");
+        Author author = authorService.findAuthorByName("author1");
         mvc.perform(MockMvcRequestBuilders.get("/paper/author/recently/publish")
                 .param("id", String.valueOf(author.getId()))
                 .param("limit","10")
@@ -155,20 +157,22 @@ public class PaperControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1]").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].title").value("Standard3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].title").value("Standard1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").doesNotExist());
     }
 
     @Test
     public void getAuthorAllPublish() throws Exception {
-        Author author = authorService.findAuthorByName("Jian Zhang");
+        Author author = authorService.findAuthorByName("author1");
         mvc.perform(MockMvcRequestBuilders.get("/paper/author/all/publish")
                 .param("id", String.valueOf(author.getId()))
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1]").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].title").value("Standard1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].title").value("Standard3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").doesNotExist());
     }
 }

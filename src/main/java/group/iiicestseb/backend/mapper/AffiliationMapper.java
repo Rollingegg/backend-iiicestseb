@@ -33,14 +33,16 @@ public interface AffiliationMapper extends BaseMapper<Affiliation> {
      * @param id 机构id
      * @return 机构基本信息
      */
-    @Select("select x.id, x.name,count(*) as authorNum, sum(each_au_paper_num) as paperNum " +
+    @Select("select x.id, x.name,x.authorNum , count(pid) as paperNum " +
             "from " +
-            "(select aff.id, aff.name , au.id as au_id,count(*) as each_au_paper_num " +
+            "(select aff.id, aff.name , au.id as au_id,count(*) as authorNum " +
+            "from affiliation aff, author au " +
+            "where aff.id = au.affiliation_id and aff.id = #{id} " +
+            ") as x," +
+            "(select distinct pa.paper_id as pid " +
             "from affiliation aff, author au,paper_authors pa " +
             "where aff.id = au.affiliation_id and aff.id = #{id} " +
-            "and pa.author_id = au.id " +
-            "group by au_id) as x " +
-            "group by x.id"
+            "and pa.author_id = au.id ) as y "
     )
     @ResultType(AffiliationInfoVO.class)
     AffiliationInfoVO selectBasicInfoById(Integer id);

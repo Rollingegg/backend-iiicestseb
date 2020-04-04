@@ -41,13 +41,14 @@ public class AuthorControllerTest {
     public void setUp() throws Exception {
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
         session = new MockHttpSession();
-        JSONUtil.analyzeExistedJsonFile("icse15_19(50).json");
+        JSONUtil.loadTestData();
+        //JSONUtil.analyzeExistedJsonFile("icse15_19(50).json");
     }
 
 
     @Test
     public void getAllAuthorInAffiliation() throws Exception{
-        Affiliation affiliation = affiliationService.findAffiliationByName("Beihang University, China; Beijing Advanced Innovation Center for Big Data and Brain Computing, China");
+        Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
         mvc.perform(MockMvcRequestBuilders.get("/author/allin/affiliation")
                 .param("id", String.valueOf(affiliation.getId()))
                 .accept(MediaType.APPLICATION_JSON)
@@ -56,9 +57,7 @@ public class AuthorControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[1]").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[3]").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[4]").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").doesNotExist());
     }
 
 //    @Test
@@ -81,7 +80,7 @@ public class AuthorControllerTest {
 
     @Test
     public void getAuthorPartner() throws Exception{
-        Author author = authorService.findAuthorByName("Jian Zhang");
+        Author author = authorService.findAuthorByName("author1");
         mvc.perform(MockMvcRequestBuilders.get("/author/partner")
                 .param("id", String.valueOf(author.getId()))
                 .param("limit", String.valueOf(10))
@@ -92,19 +91,18 @@ public class AuthorControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[1]").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[3]").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[4]").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[3]").doesNotExist());
     }
 
     @Test
     public void getAuthorBasicInfo() throws Exception{
-        Author author = authorService.findAuthorByName("Jian Zhang");
+        Author author = authorService.findAuthorByName("author1");
         mvc.perform(MockMvcRequestBuilders.get("/author/info")
                 .param("id", String.valueOf(author.getId()))
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result.paperCount").value(1));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.paperCount").value(2));
     }
 }
