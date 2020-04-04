@@ -1,12 +1,13 @@
 package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.entity.Author;
-import group.iiicestseb.backend.entity.AuthorStatistics;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.serviceImpl.AuthorServiceImpl;
 import group.iiicestseb.backend.utils.JSONUtil;
-import group.iiicestseb.backend.vo.author.AuthorInfoVO;
-import org.easymock.*;
+import org.easymock.EasyMockRule;
+import org.easymock.EasyMockSupport;
+import org.easymock.Mock;
+import org.easymock.TestSubject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,9 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static org.junit.Assert.*;
 
 @Transactional
 @SpringBootTest
@@ -44,24 +42,11 @@ public class AuthorServiceTest extends EasyMockSupport {
     }
 
     @Test
-    public void reComputeAuthorStatistics() {
-        authorService.reComputeAuthorStatistics();
-        Author author1 = authorService.findAuthorByName("author1");
-        Author author3 = authorService.findAuthorByName("author3");
-        AuthorStatistics as1 = authorService.getAuthorStatisticsByAuthorId(author1.getId());
-        AuthorStatistics as3 = authorService.getAuthorStatisticsByAuthorId(author3.getId());
-        Assert.assertEquals(Integer.valueOf(1), as1.getHIndex());
-        Assert.assertEquals(Integer.valueOf(2), as1.getGIndex());
-        Assert.assertEquals(Double.valueOf(8.0), as1.getAvgCite());
-        Assert.assertEquals(Integer.valueOf(2), as1.getPaperNum());
-        Assert.assertEquals(Integer.valueOf(1), as1.getAsePaperNum());
-        Assert.assertEquals(Integer.valueOf(1), as1.getIcsePaperNum());
-        Assert.assertEquals(Integer.valueOf(2), as3.getHIndex());
-        Assert.assertEquals(Integer.valueOf(3), as3.getGIndex());
-        Assert.assertEquals(Double.valueOf(10.333333333333334), as3.getAvgCite());
-        Assert.assertEquals(Integer.valueOf(3), as3.getPaperNum());
-        Assert.assertEquals(Integer.valueOf(2), as3.getAsePaperNum());
-        Assert.assertEquals(Integer.valueOf(1), as3.getIcsePaperNum());
+    public void temp() {
+        Author a = authorService.findAuthorByName("author1");
+        Assert.assertNotEquals(0, a.getId());
+        Assert.assertNotNull(a.getAffiliationId());
+        Assert.assertEquals("author1", a.getName());
     }
 
 //    @Test

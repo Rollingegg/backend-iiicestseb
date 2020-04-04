@@ -53,7 +53,7 @@ public class AuthorController {
      * @return 合作伙伴列表
      */
     @GetMapping("/partner")
-    public Response getAuthorPartner(@RequestParam("id") Integer id, @RequestParam(name = "limit",defaultValue = "10") Integer limit) {
+    public Response getAuthorPartner(@RequestParam("id") Integer id, @RequestParam(name = "limit", defaultValue = "10") Integer limit) {
         return Response.buildSuccess(authorService.getAuthorPartner(id, limit));
     }
 
@@ -83,14 +83,5 @@ public class AuthorController {
         return Response.buildSuccess(authorService.getAuthorStatisticsByAuthorId(id));
     }
 
-    /**
-     * 重新计算所有作者的统计信息
-     *
-     * @return 计算行数
-     */
-    @PostMapping("/statistics/reCompute")
-    public Response reComputeAuthorStatistics() {
-        return Response.buildSuccess(authorService.reComputeAuthorStatistics());
-    }
 
 }

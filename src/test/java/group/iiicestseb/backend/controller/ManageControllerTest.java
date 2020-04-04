@@ -2,7 +2,7 @@ package group.iiicestseb.backend.controller;
 
 import com.alibaba.fastjson.JSON;
 import group.iiicestseb.backend.entity.Paper;
-import group.iiicestseb.backend.service.PaperManageService;
+import group.iiicestseb.backend.service.ManageService;
 import group.iiicestseb.backend.utils.JSONUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +34,7 @@ import java.util.List;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @Transactional
-public class PaperManageControllerTest {
+public class ManageControllerTest {
     @Autowired
     WebApplicationContext wac;
 
@@ -45,26 +45,26 @@ public class PaperManageControllerTest {
     private MockHttpSession session;
 
     @Mock
-    PaperManageService paperManageServiceMock;
+    ManageService manageServiceMock;
 
     @InjectMocks
-    PaperManageController paperManageController;
+    ManageController manageController;
 
     @Resource(name = "Regedit")
-    PaperManageService paperManageService;
+    ManageService manageService;
 
     @Before
     public void setUp() {
         JSONUtil.loadTestData();
         MockitoAnnotations.initMocks(this);
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
-        mvcStandalone = MockMvcBuilders.standaloneSetup(paperManageController).build();
+        mvcStandalone = MockMvcBuilders.standaloneSetup(manageController).build();
         session = new MockHttpSession();
     }
 
     @Test
     public void DeletePaperSuccess() throws Exception {
-        Mockito.doNothing().when(paperManageServiceMock).deletePaperById(1);
+        Mockito.doNothing().when(manageServiceMock).deletePaperById(1);
         mvcStandalone.perform(MockMvcRequestBuilders.delete("/admin/paper/delete")
                 .param("id", "1")
                 .accept(MediaType.APPLICATION_JSON)
@@ -73,13 +73,13 @@ public class PaperManageControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
-        Mockito.verify(paperManageServiceMock).deletePaperById(1);
+        Mockito.verify(manageServiceMock).deletePaperById(1);
     }
 
     @Test
     public void analyzeJSONSuccess() throws Exception {
         String param = "One.json";
-        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/loadJSON")
+        mvc.perform(MockMvcRequestBuilders.post("/admin/loadJSON")
                 .param("filename", param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
@@ -92,7 +92,7 @@ public class PaperManageControllerTest {
     @Test
     public void analyzeJSONFileNotExist() throws Exception {
         String param = "aaa.json";
-        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/loadJSON")
+        mvc.perform(MockMvcRequestBuilders.post("/admin/loadJSON")
                 .param("filename", param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
@@ -104,7 +104,7 @@ public class PaperManageControllerTest {
     @Test
     public void analyzeJSONExisted() throws Exception {
         String param = "Existed.json";
-        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/loadJSON")
+        mvc.perform(MockMvcRequestBuilders.post("/admin/loadJSON")
                 .param("filename", param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
@@ -118,7 +118,7 @@ public class PaperManageControllerTest {
     @Test
     public void analyzeJSONError() throws Exception {
         String param = "Error.json";
-        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/loadJSON")
+        mvc.perform(MockMvcRequestBuilders.post("/admin/loadJSON")
                 .param("filename", param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
@@ -134,7 +134,7 @@ public class PaperManageControllerTest {
         ClassPathResource file = new ClassPathResource("json/One.json");
         FileInputStream fileInput = new FileInputStream(file.getFile());
         MockMultipartFile multipartFile = new MockMultipartFile("file", "One.json", "text/plain", fileInput);
-        mvc.perform(MockMvcRequestBuilders.multipart("/admin/paper/uploadJSON")
+        mvc.perform(MockMvcRequestBuilders.multipart("/admin/uploadJSON")
                 .file(multipartFile)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -151,7 +151,7 @@ public class PaperManageControllerTest {
         ClassPathResource file = new ClassPathResource("json/Existed.json");
         FileInputStream fileInput = new FileInputStream(file.getFile());
         MockMultipartFile multipartFile = new MockMultipartFile("file", "Existed.json", "text/plain", fileInput);
-        mvc.perform(MockMvcRequestBuilders.multipart("/admin/paper/uploadJSON")
+        mvc.perform(MockMvcRequestBuilders.multipart("/admin/uploadJSON")
                 .file(multipartFile)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -169,7 +169,7 @@ public class PaperManageControllerTest {
         ClassPathResource file = new ClassPathResource("json/Error.json");
         FileInputStream fileInput = new FileInputStream(file.getFile());
         MockMultipartFile multipartFile = new MockMultipartFile("file", "Error.json", "text/plain", fileInput);
-        mvc.perform(MockMvcRequestBuilders.multipart("/admin/paper/uploadJSON")
+        mvc.perform(MockMvcRequestBuilders.multipart("/admin/uploadJSON")
                 .file(multipartFile)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -192,8 +192,8 @@ public class PaperManageControllerTest {
 
     @Test
     public void findPaperStatisticsSuccess() throws Exception {
-        Paper p = paperManageService.findPaperByArticleId(111111111);
-        mvc.perform(MockMvcRequestBuilders.get("/admin/paper/paperScore")
+        Paper p = manageService.findPaperByArticleId(111111111);
+        mvc.perform(MockMvcRequestBuilders.get("/admin/paper/score")
                 .param("paperId", String.valueOf(p.getId()))
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
@@ -205,8 +205,8 @@ public class PaperManageControllerTest {
 
     @Test
     public void updatePaperStatisticsSuccess() throws Exception {
-        Paper p = paperManageService.findPaperByArticleId(111111111);
-        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/paperScore")
+        Paper p = manageService.findPaperByArticleId(111111111);
+        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/score")
                 .param("paperId", String.valueOf(p.getId()))
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
@@ -218,13 +218,13 @@ public class PaperManageControllerTest {
 
     @Test
     public void updatePaperStatisticsBatchSuccess() throws Exception {
-        Paper p1 = paperManageService.findPaperByArticleId(111111111);
-        Paper p2 = paperManageService.findPaperByArticleId(333333333);
+        Paper p1 = manageService.findPaperByArticleId(111111111);
+        Paper p2 = manageService.findPaperByArticleId(333333333);
         List<Integer> list = new LinkedList<>() {{
             add(p1.getId());
             add(p2.getId());
         }};
-        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/paperScoreBatch")
+        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/scoreBatch")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JSON.toJSONString(list))
                 .accept(MediaType.APPLICATION_JSON)
@@ -237,8 +237,6 @@ public class PaperManageControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].paperId").value(p2.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].score").value(0.009166667));
     }
-
-
 
 
 }

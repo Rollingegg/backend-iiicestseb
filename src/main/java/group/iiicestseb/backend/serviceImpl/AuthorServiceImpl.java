@@ -96,40 +96,7 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
         return authorStatisticsMapper.selectByAuthorIdBatch(authorIds);
     }
 
-    @Override
-    public Integer reComputeAuthorStatistics() {
-        Collection<AuthorPaperCites> authorCites = authorStatisticsMapper.selectAllAuthorPaperCites();
-        Map<Integer, List<Integer>> values = new HashMap<>();
-        Map<Integer, Integer> aseCounts = new HashMap<>();
-        Map<Integer, Integer> icseCounts = new HashMap<>();
-        List<Integer> cites;
-        int aseCount, icseCount;
-        for (AuthorPaperCites apc : authorCites) {
-            cites = values.computeIfAbsent(apc.getAuthorId(), k -> new LinkedList<>());
-            cites.add(apc.getCite());
-            if (apc.getConference().equals(JSONUtil.CONFERENCE.ASE.value())) {
-                aseCount = aseCounts.computeIfAbsent(apc.getAuthorId(), k -> 0);
-                aseCounts.put(apc.getAuthorId(), aseCount + 1);
-            } else if (apc.getConference().equals(JSONUtil.CONFERENCE.ICSE.value())) {
-                icseCount = icseCounts.computeIfAbsent(apc.getAuthorId(), k -> 0);
-                icseCounts.put(apc.getAuthorId(), icseCount + 1);
-            }
-        }
-        Collection<AuthorStatistics> authorStatistics = new LinkedList<>();
-        for (Integer key : values.keySet()) {
-            cites = values.get(key);
-            int i = 1, total = 0;
-            int h = 0, g = 0;
-            for (Integer cite : cites) {
-                h = cite >= i ? h + 1 : h;
-                total += cite;
-                g = (i ^ 2) <= total ? g + 1 : g;
-                i++;
-            }
-            authorStatistics.add(new AuthorStatistics(key, h, g, ((double) total) / cites.size(), cites.size(), aseCounts.get(key), icseCounts.get(key)));
-        }
-        return authorStatisticsMapper.insertOrUpdateBatch(authorStatistics);
-    }
+
 
 
 }

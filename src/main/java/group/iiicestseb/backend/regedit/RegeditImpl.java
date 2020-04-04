@@ -38,8 +38,8 @@ public class RegeditImpl implements Regedit {
     @Resource(name = "User")
     private UserService userService;
     @Lazy
-    @Resource(name = "PaperManage")
-    private PaperManageService paperManageService;
+    @Resource(name = "Manage")
+    private ManageService manageService;
     @Lazy
     @Resource(name = "Paper")
     private PaperService paperService;
@@ -49,6 +49,7 @@ public class RegeditImpl implements Regedit {
     @Lazy
     @Resource(name = "Statistics")
     private StatisticsService statisticsService;
+
     @Lazy
 
 
@@ -99,7 +100,7 @@ public class RegeditImpl implements Regedit {
 
     @Override
     public Collection<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit) {
-        return authorService.selectHotAuthorByAffiliationId(id,limit);
+        return authorService.selectHotAuthorByAffiliationId(id, limit);
     }
 
     @Override
@@ -119,7 +120,7 @@ public class RegeditImpl implements Regedit {
 
     @Override
     public Collection<AuthorInfoVO> getAuthorPartner(Integer id, Integer limit) {
-        return authorService.getAuthorPartner(id,limit);
+        return authorService.getAuthorPartner(id, limit);
     }
 
     @Override
@@ -130,11 +131,6 @@ public class RegeditImpl implements Regedit {
     @Override
     public Collection<AuthorStatistics> getAuthorStatisticsByAuthorIdBatch(Collection<Integer> authorIds) {
         return authorService.getAuthorStatisticsByAuthorIdBatch(authorIds);
-    }
-
-    @Override
-    public Integer reComputeAuthorStatistics() {
-        return authorService.reComputeAuthorStatistics();
     }
 
     //-----------------------------------------ConferenceService------------------------------
@@ -159,47 +155,47 @@ public class RegeditImpl implements Regedit {
 
     @Override
     public void deletePaperById(int id) {
-        paperManageService.deletePaperById(id);
+        manageService.deletePaperById(id);
     }
 
     @Override
     public void insertPaper(Paper paper) {
-        paperManageService.insertPaper(paper);
+        manageService.insertPaper(paper);
     }
 
     @Override
     public void insertPaperTermList(List<PaperTerm> paperTerms) {
-        paperManageService.insertPaperTermList(paperTerms);
+        manageService.insertPaperTermList(paperTerms);
     }
 
     @Override
     public void insertReferences(List<Reference> references) {
-        paperManageService.insertReferences(references);
+        manageService.insertReferences(references);
     }
 
     @Override
     public void insertPaperAuthorList(List<PaperAuthors> paperAuthors) {
-        paperManageService.insertPaperAuthorList(paperAuthors);
+        manageService.insertPaperAuthorList(paperAuthors);
     }
 
     @Override
     public Paper findPaperByArticleId(Integer articleId) {
-        return paperManageService.findPaperByArticleId(articleId);
+        return manageService.findPaperByArticleId(articleId);
     }
 
     @Override
     public Term findTermByName(String name) {
-        return paperManageService.findTermByName(name);
+        return manageService.findTermByName(name);
     }
 
     @Override
     public void saveTermList(List<Term> termList) {
-        paperManageService.saveTermList(termList);
+        manageService.saveTermList(termList);
     }
 
     @Override
     public Collection<PaperBasicVO> getAuthorRecentPaper(Integer id, int limit) {
-        return paperService.getAuthorRecentPaper(id,limit);
+        return paperService.getAuthorRecentPaper(id, limit);
     }
 
     @Override
@@ -209,22 +205,27 @@ public class RegeditImpl implements Regedit {
 
     @Override
     public Integer reComputePapersScore() {
-        return paperManageService.reComputePapersScore();
+        return manageService.reComputePapersScore();
     }
 
     @Override
     public PaperStatistics findPaperStatistics(Integer paperId) {
-        return paperManageService.findPaperStatistics(paperId);
+        return manageService.findPaperStatistics(paperId);
     }
 
     @Override
     public PaperStatistics updatePaperScore(Integer id) {
-        return paperManageService.updatePaperScore(id);
+        return manageService.updatePaperScore(id);
     }
 
     @Override
     public Collection<PaperStatistics> updatePaperScoreBatch(Collection<Integer> ids) {
-        return paperManageService.updatePaperScoreBatch(ids);
+        return manageService.updatePaperScoreBatch(ids);
+    }
+
+    @Override
+    public Integer reComputeAuthorStatistics() {
+        return manageService.reComputeAuthorStatistics();
     }
 
     //---------------------------SearchService-------------------------------
@@ -253,7 +254,6 @@ public class RegeditImpl implements Regedit {
     }
 
 
-
     //-----------------------------------------PaperService--------------------------------------
 
 
@@ -279,13 +279,14 @@ public class RegeditImpl implements Regedit {
 
     @Override
     public Collection<PaperBasicVO> getAffiliationRecentlyPublish(Integer id, Integer limit) {
-        return paperService.getAffiliationRecentlyPublish(id,limit);
+        return paperService.getAffiliationRecentlyPublish(id, limit);
     }
 
     @Override
     public Collection<SearchResultVO> getAffiliationAllPublish(Integer id) {
         return paperService.getAffiliationAllPublish(id);
     }
+
     @Override
     public Collection<Paper> findPapersByIdBatch(Collection<Integer> paperIds) {
         return paperService.findPapersByIdBatch(paperIds);

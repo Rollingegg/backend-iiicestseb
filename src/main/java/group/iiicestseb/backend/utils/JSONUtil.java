@@ -45,7 +45,7 @@ public class JSONUtil {
     public static final String GET_STANDARD_JSON_FILE_ERROR = "获取标准json文件模板失败，请查看日志";
 
     @Resource(name = "Regedit")
-    private PaperManageService paperManageService;
+    private ManageService manageService;
     @Resource(name = "Regedit")
     private PaperService paperService;
     @Resource(name = "Regedit")
@@ -234,8 +234,8 @@ public class JSONUtil {
      */
     public static void loadTestData() {
         analyzeExistedJsonFile(STANDARD_JSON_FILE);
-        Instance.paperManageService.reComputePapersScore();
-        Instance.authorService.reComputeAuthorStatistics();
+        Instance.manageService.reComputePapersScore();
+        Instance.manageService.reComputeAuthorStatistics();
     }
 
     /**
@@ -395,18 +395,18 @@ public class JSONUtil {
         // 关键词
         Map<String, List<Term>> terms = analyzeTerms(jo, existedMaps, newLists);
         paper.setAuthorKeywords(joinAuthorKeywords(terms.get(TERM.Author.value())));
-        paperManageService.insertPaper(paper);
+        manageService.insertPaper(paper);
         // 作者+机构
         List<Author> authors = analyzeAuthors(jo, existedMaps, newLists);
         // 文献-引用
         List<Reference> references = analyzeReference(paper, jo);
-        paperManageService.insertReferences(references);
+        manageService.insertReferences(references);
         // 文献-关键词
         List<PaperTerm> paperTerms = analyzePaperTerms(paper, terms.get(TERM.Index.value()));
-        paperManageService.insertPaperTermList(paperTerms);
+        manageService.insertPaperTermList(paperTerms);
         // 文献-作者
         List<PaperAuthors> paperAuthors = analyzePaperAuthors(paper, authors);
-        paperManageService.insertPaperAuthorList(paperAuthors);
+        manageService.insertPaperAuthorList(paperAuthors);
     }
 
     @SuppressWarnings("unchecked")
@@ -418,7 +418,7 @@ public class JSONUtil {
         if (existed.containsKey(articleId)) {
             throw new JSONAnalyzeException(PAPER_EXISTED);
         }
-        paper = paperManageService.findPaperByArticleId(articleId);
+        paper = manageService.findPaperByArticleId(articleId);
         if (paper != null) {
             existed.put(articleId, paper);
             throw new JSONAnalyzeException(PAPER_EXISTED);
@@ -559,7 +559,7 @@ public class JSONUtil {
                     String name_key = s.toLowerCase();
                     if (existed.containsKey(name_key)) {
                         t = existed.get(name_key);
-                    } else if ((t = paperManageService.findTermByName(s)) == null) {
+                    } else if ((t = manageService.findTermByName(s)) == null) {
                         t = new Term();
                         t.setName(s);
                         existed.put(name_key, t);
@@ -573,7 +573,7 @@ public class JSONUtil {
                 }
             }
         }
-        paperManageService.saveTermList(tempNews);
+        manageService.saveTermList(tempNews);
         news.addAll(tempNews);
         return terms;
     }

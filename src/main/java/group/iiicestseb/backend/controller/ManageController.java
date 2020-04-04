@@ -1,6 +1,6 @@
 package group.iiicestseb.backend.controller;
 
-import group.iiicestseb.backend.service.PaperManageService;
+import group.iiicestseb.backend.service.ManageService;
 import group.iiicestseb.backend.utils.JSONUtil;
 import group.iiicestseb.backend.vo.Response;
 import org.springframework.core.io.ClassPathResource;
@@ -20,10 +20,10 @@ import java.util.Collection;
 @ResponseBody
 @RestController
 @CrossOrigin
-@RequestMapping("/admin/paper")
-public class PaperManageController {
+@RequestMapping("/admin")
+public class ManageController {
     @Resource(name = "Regedit")
-    private PaperManageService paperManageService;
+    private ManageService manageService;
     public static final String DELETE_PAPER_ERROR = "删除文献出现位置错误";
     public static final String CSV_ANALYZE_ERROR = "CSV解析错误，请查阅日志";
     public static final String SHOULD_BE_POSITIVE = "参数应该大于0";
@@ -38,10 +38,10 @@ public class PaperManageController {
      * @param id 论文id
      * @return 无
      */
-    @DeleteMapping("/delete")
+    @DeleteMapping("/paper/delete")
     public Response deletePaper(@RequestParam("id") int id) {
 
-        paperManageService.deletePaperById(id);
+        manageService.deletePaperById(id);
         return Response.buildSuccess();
     }
 
@@ -109,9 +109,9 @@ public class PaperManageController {
      *
      * @return 计算的行数
      */
-    @PostMapping("/statistics/reCompute")
+    @PostMapping("/paper/statistics/reCompute")
     public Response reComputePapersScore() {
-        return Response.buildSuccess(paperManageService.reComputePapersScore());
+        return Response.buildSuccess(manageService.reComputePapersScore());
     }
 
     /**
@@ -120,12 +120,12 @@ public class PaperManageController {
      * @param paperId 论文id
      * @return 论文评分
      */
-    @GetMapping("paperScore")
+    @GetMapping("paper/score")
     public Response findPaperStatistics(
             @RequestParam("paperId")
             @NotNull(message = PARAMETER_ERROR)
                     Integer paperId) {
-        return Response.buildSuccess(paperManageService.findPaperStatistics(paperId));
+        return Response.buildSuccess(manageService.findPaperStatistics(paperId));
     }
 
     /**
@@ -133,12 +133,12 @@ public class PaperManageController {
      *
      * @param id 论文id
      */
-    @PostMapping("paperScore")
+    @PostMapping("paper/score")
     public Response updatePaperScore(
             @NotNull(message = PARAMETER_ERROR)
             @RequestParam("paperId")
                     Integer id) {
-        return Response.buildSuccess(paperManageService.updatePaperScore(id));
+        return Response.buildSuccess(manageService.updatePaperScore(id));
     }
 
     /**
@@ -146,11 +146,22 @@ public class PaperManageController {
      *
      * @param ids 论文id集合
      */
-    @PostMapping("paperScoreBatch")
+    @PostMapping("paper/scoreBatch")
     public Response updatePaperScoreBatch(
             @RequestBody
             @NotNull(message = PARAMETER_ERROR)
                     Collection<Integer> ids) {
-        return Response.buildSuccess(paperManageService.updatePaperScoreBatch(ids));
+        return Response.buildSuccess(manageService.updatePaperScoreBatch(ids));
     }
+
+    /**
+     * 重新计算所有作者的统计信息
+     *
+     * @return 计算行数
+     */
+    @PostMapping("/author/statistics/reCompute")
+    public Response reComputeAuthorStatistics() {
+        return Response.buildSuccess(manageService.reComputeAuthorStatistics());
+    }
+
 }

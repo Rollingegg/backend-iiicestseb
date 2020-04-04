@@ -101,11 +101,5 @@ public interface AuthorService {
      */
     Collection<AuthorStatistics> getAuthorStatisticsByAuthorIdBatch(Collection<Integer> authorIds);
 
-    /**
-     * 重算所有作者的统计信息
-     *
-     * @return 更新行数
-     */
-    Integer reComputeAuthorStatistics();
 
 }
