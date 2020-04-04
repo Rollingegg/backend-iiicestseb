@@ -2,6 +2,7 @@ package group.iiicestseb.backend.controller;
 
 
 import group.iiicestseb.backend.entity.Term;
+import group.iiicestseb.backend.mapper.StatisticsMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.StatisticsService;
 import group.iiicestseb.backend.serviceImpl.AffiliationServiceImpl;
@@ -42,6 +43,9 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @Transactional
 public class StatisticsControllerTest {
+
+    @Resource
+    StatisticsMapper statisticsMapper;
 
     @Mock
     StatisticsService statisticsService;
@@ -262,7 +266,22 @@ public class StatisticsControllerTest {
 
         mvc.perform(MockMvcRequestBuilders.get("/statistics/affiliation/publish/count/per/year")
                 .param("id", Integer.toString(param))
-                .param("limit", Integer.toString(10))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].count").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].count").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2].count").doesNotExist())
+        ;
+    }
+
+    @Test
+    public void getTermCountPerYear() throws Exception{
+        int param =  statisticsMapper.findTermByName("Control1").getId();
+
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/term/count/per/year")
+                .param("id", Integer.toString(param))
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())

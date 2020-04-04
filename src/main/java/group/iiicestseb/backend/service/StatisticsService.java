@@ -6,7 +6,7 @@ import group.iiicestseb.backend.entity.Term;
 import group.iiicestseb.backend.vo.author.AuthorHotVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
-import group.iiicestseb.backend.vo.statistics.PaperCountPerYearVO;
+import group.iiicestseb.backend.vo.statistics.GeneralCountPerYearVO;
 import group.iiicestseb.backend.vo.term.TermWithCountVO;
 import group.iiicestseb.backend.vo.term.TermWithHotVO;
 
@@ -105,7 +105,7 @@ public interface StatisticsService {
      * @param id 机构id
      * @return 机构
      */
-    public Collection<PaperCountPerYearVO> getAffiliationPublishCountPerYear(int id);
+    public Collection<GeneralCountPerYearVO> getAffiliationPublishCountPerYear(int id);
 
 
     /**
@@ -113,5 +113,12 @@ public interface StatisticsService {
      * @param id 作者id
      * @return 作者每年发表数列表
      */
-    public Collection<PaperCountPerYearVO> getAuthorPublishCountPerYear(int id);
+    public Collection<GeneralCountPerYearVO> getAuthorPublishCountPerYear(int id);
+
+    /**
+     * 获取术语每年相关文章数
+     * @param id 术语id
+     * @return 术语每年发表数列表
+     */
+    public Collection<GeneralCountPerYearVO> getTermCountPerYear(int id);
 }

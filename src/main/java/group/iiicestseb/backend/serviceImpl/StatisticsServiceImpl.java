@@ -13,7 +13,7 @@ import group.iiicestseb.backend.service.StatisticsService;
 import group.iiicestseb.backend.vo.author.AuthorHotVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
-import group.iiicestseb.backend.vo.statistics.PaperCountPerYearVO;
+import group.iiicestseb.backend.vo.statistics.GeneralCountPerYearVO;
 import group.iiicestseb.backend.vo.term.TermWithCountVO;
 import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.springframework.stereotype.Service;
@@ -37,6 +37,9 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Resource
     StatisticsMapper statisticsMapper;
+
+
+
 
     @Override
     public List<TermWithHotVO> findHotTerms(Integer num) {
@@ -89,13 +92,17 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public Collection<PaperCountPerYearVO> getAffiliationPublishCountPerYear(int id) {
+    public Collection<GeneralCountPerYearVO> getAffiliationPublishCountPerYear(int id) {
         return statisticsMapper.getAffiliationPublishCountPerYear(id);
     }
 
     @Override
-    public Collection<PaperCountPerYearVO> getAuthorPublishCountPerYear(int id) {
+    public Collection<GeneralCountPerYearVO> getAuthorPublishCountPerYear(int id) {
         return statisticsMapper.getAuthorPublishCountPerYear(id);
     }
 
+    @Override
+    public Collection<GeneralCountPerYearVO> getTermCountPerYear(int id) {
+        return statisticsMapper.getTermCountPerYear(id);
+    }
 }

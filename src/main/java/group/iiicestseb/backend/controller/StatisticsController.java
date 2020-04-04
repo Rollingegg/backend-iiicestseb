@@ -189,4 +189,15 @@ public class StatisticsController {
     public Response getAffiliationPublishCountPerYear(@RequestParam("id") int id){
         return Response.buildSuccess(statisticsService.getAffiliationPublishCountPerYear(id));
     }
+
+
+    /**
+     * 获取术语每年相关文章数
+     * @param id 术语id
+     * @return 术语每年发表数列表
+     */
+    @GetMapping("/term/count/per/year")
+    public Response getTermCountPerYear(@RequestParam("id") int id){
+        return Response.buildSuccess(statisticsService.getTermCountPerYear(id));
+    }
 }

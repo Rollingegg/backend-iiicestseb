@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaperCountPerYearVO {
+public class GeneralCountPerYearVO {
 
     /**
      * 年份

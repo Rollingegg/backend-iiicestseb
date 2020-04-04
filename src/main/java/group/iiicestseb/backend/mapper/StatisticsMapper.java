@@ -1,8 +1,9 @@
 package group.iiicestseb.backend.mapper;
 
 
+import group.iiicestseb.backend.entity.Term;
 import group.iiicestseb.backend.vo.author.AuthorHotVO;
-import group.iiicestseb.backend.vo.statistics.PaperCountPerYearVO;
+import group.iiicestseb.backend.vo.statistics.GeneralCountPerYearVO;
 import group.iiicestseb.backend.vo.term.TermWithCountVO;
 import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.apache.ibatis.annotations.*;
@@ -19,6 +20,17 @@ import java.util.List;
  */
 @Mapper
 public interface StatisticsMapper {
+
+    /**
+     * 根据名称寻找术语
+     * @param name 术语名称
+     * @return 术语
+     */
+    @Select("select * " +
+            "from term t " +
+            "where t.name = #{name}")
+    @ResultType(Term.class)
+    public Term findTermByName(String name);
 
     /**
      * 计算并返回最热门的几个术语
@@ -187,8 +199,8 @@ public interface StatisticsMapper {
             "where p2.id = x.id " +
             "group by p2.chron_date " +
             "order by p2.chron_date ")
-    @ResultType(PaperCountPerYearVO.class)
-    public Collection<PaperCountPerYearVO> getAffiliationPublishCountPerYear(int id);
+    @ResultType(GeneralCountPerYearVO.class)
+    public Collection<GeneralCountPerYearVO> getAffiliationPublishCountPerYear(int id);
 
 
     /**
@@ -197,14 +209,20 @@ public interface StatisticsMapper {
      * @return 作者每年发表数
      */
     @Select("select p2.chron_date as year, count(*) as count " +
-            "from (select distinct pa.paper_id as id " +
+            "from (select pa.paper_id as id " +
             "from paper_authors pa " +
             "where #{id} = pa.author_id ) as x," +
             "paper p2 " +
             "where p2.id = x.id " +
             "group by p2.chron_date " +
             "order by p2.chron_date ")
-    @ResultType(PaperCountPerYearVO.class)
-    public Collection<PaperCountPerYearVO> getAuthorPublishCountPerYear(int id);
+    @ResultType(GeneralCountPerYearVO.class)
+    public Collection<GeneralCountPerYearVO> getAuthorPublishCountPerYear(int id);
 
+    @Select("select p.chron_date as year,count(*) as count " +
+            "from paper_term pt,paper p " +
+            "where pt.term_id = #{id} and pt.paper_id = p.id " +
+            "group by p.chron_date ")
+    @ResultType(GeneralCountPerYearVO.class)
+    public Collection<GeneralCountPerYearVO> getTermCountPerYear(int id);
 }
