@@ -154,9 +154,10 @@ public interface StatisticsMapper {
      */
     @Select("select t.id,t.name,count(*) as count " +
             "from paper_term pt,term t, " +
-            "(select distinct pa.paper_id as pid " +
-            "from paper_authors pa, paper_term pt,term t " +
-            "where pa.author_id = #{id} ) as x  " +
+            "(select pa.paper_id as pid " +
+            "from paper_authors pa " +
+            "where pa.author_id = #{id} " +
+            "group by pa.paper_id) as x  " +
             "where pid = pt.paper_id and t.id = pt.term_id " +
             "group by t.id " +
             "order by count desc " +
@@ -172,9 +173,11 @@ public interface StatisticsMapper {
      */
     @Select("select t.id,t.name,count(*) as count " +
             "from paper_term pt,term t, " +
-            "(select distinct pa.paper_id as pid " +
+            "(select pa.paper_id as pid " +
             "from affiliation aff ,author au,paper_authors pa  " +
-            "where aff.id = #{id} and aff.id = au.affiliation_id and au.id = pa.author_id ) as x " +
+            "where aff.id = #{id} and aff.id = au.affiliation_id and au.id = pa.author_id " +
+            "group by pid " +
+            ") as x " +
             "where pid = pt.paper_id and t.id = pt.term_id " +
             "group by t.id " +
             "order by count desc " +
@@ -192,9 +195,10 @@ public interface StatisticsMapper {
      * @return 机构每年发表数
      */
     @Select("select p2.chron_date as year, count(*) as count " +
-            "from (select distinct pa.paper_id as id " +
+            "from (select pa.paper_id as id " +
             "from affiliation aff,author au,paper_authors pa " +
-            "where aff.id = #{id} and aff.id = au.affiliation_id and au.id = pa.author_id ) as x," +
+            "where aff.id = #{id} and aff.id = au.affiliation_id and au.id = pa.author_id  " +
+            "group by pa.paper_id) as x," +
             "paper p2 " +
             "where p2.id = x.id " +
             "group by p2.chron_date " +
