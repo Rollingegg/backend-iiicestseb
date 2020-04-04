@@ -98,7 +98,7 @@ public class RegeditImpl implements Regedit {
     }
 
     @Override
-    public List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit) {
+    public Collection<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit) {
         return authorService.selectHotAuthorByAffiliationId(id,limit);
     }
 
@@ -125,6 +125,11 @@ public class RegeditImpl implements Regedit {
     @Override
     public AuthorStatistics getAuthorStatisticsByAuthorId(Integer authorId) {
         return authorService.getAuthorStatisticsByAuthorId(authorId);
+    }
+
+    @Override
+    public Collection<AuthorStatistics> getAuthorStatisticsByAuthorIdBatch(Collection<Integer> authorIds) {
+        return authorService.getAuthorStatisticsByAuthorIdBatch(authorIds);
     }
 
     @Override

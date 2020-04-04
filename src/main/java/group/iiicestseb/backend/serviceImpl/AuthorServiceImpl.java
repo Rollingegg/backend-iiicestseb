@@ -3,7 +3,6 @@ package group.iiicestseb.backend.serviceImpl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.entity.AuthorStatistics;
-import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.entity.PaperStatistics.AuthorPaperCites;
 import group.iiicestseb.backend.factory.AuthorFactory;
 import group.iiicestseb.backend.mapper.AuthorMapper;
@@ -16,7 +15,6 @@ import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
-import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,8 +62,20 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
     }
 
     @Override
-    public List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit) {
-        return authorMapper.selectHotAuthorByAffiliationId(id, limit);
+    public Collection<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit) {
+//        Author a1 = regedit.findAuthorByName("author1");
+//        Author a3 = regedit.findAuthorByName("author3");
+//        Collection<Integer> ids = new LinkedList<>() {{
+//            add(a1.getId());
+//            add(a3.getId());
+//        }};
+//        Collection<AuthorInfoVO> authors = regedit.findAuthorInfoByIdBatch(ids);
+//        Collection<AuthorStatistics> statistics = getAuthorStatisticsByAuthorIdBatch(ids);
+//        for (AuthorInfoVO a : authors) {
+//            statistics.isEmpty();
+//            System.out.println();
+//        }
+        return authorStatisticsMapper.selectHotAuthorByAffiliationId(id, limit);
     }
 
     @Override
@@ -91,6 +101,11 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
     @Override
     public AuthorStatistics getAuthorStatisticsByAuthorId(Integer authorId) {
         return authorStatisticsMapper.selectByAuthorId(authorId);
+    }
+
+    @Override
+    public Collection<AuthorStatistics> getAuthorStatisticsByAuthorIdBatch(Collection<Integer> authorIds) {
+        return authorStatisticsMapper.selectByAuthorIdBatch(authorIds);
     }
 
     @Override

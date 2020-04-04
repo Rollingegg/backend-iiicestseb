@@ -55,9 +55,8 @@ public interface AuthorService {
      * @param id    机构id
      * @param limit 搜索个数
      * @return 作者列表
-     * todo 更改了热度计算公式，等jh写完要重写
      */
-    List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit);
+    Collection<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit);
 
 
     /**
@@ -93,6 +92,14 @@ public interface AuthorService {
      * @return 作者统计信息
      */
     AuthorStatistics getAuthorStatisticsByAuthorId(Integer authorId);
+
+    /**
+     * 批量根据作者id查找作者统计信息
+     *
+     * @param authorIds 作者id集合
+     * @return 作者统计信息
+     */
+    Collection<AuthorStatistics> getAuthorStatisticsByAuthorIdBatch(Collection<Integer> authorIds);
 
     /**
      * 重算所有作者的统计信息

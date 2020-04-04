@@ -3,10 +3,12 @@ package group.iiicestseb.backend.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.AuthorStatistics;
 import group.iiicestseb.backend.entity.PaperStatistics.AuthorPaperCites;
+import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import org.apache.ibatis.annotations.*;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author jh
@@ -78,5 +80,35 @@ public interface AuthorStatisticsMapper extends BaseMapper<AuthorStatistics> {
     @Select("select * from author_statistics where author_id = #{authorId}")
     @ResultType(AuthorStatistics.class)
     AuthorStatistics selectByAuthorId(@Param("authorId") Integer authorId);
+
+    /**
+     * 批量根据作者id查找作者统计信息
+     *
+     * @param ids 作者id集合
+     * @return 作者统计信息
+     */
+    @Select("<script>" +
+            "select * from author_statistics where author_id in " +
+            "(<foreach collection='ids' item='i' separator=',' > " +
+            "#{i}" +
+            "</foreach>)" +
+            "</script>")
+    @ResultType(AuthorStatistics.class)
+    Collection<AuthorStatistics> selectByAuthorIdBatch(@Param("ids") Collection<Integer> ids);
+
+    /**
+     * 根据机构名搜索该机构的热门作者
+     *
+     * @param id    机构id
+     * @param limit 搜索限制数
+     * @return 作者列表
+     */
+    @Select("select au.id, au.name, aus.h_index, aus.g_index, aus.avg_cite, aus.paper_num " +
+            "from author au, affiliation aff, author_statistics aus " +
+            "where aff.id=#{id} and aff.id = au.affiliation_id and aus.author_id = au.id " +
+            "order by aus.h_index desc " +
+            "limit #{limit}")
+    @ResultType(AuthorHotInAffiliationVO.class)
+    List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit);
 
 }

@@ -42,7 +42,6 @@ public class AuthorControllerTest {
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
         session = new MockHttpSession();
         JSONUtil.loadTestData();
-        //JSONUtil.analyzeExistedJsonFile("icse15_19(50).json");
     }
 
 
@@ -60,23 +59,28 @@ public class AuthorControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").doesNotExist());
     }
 
-//    @Test
-//    public void getHotAuthorInAffiliation()throws Exception {
-//        //todo 热度测试
-//        Affiliation affiliation = affiliationService.findAffiliationByName("Beihang University, China; Beijing Advanced Innovation Center for Big Data and Brain Computing, China");
-//        mvc.perform(MockMvcRequestBuilders.get("/author/partner")
-//                .param("id", String.valueOf(affiliation.getId()))
-//                .accept(MediaType.APPLICATION_JSON)
-//                .session(session))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").exists())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1]").exists())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").exists())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.result[3]").exists())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.result[4]").exists());
-//
-//    }
+    @Test
+    public void getHotAuthorInAffiliation()throws Exception {
+        Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
+        mvc.perform(MockMvcRequestBuilders.get("/author/hotin/affiliation")
+                .param("id", String.valueOf(affiliation.getId()))
+                .param("limit", String.valueOf(1))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1]").doesNotExist());
+        mvc.perform(MockMvcRequestBuilders.get("/author/hotin/affiliation")
+                .param("id", String.valueOf(affiliation.getId()))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0]").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1]").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").doesNotExist());
+    }
 
     @Test
     public void getAuthorPartner() throws Exception{
