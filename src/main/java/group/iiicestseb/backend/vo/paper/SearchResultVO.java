@@ -57,4 +57,8 @@ public class SearchResultVO {
      */
     private List<Term> termsList;
 
+
+    public void setChronDate(String chronDate) {
+        this.chronDate = chronDate.substring(0,chronDate.indexOf("-"));
+    }
 }
