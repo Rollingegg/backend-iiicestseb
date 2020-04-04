@@ -153,7 +153,7 @@ public class StatisticsController {
      * @return 研究方向热度列表
      */
     @GetMapping("/author/hot/term")
-    public Response getAuthorHotTerm(@RequestParam("id") int id,@RequestParam("limit") int limit){
+    public Response getAuthorHotTerm(@RequestParam("id") int id,@RequestParam(name = "limit",defaultValue = "10") int limit){
         return Response.buildSuccess(statisticsService.getAuthorHotTerm(id,limit));
     }
 
@@ -164,7 +164,7 @@ public class StatisticsController {
      * @return 研究方向热度列表
      */
     @GetMapping("/affiliation/hot/term")
-    public Response getAffiliationHotTerm(@RequestParam("id") int id,@RequestParam("limit") int limit){
+    public Response getAffiliationHotTerm(@RequestParam("id") int id,@RequestParam(name = "limit",defaultValue = "10") int limit){
         return Response.buildSuccess(statisticsService.getAffiliationHotTerm(id,limit));
     }
 

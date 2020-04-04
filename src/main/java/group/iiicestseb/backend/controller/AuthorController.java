@@ -53,7 +53,7 @@ public class AuthorController {
      * @return 合作伙伴列表
      */
     @GetMapping("/partner")
-    public Response getAuthorPartner(@RequestParam("id") Integer id, @RequestParam("limit") Integer limit) {
+    public Response getAuthorPartner(@RequestParam("id") Integer id, @RequestParam(name = "limit",defaultValue = "10") Integer limit) {
         return Response.buildSuccess(authorService.getAuthorPartner(id, limit));
     }
 

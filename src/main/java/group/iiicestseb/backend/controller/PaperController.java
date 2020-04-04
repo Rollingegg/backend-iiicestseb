@@ -52,7 +52,7 @@ public class PaperController {
      */
     @GetMapping("/affiliation/recently/publish")
     public Response getAffiliationsRecentlyPublish(@RequestParam("id")@NotNull(message = PARAMETER_ERROR)Integer id,
-                                                   @RequestParam("limit")@Min(value = 1,message = PARAMETER_ERROR)Integer limit) {
+                                                   @RequestParam(name = "limit",defaultValue = "10")@Min(value = 1,message = PARAMETER_ERROR)Integer limit) {
         return Response.buildSuccess(paperService.getAffiliationRecentlyPublish(id,limit));
     }
 
@@ -75,7 +75,7 @@ public class PaperController {
      */
     @GetMapping("/author/recently/publish")
     public Response getAuthorRecentlyPublish(@RequestParam("id")@NotNull(message = PARAMETER_ERROR)Integer id,
-                                                   @RequestParam("limit")@Min(value = 1,message = PARAMETER_ERROR)Integer limit) {
+                                                   @RequestParam(name = "limit",defaultValue = "10")@Min(value = 1,message = PARAMETER_ERROR)Integer limit) {
         return Response.buildSuccess(paperService.getAuthorRecentPaper(id,limit));
     }
 
