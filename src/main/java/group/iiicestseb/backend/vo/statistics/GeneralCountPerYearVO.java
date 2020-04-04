@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 /**
  * 通用 年份-次数 统计vo
  */
@@ -18,10 +16,14 @@ public class GeneralCountPerYearVO {
     /**
      * 年份
      */
-    Date year;
+    String year;
 
     /**
      * 发表数量
      */
     Integer count;
+
+    public void setYear(String year) {
+        this.year = year.substring(0,year.indexOf("-"));
+    }
 }
