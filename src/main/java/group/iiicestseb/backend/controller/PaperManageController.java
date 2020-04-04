@@ -109,7 +109,7 @@ public class PaperManageController {
      *
      * @return 计算的行数
      */
-    @PostMapping("computeNewPaperScore")
+    @PostMapping("/statistics/reCompute")
     public Response reComputePapersScore() {
         return Response.buildSuccess(paperManageService.reComputePapersScore());
     }

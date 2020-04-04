@@ -63,18 +63,6 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
 
     @Override
     public Collection<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit) {
-//        Author a1 = regedit.findAuthorByName("author1");
-//        Author a3 = regedit.findAuthorByName("author3");
-//        Collection<Integer> ids = new LinkedList<>() {{
-//            add(a1.getId());
-//            add(a3.getId());
-//        }};
-//        Collection<AuthorInfoVO> authors = regedit.findAuthorInfoByIdBatch(ids);
-//        Collection<AuthorStatistics> statistics = getAuthorStatisticsByAuthorIdBatch(ids);
-//        for (AuthorInfoVO a : authors) {
-//            statistics.isEmpty();
-//            System.out.println();
-//        }
         return authorStatisticsMapper.selectHotAuthorByAffiliationId(id, limit);
     }
 

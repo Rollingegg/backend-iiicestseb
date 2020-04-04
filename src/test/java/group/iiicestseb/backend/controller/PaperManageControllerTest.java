@@ -184,7 +184,7 @@ public class PaperManageControllerTest {
 
     @Test
     public void reComputeScoreSuccess() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/computeNewPaperScore")
+        mvc.perform(MockMvcRequestBuilders.post("/admin/paper/statistics/reCompute")
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"));

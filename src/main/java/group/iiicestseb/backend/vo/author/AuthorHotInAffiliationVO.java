@@ -26,11 +26,6 @@ public class AuthorHotInAffiliationVO {
     private String name;
 
     /**
-     * 发表文献数量
-     */
-    private Integer publishNum;
-
-    /**
      * h指数
      */
     private Integer hIndex;
