@@ -1,6 +1,7 @@
 package group.iiicestseb.backend.vo.author;
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,25 @@ public class AuthorHotInAffiliationVO {
      */
     private String name;
 
+    /**
+     * h指数
+     */
+    private Integer hIndex;
 
     /**
-     * 发表文献数量
+     * g指数
      */
-    private Integer publishNum;
+    private Integer gIndex;
+
+    /**
+     * 篇均被引
+     */
+    private Double avgCite;
+
+    /**
+     * 总论文数
+     */
+    private Integer paperNum;
+
+
 }

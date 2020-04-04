@@ -39,25 +39,8 @@ public interface AuthorMapper extends BaseMapper<Author> {
 
 
     /**
-     * 根据机构名搜索该机构的热门作者
-     * @param id 机构id
-     * @param limit 搜索限制数
-     * @return 作者列表
-     */
-    @Select("select id,name,publishNum  from" +
-            "(select au.id,au.name,au.first_name,au.last_name,count(*) as publishNum " +
-            "from author au, affiliation aff,paper_authors pa " +
-            "where aff.id=#{id} and aff.id = au.affiliation_id and pa.author_id = au.id " +
-            "group by au.id) as x " +
-            "order by publishNum desc " +
-            "limit #{limit}" +
-            "")
-    @ResultType(AuthorHotInAffiliationVO.class)
-    List<AuthorHotInAffiliationVO> selectHotAuthorByAffiliationId(Integer id, Integer limit);
-
-
-    /**
      * 根据机构名搜索该机构所有作者
+     *
      * @param id 机构id
      * @return 作者列表
      */
@@ -66,7 +49,6 @@ public interface AuthorMapper extends BaseMapper<Author> {
             "where aff.id=#{id} and aff.id = au.affiliation_id")
     @ResultType(Author.class)
     List<Author> selectAllAuthorByAffiliationId(Integer id);
-
 
 
     /**
@@ -80,6 +62,7 @@ public interface AuthorMapper extends BaseMapper<Author> {
 
     /**
      * 根据id查找批量作者
+     *
      * @param ids id集合
      * @return 作者集合
      */
@@ -95,7 +78,6 @@ public interface AuthorMapper extends BaseMapper<Author> {
     Collection<AuthorInfoVO> selectAuthorInfoByIdBatch(Collection<Integer> ids);
 
 
-
     @Select("select au.id,au.name, aff.id as affiliationId,aff.name as affiliationName, " +
             "count(*) as paperCount, sum(p.citation_count_paper) as citationCount  " +
             "from author au, paper_authors pa, paper p,affiliation aff " +
@@ -107,7 +89,8 @@ public interface AuthorMapper extends BaseMapper<Author> {
 
     /**
      * 获取作者合作伙伴
-     * @param id 作者id
+     *
+     * @param id    作者id
      * @param limit 搜索数
      * @return 合作伙伴列表
      */
@@ -123,6 +106,6 @@ public interface AuthorMapper extends BaseMapper<Author> {
             "limit #{limit}" +
             "")
     @ResultType(AuthorInfoVO.class)
-    Collection<AuthorInfoVO> selectPartnerById(int id,int limit);
+    Collection<AuthorInfoVO> selectPartnerById(int id, int limit);
 
 }

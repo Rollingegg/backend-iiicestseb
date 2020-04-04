@@ -47,6 +47,8 @@ public class JSONUtil {
     @Resource(name = "Regedit")
     private PaperManageService paperManageService;
     @Resource(name = "Regedit")
+    private PaperService paperService;
+    @Resource(name = "Regedit")
     private AuthorService authorService;
     @Resource(name = "Regedit")
     private AffiliationService affiliationService;
@@ -233,6 +235,7 @@ public class JSONUtil {
     public static void loadTestData() {
         analyzeExistedJsonFile(STANDARD_JSON_FILE);
         Instance.paperManageService.reComputePapersScore();
+        Instance.authorService.reComputeAuthorStatistics();
     }
 
     /**

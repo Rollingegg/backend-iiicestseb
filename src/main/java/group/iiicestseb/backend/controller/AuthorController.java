@@ -39,9 +39,8 @@ public class AuthorController {
      * @param id 机构id
      * @return 作者列表
      */
-    @GetMapping("/hotin/affilation")
-    public Response getHotAuthorInAffiliation(@RequestParam("id") Integer id, @RequestParam("limit") Integer limit) {
-        //todo 评分
+    @GetMapping("/hotin/affiliation")
+    public Response getHotAuthorInAffiliation(@RequestParam("id") Integer id, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
         return Response.buildSuccess(authorService.selectHotAuthorByAffiliationId(id, limit));
     }
 
