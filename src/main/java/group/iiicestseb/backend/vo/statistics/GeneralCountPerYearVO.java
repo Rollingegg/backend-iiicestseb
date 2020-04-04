@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * 通用 年份-次数 统计vo
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
