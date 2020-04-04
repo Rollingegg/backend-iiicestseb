@@ -3,7 +3,6 @@ package group.iiicestseb.backend.controller;
 import com.alibaba.fastjson.JSON;
 import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.service.PaperManageService;
-import group.iiicestseb.backend.service.PaperService;
 import group.iiicestseb.backend.utils.JSONUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -238,6 +237,8 @@ public class PaperManageControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].paperId").value(p2.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].score").value(0.009166667));
     }
+
+
 
 
 }

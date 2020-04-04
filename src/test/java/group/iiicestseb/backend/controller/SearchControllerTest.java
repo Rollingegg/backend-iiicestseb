@@ -7,6 +7,7 @@ import group.iiicestseb.backend.exception.paper.PaperTypeException;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.service.SearchService;
 import group.iiicestseb.backend.vo.paper.SearchResultVO;
+import group.iiicestseb.backend.vo.paper.SearchVO;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -85,7 +86,10 @@ public class SearchControllerTest {
         advancedSearchForm.setLimit(10);
         advancedSearchForm.setPage(0);
         String param = JSON.toJSONString(advancedSearchForm);
-        Mockito.when(searchServiceStub.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
+        SearchVO searchVO = new SearchVO();
+        searchVO.setSearchResultVOCollection(searchResultVOList);
+
+        Mockito.when(searchServiceStub.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchVO);
         mvcStandalone.perform(MockMvcRequestBuilders.post("/search/advanced")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(param)
@@ -93,7 +97,7 @@ public class SearchControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].id").value(1));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.searchResultVOCollection[0].id").value(1));
         Mockito.verify(searchServiceStub).advancedSearchPaper(advancedSearchForm);
     }
 

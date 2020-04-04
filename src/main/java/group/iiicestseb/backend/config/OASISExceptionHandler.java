@@ -6,7 +6,6 @@ import group.iiicestseb.backend.exception.paper.PaperFormException;
 import group.iiicestseb.backend.exception.paper.PaperTypeException;
 import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
 import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
-import group.iiicestseb.backend.utils.CSVUtil;
 import group.iiicestseb.backend.vo.Response;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;

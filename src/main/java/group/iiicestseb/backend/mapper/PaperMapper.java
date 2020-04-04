@@ -32,13 +32,13 @@ public interface PaperMapper extends BaseMapper<Paper> {
     Paper selectByArticleId(@Param("articleId") Integer articleId);
 
     /**
-     * 多字段高级检索
+     * 根据搜索表单搜索符合条件的论文id
      *
-     * @param advancedSearchForm 高级检索表单
-     * @return 论文列表
+     * @param advancedSearchForm 搜索表单
+     * @return 论文id列表
      */
     @Select("<script>" +
-            "select p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id  " +
+            "select p.id  " +
             "from paper p " +
             //高级搜索
             "<if test='type==\"advanced\"'> " +
@@ -67,10 +67,10 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "from paper_term pt, term t " +
             "where t.id = pt.term_id " +
             "and (LOCATE(#{allKeyword}, t.name)>0))) as x " +
-            "where p.id = x.key_id  " +
+            "where (p.id = x.key_id  " +
             "or (LOCATE(#{allKeyword}, p.title)>0)" +
             "or (LOCATE(#{allKeyword}, p.paper_abstract)>0)" +
-            "or (LOCATE(#{allKeyword}, p.doi)>0)" +
+            "or (LOCATE(#{allKeyword}, p.doi)>0))" +
             "</if>" +
             //简单搜索术语， 连接文献表
             "<if test='type==\"term\"'> " +
@@ -104,9 +104,29 @@ public interface PaperMapper extends BaseMapper<Paper> {
             "</if>" +
             "</if> " +
             //年份
-            " <![CDATA[ and p.chron_date >= str_to_date(#{chronDateMinKeyword},'%Y-%m-%d') and p.chron_date <= str_to_date(#{chronDateMaxKeyword},'%Y-%m-%d') ]]>  " +
+            " and (p.chron_date between #{chronDateMinKeyword} and #{chronDateMaxKeyword})  " +
             "group by p.id " +
-            "order by p.citation_count_paper desc " +
+            "order by p.citation_count_paper desc "+
+            "</script>")
+    @ResultType(Integer.class)
+    Collection<Integer> advancedSearch(AdvancedSearchForm advancedSearchForm);
+
+
+    /**
+     * 根据论文id 生成搜搜结果
+     *
+     * @param idList 论文id列表
+     * @param page   页数
+     * @param limit  每页搜索数
+     * @return 搜索结果
+     */
+    @Select("<script>" +
+            "select p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id " +
+            "from paper p " +
+            "where p.id in " +
+            "(<foreach collection='idList' item='i' separator=','> " +
+            "#{i}" +
+            "</foreach>)" +
             "limit #{page},#{limit}" +
             "</script>")
     @Results(id = "SearchResultVOResultMap", value = {
@@ -119,8 +139,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
             @Result(column = "id", property = "authorList", many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId", fetchType = FetchType.EAGER)),
             @Result(column = "id", property = "termsList", many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId", fetchType = FetchType.EAGER))}
     )
-    List<SearchResultVO> advancedSearch(AdvancedSearchForm advancedSearchForm);
-
+    Collection<SearchResultVO> getSearchResult(@Param("idList") Collection<Integer> idList, int page, int limit);
 
     /**
      * 查找机构最近文章
@@ -129,7 +148,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
      * @param limit 搜索数
      * @return 机构最近文章列表
      */
-    @Select("select p.* " +
+    @Select("select distinct p.* " +
             "from paper p,author au, affiliation aff,paper_authors pa " +
             "where aff.id=#{id} and aff.id = au.affiliation_id and au.id = pa.author_id and p.id = pa.paper_id " +
             "order by chron_date desc " +
@@ -144,7 +163,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
      * @param id 机构id
      * @return 机构文章列表
      */
-    @Select("select p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id  " +
+    @Select("select distinct p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id  " +
             "from paper p, paper_authors pa, author au, affiliation aff " +
             "where aff.id = #{id} and pa.paper_id = p.id and pa.author_id = au.id and aff.id = au.affiliation_id " +
             "order by p.citation_count_paper desc")

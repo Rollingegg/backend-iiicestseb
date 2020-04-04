@@ -1,10 +1,9 @@
 package group.iiicestseb.backend.mapper;
 
 
-import group.iiicestseb.backend.entity.Affiliation;
-import group.iiicestseb.backend.entity.Author;
-import group.iiicestseb.backend.entity.PaperStatistics;
 import group.iiicestseb.backend.vo.author.AuthorHotVO;
+import group.iiicestseb.backend.vo.statistics.PaperCountPerYearVO;
+import group.iiicestseb.backend.vo.term.TermWithCountVO;
 import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
@@ -133,4 +132,79 @@ public interface StatisticsMapper {
             "group by pt2.term_id order by count(*) desc " +
             "limit #{max}")
     Collection<Integer> selectRelativeTermsOfTerm(@Param("termId") Integer termId, @Param("max") Integer max);
+
+
+    /**
+     * 获取作者的热度研究方向、词云
+     * @param id 作者id
+     * @param limit 搜索数
+     * @return 研究方向热度列表
+     */
+    @Select("select t.id,t.name,count(*) as count " +
+            "from paper_term pt,term t, " +
+            "(select distinct pa.paper_id as pid " +
+            "from paper_authors pa, paper_term pt,term t " +
+            "where pa.author_id = #{id} ) as x  " +
+            "where pid = pt.paper_id and t.id = pt.term_id " +
+            "group by t.id " +
+            "order by count desc " +
+            "limit #{limit}")
+    @ResultType(TermWithHotVO.class)
+    Collection<TermWithCountVO> getAuthorHotTerm(int id, int limit);
+
+    /**
+     * 获取机构的热度研究方向、词云
+     * @param id 机构id
+     * @param limit 搜索数
+     * @return 研究方向热度列表
+     */
+    @Select("select t.id,t.name,count(*) as count " +
+            "from paper_term pt,term t, " +
+            "(select distinct pa.paper_id as pid " +
+            "from affiliation aff ,author au,paper_authors pa  " +
+            "where aff.id = #{id} and aff.id = au.affiliation_id and au.id = pa.author_id ) as x " +
+            "where pid = pt.paper_id and t.id = pt.term_id " +
+            "group by t.id " +
+            "order by count desc " +
+            "limit #{limit}")
+    @ResultType(TermWithHotVO.class)
+    Collection<TermWithCountVO> getAffiliationHotTerm(int id, int limit);
+
+
+
+
+
+    /**
+     * 获取机构每年发表数
+     * @param id 机构id
+     * @return 机构每年发表数
+     */
+    @Select("select p2.chron_date as year, count(*) as count " +
+            "from (select distinct pa.paper_id as id " +
+            "from affiliation aff,author au,paper_authors pa " +
+            "where aff.id = #{id} and aff.id = au.affiliation_id and au.id = pa.author_id ) as x," +
+            "paper p2 " +
+            "where p2.id = x.id " +
+            "group by p2.chron_date " +
+            "order by p2.chron_date ")
+    @ResultType(PaperCountPerYearVO.class)
+    public Collection<PaperCountPerYearVO> getAffiliationPublishCountPerYear(int id);
+
+
+    /**
+     * 获取作者每年发表数
+     * @param id 作者id
+     * @return 作者每年发表数
+     */
+    @Select("select p2.chron_date as year, count(*) as count " +
+            "from (select distinct pa.paper_id as id " +
+            "from paper_authors pa " +
+            "where #{id} = pa.author_id ) as x," +
+            "paper p2 " +
+            "where p2.id = x.id " +
+            "group by p2.chron_date " +
+            "order by p2.chron_date ")
+    @ResultType(PaperCountPerYearVO.class)
+    public Collection<PaperCountPerYearVO> getAuthorPublishCountPerYear(int id);
+
 }

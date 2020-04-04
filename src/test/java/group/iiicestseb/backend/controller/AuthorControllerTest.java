@@ -61,9 +61,9 @@ public class AuthorControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[4]").exists());
     }
 
-    @Test
-    public void getHotAuthorInAffiliation()throws Exception {
-        //todo 热度测试
+//    @Test
+//    public void getHotAuthorInAffiliation()throws Exception {
+//        //todo 热度测试
 //        Affiliation affiliation = affiliationService.findAffiliationByName("Beihang University, China; Beijing Advanced Innovation Center for Big Data and Brain Computing, China");
 //        mvc.perform(MockMvcRequestBuilders.get("/author/partner")
 //                .param("id", String.valueOf(affiliation.getId()))
@@ -76,8 +76,8 @@ public class AuthorControllerTest {
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").exists())
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.result[3]").exists())
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.result[4]").exists());
-
-    }
+//
+//    }
 
     @Test
     public void getAuthorPartner() throws Exception{

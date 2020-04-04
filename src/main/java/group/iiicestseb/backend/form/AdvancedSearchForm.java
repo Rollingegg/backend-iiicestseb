@@ -80,7 +80,7 @@ public class AdvancedSearchForm {
      */
     @Min(value = 1,message = LIMIT_ERROR)
     @Max(value = 200,message = LIMIT_ERROR)
-    private Integer limit = 50;
+    private Integer limit = 20;
 
     /**
      * 出版年份最小值

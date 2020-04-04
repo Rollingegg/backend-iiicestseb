@@ -2,7 +2,6 @@ package group.iiicestseb.backend.mapper;
 
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.utils.JSONUtil;
-import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author jh
@@ -47,9 +45,9 @@ public class PaperMapperTest {
         advancedSearchForm.setPaperAbstractKeyword(null);
         advancedSearchForm.setAuthorKeyword(null);
         advancedSearchForm.setLimit(10);
-        List<SearchResultVO> re = paperMapper.advancedSearch(advancedSearchForm);
-        System.out.println("result_num"+re.size());
-        System.out.println(re);
+//        SearchVO re = paperMapper.advancedSearch(advancedSearchForm);
+//        System.out.println("result_num"+re.size());
+//        System.out.println(re);
     }
 
 }

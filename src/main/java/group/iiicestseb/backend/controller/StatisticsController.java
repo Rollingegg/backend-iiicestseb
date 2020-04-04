@@ -1,14 +1,10 @@
 package group.iiicestseb.backend.controller;
 
 
-import group.iiicestseb.backend.entity.Affiliation;
-import group.iiicestseb.backend.entity.PaperStatistics;
 import group.iiicestseb.backend.entity.Term;
 import group.iiicestseb.backend.service.StatisticsService;
-import group.iiicestseb.backend.vo.author.AuthorHotVO;
 import group.iiicestseb.backend.vo.Response;
-import group.iiicestseb.backend.vo.author.AuthorInfoVO;
-import group.iiicestseb.backend.vo.paper.PaperOverview;
+import group.iiicestseb.backend.vo.author.AuthorHotVO;
 import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -150,40 +146,47 @@ public class StatisticsController {
         return Response.buildSuccess(authorHotVOList);
     }
 
+    /**
+     * 获取作者的热度研究方向、词云
+     * @param id 作者id
+     * @param limit 搜索数
+     * @return 研究方向热度列表
+     */
+    @GetMapping("/author/hot/term")
+    public Response getAuthorHotTerm(@RequestParam("id") int id,@RequestParam("limit") int limit){
+        return Response.buildSuccess(statisticsService.getAuthorHotTerm(id,limit));
+    }
 
-//
-//    @PostMapping("/analyzeCSV")
-//    public Response analyzeCSV(@RequestParam("filename") String filename) {
-//        Assert.notNull(filename, PARAMETER_ERROR);
-//        statisticsService.loadExistedCSV(filename);
-//        return Response.buildSuccess();
-//    }
-//
-//    @PostMapping("/uploadCSV")
-//    public Response uploadCSV(@RequestParam("file") MultipartFile file) {
-//        Assert.notNull(file, PARAMETER_ERROR);
-//        return Response.buildSuccess(statisticsService.analyzeUploadedCSV(file));
-//    }
-//
+    /**
+     * 获取机构的热度研究方向、词云
+     * @param id 机构id
+     * @param limit 搜索数
+     * @return 研究方向热度列表
+     */
+    @GetMapping("/affiliation/hot/term")
+    public Response getAffiliationHotTerm(@RequestParam("id") int id,@RequestParam("limit") int limit){
+        return Response.buildSuccess(statisticsService.getAffiliationHotTerm(id,limit));
+    }
 
-//
-//    @GetMapping("/StandardCSV")
-//    public Response getStandardCSV(HttpServletResponse response){
-//        response.setHeader("content-type", "application/octet-stream; charset=utf-8");
-//        String headerKey = "Content-Disposition";
-//        String headerValue = "attachment; filename=Standard.csv";
-//        response.setHeader(headerKey, headerValue);
-//        response.setContentType("application/octet-stream");
-//        ClassPathResource file = new ClassPathResource("csv/Standard.csv");
-//        try {
-//            response.getOutputStream().write(file.getInputStream().readAllBytes());
-//            response.setContentLength(Math.toIntExact(file.contentLength()));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Response.buildFailure("未知错误，可能是文件不存在或文件过大");
-//        }
-//        return Response.buildSuccess();
-//    }
+    /**
+     * 获取作者每年发表数
+     * @param id 作者id
+     * @return 作者每年发表数列表
+     */
+    @GetMapping("/author/publish/count/per/year")
+    public Response getAuthorPublishCountPerYear(@RequestParam("id") int id){
+        return Response.buildSuccess(statisticsService.getAuthorPublishCountPerYear(id));
+    }
 
 
+
+    /**
+     * 获取机构每年发表数
+     * @param id 机构id
+     * @return 机构每年发表数列表
+     */
+    @GetMapping("/affiliation/publish/count/per/year")
+    public Response getAffiliationPublishCountPerYear(@RequestParam("id") int id){
+        return Response.buildSuccess(statisticsService.getAffiliationPublishCountPerYear(id));
+    }
 }
