@@ -86,7 +86,7 @@ public class StatisticsController {
      * @return 相关论文集合
      */
     @GetMapping("relativePapersOfTerm")
-    Response getPapersByTermIdInScoreOrder(@RequestParam("termId")
+    public Response getPapersByTermIdInScoreOrder(@RequestParam("termId")
                                            @NotNull(message = PARAMETER_ERROR)
                                                    Integer termId,
                                            @RequestParam(value = "max", defaultValue = "10")
@@ -104,7 +104,7 @@ public class StatisticsController {
      * @return 相关作者集合
      */
     @GetMapping("activeAuthorsOfTerm")
-    Response getActiveAuthorsOfTerm(@RequestParam("termId")
+    public Response getActiveAuthorsOfTerm(@RequestParam("termId")
                                     @NotNull(message = PARAMETER_ERROR)
                                             Integer termId,
                                     @RequestParam(value = "max", defaultValue = "10")
@@ -122,7 +122,7 @@ public class StatisticsController {
      * @return 相关机构集合
      */
     @GetMapping("activeAffiliationOfTerm")
-    Response getActiveAffiliationOfTerm(@RequestParam("termId")
+    public Response getActiveAffiliationOfTerm(@RequestParam("termId")
                                         @NotNull(message = PARAMETER_ERROR)
                                                 Integer termId,
                                         @RequestParam(value = "max", defaultValue = "10")

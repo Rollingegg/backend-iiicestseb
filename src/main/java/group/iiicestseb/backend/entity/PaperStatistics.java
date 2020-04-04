@@ -44,6 +44,7 @@ public class PaperStatistics {
     public static class AuthorPaperCites {
         Integer authorId;
         Integer cite;
+        String conference;
     }
 
 }

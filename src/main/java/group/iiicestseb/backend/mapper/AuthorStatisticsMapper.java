@@ -20,11 +20,13 @@ public interface AuthorStatisticsMapper extends BaseMapper<AuthorStatistics> {
      *
      * @return 引用数集合
      */
-    @Select("select pa.author_id, p.citation_count_paper as cite " +
+    @Select("select pa.author_id, p.citation_count_paper as cite, c.name as conference " +
             "from paper p, " +
-            "     paper_authors pa " +
+            "     paper_authors pa, " +
+            "     conference c " +
             "where p.id = pa.paper_id " +
             "  and pa.author_id in (select a.id from author a) " +
+            "  and c.id = p.conference_id " +
             "order by cite desc ")
     @ResultType(AuthorPaperCites.class)
     Collection<AuthorPaperCites> selectAllAuthorPaperCites();
@@ -56,10 +58,10 @@ public interface AuthorStatisticsMapper extends BaseMapper<AuthorStatistics> {
      * @return 行数
      */
     @Update("<script>" +
-            "insert into author_statistics(author_id, h_index, g_index, avg_cite, paper_num)  " +
+            "insert into author_statistics(author_id, h_index, g_index, avg_cite, paper_num, ase_paper_num, icse_paper_num)  " +
             "   values (" +
             "   <foreach collection='asClc' item='i' separator='), (' >" +
-            "   #{i.authorId}, #{i.hIndex}, #{i.gIndex}, #{i.avgCite}, #{i.paperNum} " +
+            "   #{i.authorId}, #{i.hIndex}, #{i.gIndex}, #{i.avgCite}, #{i.paperNum}, #{i.asePaperNum}, #{i.icsePaperNum} " +
             "   </foreach>) " +
             "   on duplicate key update " +
             "   h_index=values(h_index), g_index=values(g_index), " +
