@@ -85,12 +85,12 @@ public class AdvancedSearchForm {
     /**
      * 出版年份最小值
      */
-    private String chronDateMinKeyword = "1900-01-01";
+    private String chronDateMinKeyword = "1900";
 
     /**
      * 出版年份最大值
      */
-    private String chronDateMaxKeyword = "2100-12-31";
+    private String chronDateMaxKeyword = "2100";
 
 
     public void setChronDateMinKeyword(String chronDateMinKeyword) {
