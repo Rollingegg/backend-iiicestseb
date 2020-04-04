@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.Resource;
@@ -35,7 +34,7 @@ import javax.annotation.Resource;
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@Transactional
+//@Transactional
 public class PaperControllerTest {
 
     @Autowired
@@ -142,8 +141,8 @@ public class PaperControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].title").value("Standard1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].title").value("Standard3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].title").value("Standard3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].title").value("Standard1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").doesNotExist());
     }
 
@@ -171,8 +170,8 @@ public class PaperControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].title").value("Standard1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].title").value("Standard3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[0].title").value("Standard3"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].title").value("Standard1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").doesNotExist());
     }
 }
