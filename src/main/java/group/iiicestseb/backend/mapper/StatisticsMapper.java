@@ -128,7 +128,7 @@ public interface StatisticsMapper {
             "   group by pa.author_id " +
             "   ) x " +
             "where aut.affiliation_id = aff.id and aut.id = x.author_id " +
-            "group by aff.id order by paperNum " +
+            "group by aff.id order by score " +
             "limit #{max}")
     @ResultType(AffWithScore.class)
     Collection<AffWithScore> selectAffiliationsOfTermForActive(@Param("termId") Integer termId, @Param("max") Integer max);

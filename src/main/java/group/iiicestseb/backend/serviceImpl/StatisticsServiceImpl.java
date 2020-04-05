@@ -84,7 +84,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         Collection<AffiliationActiveInTerm> activeInTerms = AffiliationFactory.packageAffiliationActiveInTerm(id_AffScores, affiliations);
         List<AffiliationActiveInTerm> results = CollectionHelper.newArrayList(activeInTerms);
         results.sort((o1, o2) ->
-                o1.getScore() > o2.getScore() ? 1 : o1.getScore().equals(o2.getScore()) ? 0 : -1);
+                o1.getPaperNum() > o2.getPaperNum() ? 1 : o1.getPaperNum().equals(o2.getPaperNum()) ? 0 : -1);
         return results;
     }
 
