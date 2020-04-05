@@ -39,14 +39,12 @@ public class UserControllerTest{
     private MockMvc mvcStandalone;
     private MockHttpSession session;
 
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
     @Mock
     private UserService userServiceStub;
     @InjectMocks
     private UserController userControllerUnit = new UserController();
-
 
     private UserVO userVO = new UserVO();
 
@@ -102,7 +100,6 @@ public class UserControllerTest{
         Mockito.verify(userServiceStub).signIn(userForm);
     }
 
-
     /**
      * 注册成功
      * @throws Exception 无
@@ -122,7 +119,7 @@ public class UserControllerTest{
     }
 
     /**
-     * 注册成功
+     * 注册失败
      * @throws Exception 无
      */
     @Test
@@ -154,8 +151,6 @@ public class UserControllerTest{
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"));
         Mockito.verify(userServiceStub).isExist("testset1");
     }
-
-
 
     /**
      * isExist发现输入的用户名已注册

@@ -44,9 +44,8 @@ public class AuthorControllerTest {
         JSONUtil.loadTestData();
     }
 
-
     @Test
-    public void getAllAuthorInAffiliation() throws Exception{
+    public void getAllAuthorInAffiliation() throws Exception {
         Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
         mvc.perform(MockMvcRequestBuilders.get("/author/allin/affiliation")
                 .param("id", String.valueOf(affiliation.getId()))
@@ -60,7 +59,7 @@ public class AuthorControllerTest {
     }
 
     @Test
-    public void getHotAuthorInAffiliation()throws Exception {
+    public void getHotAuthorInAffiliation() throws Exception {
         Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
         mvc.perform(MockMvcRequestBuilders.get("/author/hotin/affiliation")
                 .param("id", String.valueOf(affiliation.getId()))
@@ -83,7 +82,7 @@ public class AuthorControllerTest {
     }
 
     @Test
-    public void getAuthorPartner() throws Exception{
+    public void getAuthorPartner() throws Exception {
         Author author = authorService.findAuthorByName("author1");
         mvc.perform(MockMvcRequestBuilders.get("/author/partner")
                 .param("id", String.valueOf(author.getId()))
@@ -99,7 +98,7 @@ public class AuthorControllerTest {
     }
 
     @Test
-    public void getAuthorBasicInfo() throws Exception{
+    public void getAuthorBasicInfo() throws Exception {
         Author author = authorService.findAuthorByName("author1");
         mvc.perform(MockMvcRequestBuilders.get("/author/info")
                 .param("id", String.valueOf(author.getId()))

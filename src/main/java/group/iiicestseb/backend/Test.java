@@ -4,6 +4,7 @@ package group.iiicestseb.backend;
 import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.utils.DateUtil;
 import group.iiicestseb.backend.utils.NumberUtil;
+import group.iiicestseb.backend.vo.affiliation.AffiliationActiveInTerm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,9 +25,11 @@ public class Test {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface A {
     }
+
     @Retention(RetentionPolicy.RUNTIME)
     public @interface B {
     }
+
     @A
     @B
     public static class Super {
@@ -34,9 +37,11 @@ public class Test {
         public int a;
         @B
         public int b;
+
         @A
         @B
-        public void func(){}
+        public void func() {
+        }
     }
 
     public static class Son extends Super {
@@ -44,15 +49,24 @@ public class Test {
 
 
     public static void main(String[] args) throws Exception {
-        String s1 = "16-24 May 2015";
-        System.out.println(DateUtil.parseChron(s1));
-        String s2 = "25-31 May 2019";
-        System.out.println(DateUtil.parseChron(s2));
-        String s3 = "20-28 May 2017";
-        System.out.println(DateUtil.parseChron(s3));
-        String s4 = "May 27 2018-June 3 2018";
-        System.out.println(DateUtil.parseChron(s4));
-        System.out.println();
+        Collection<Affiliation> affiliations = new LinkedList<>();
+        affiliations.add(new Affiliation(1, "1"));
+        affiliations.add(new Affiliation(2, "2"));
+        affiliations.add(new Affiliation(3, "3"));
+        Map<Integer, Double> id_scores = new HashMap<>() {
+            {
+                put(1, 0.5);
+                put(2, 3.0);
+                put(3, 2.0);
+            }
+        };
+        ArrayList<AffiliationActiveInTerm> results = new ArrayList<>(3);
+//        for (Affiliation a : affiliations) {
+//            results.add(new AffiliationActiveInTerm(a.getId(), a.getName(), id_scores.get(a.getId())));
+//        }
+//        results.sort((o1, o2) ->
+//                o1.getScore() < o2.getScore() ? 1 : o1.getScore().equals(o2.getScore()) ? 0 : -1);
+//        System.out.println(results);
     }
 
 }

@@ -42,42 +42,11 @@ public class AuthorServiceTest extends EasyMockSupport {
     }
 
     @Test
-    public void temp() {
+    public void findAuthorByNameSuccess() {
         Author a = authorService.findAuthorByName("author1");
         Assert.assertNotEquals(0, a.getId());
         Assert.assertNotNull(a.getAffiliationId());
         Assert.assertEquals("author1", a.getName());
     }
-
-//    @Test
-//    public void getAuthorInfo() {
-//
-//        Author author = new Author();
-//        author.setName("hxd");
-//        author.setAffiliationId(1);
-//        author.setId(0);
-//        EasyMock.expect(authorMapperMock.selectByName("hxd")).andReturn(author);
-//        replayAll();
-//        AuthorInfoVO result = authorServiceStandalone.getAuthorInfo("hxd");
-//        assertEquals(result.getId(),(Integer) 0);
-//        assertEquals(result.getAffiliationId(),(Integer) 1);
-//        assertEquals(result.getName(),"hxd");
-//        verifyAll();
-//    }
-//
-//    @Test
-//    public void getAuthorByPaperId() {
-//        CopyOnWriteArrayList<String> authorList = new CopyOnWriteArrayList<>();
-//        authorList.add("hxd");
-//        authorList.add("jh");
-//        authorList.add("lwj");
-//        EasyMock.expect(authorMapperMock.getAuthorByPaperId(1)).andReturn(authorList);
-//        replayAll();
-//        CopyOnWriteArrayList<String> result = authorServiceStandalone.getAuthorByPaperId(1);
-//        assertEquals(result.get(0),"hxd");
-//        assertEquals(result.get(1),"jh");
-//        assertEquals(result.get(2),"lwj");
-//        verifyAll();
-//    }
 
 }

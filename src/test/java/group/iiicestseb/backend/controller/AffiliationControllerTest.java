@@ -43,7 +43,6 @@ public class AffiliationControllerTest {
 
     @Test
     public void getAffiliationBasicInfo() throws Exception {
-
         Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
         mvc.perform(MockMvcRequestBuilders.get("/affiliation/info")
                 .param("id", String.valueOf(affiliation.getId()))
@@ -53,7 +52,6 @@ public class AffiliationControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.paperNum").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.authorNum").value(2));
-
 
     }
 }

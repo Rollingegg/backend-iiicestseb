@@ -56,7 +56,8 @@ public class StatisticsController {
     }
 
     /**
-     *
+     * 获得指定术语的相关的术语
+     * 热度按在所有论文中共同出现的次数计算
      *
      * @param termId 术语id
      * @param max    数量上限
@@ -117,7 +118,7 @@ public class StatisticsController {
      * @param max    数量上限
      * @return 相关机构集合
      */
-    @GetMapping("activeAffiliationOfTerm")
+    @GetMapping("term/activeAffiliation")
     public Response getActiveAffiliationOfTerm(@RequestParam("termId")
                                         @NotNull(message = PARAMETER_ERROR)
                                                 Integer termId,

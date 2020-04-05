@@ -34,17 +34,6 @@ public class AffiliationMapperTest {
     }
 
     @Test
-    public void selectAffiliationInfoByName() {
-        System.out.println("------------------------------testtestst");
-        System.out.println("------------------------------testtestst");
-        System.out.println("------------------------------testtestst");
-        System.out.println("------------------------------testtestst");
-        System.out.println("------------------------------testtestst");
-        System.out.println("------------------------------testtestst");
-
-    }
-
-    @Test
     public void selectAffiliationInfoByIdBatch() {
         Affiliation a1 = affiliationMapper.selectByName("affiliation1");
         Affiliation a2 = affiliationMapper.selectByName("affiliation2");
@@ -66,19 +55,6 @@ public class AffiliationMapperTest {
                 fail();
             }
         }
-//            AffiliationInfoVO wph = affiliationMapper.selectBasicInfoByName(jh.getName());
-//            System.out.println("wph:" + wph.getAuthorNum() + "   " + wph.getPaperNum());
-//            System.out.println("my:" + jh.getAuthorNum() + "    " + jh.getPaperNum());
-//        Collection<AffiliationInfoVO> affiliationInfoVOS = affiliationMapper.selectBasicInfoByIdBatch(new LinkedList<>() {{
-//            add(177);
-//            add(178);
-//        }});
-//        System.out.println(affiliationInfoVOS.toString());
-//        for (AffiliationInfoVO jh : affiliationInfoVOS) {
-//            AffiliationInfoVO wph = affiliationMapper.selectBasicInfoByName(jh.getName());
-//            System.out.println("wph:" + wph.getAuthorNum() + "   " + wph.getPaperNum());
-//            System.out.println("my:" + jh.getAuthorNum() + "    " + jh.getPaperNum());
-//        }
 
     }
 }
