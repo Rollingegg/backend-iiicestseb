@@ -1,8 +1,8 @@
 package group.iiicestseb.backend.service;
 
 
-import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.entity.Term;
+import group.iiicestseb.backend.vo.affiliation.AffiliationActiveInTerm;
 import group.iiicestseb.backend.vo.author.AuthorHotVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
@@ -70,7 +70,7 @@ public interface StatisticsService {
      * @param max 数量上限
      * @return 相关机构集合
      */
-    Collection<Affiliation> findActiveAffiliationOfTerm(Integer termId, Integer max);
+    Collection<AffiliationActiveInTerm> findActiveAffiliationOfTerm(Integer termId, Integer max);
 
     /**
      * 计算并返回发表论文最多的的num个学者和其发表的论文

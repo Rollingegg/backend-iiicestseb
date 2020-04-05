@@ -1,7 +1,9 @@
 package group.iiicestseb.backend.mapper;
 
+import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.utils.JSONUtil;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +32,8 @@ public class PaperMapperTest {
 
     @Test
     public void selectByArticleId() {
+        Paper p = paperMapper.selectByArticleId(111111111);
+        Assert.assertEquals("Standard1", p.getTitle());
     }
 
     @Test

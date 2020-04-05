@@ -24,7 +24,7 @@ CREATE TABLE author
     first_name     varchar(40) comment '姓',
     last_name      varchar(40) comment '名',
     affiliation_id int comment '作者所属机构id',
-    foreign key (affiliation_id) references affiliation (id)
+    foreign key (affiliation_id) references affiliation (id) on delete Cascade
 ) ENGINE = InnoDB comment '作者表';
 create index author_name_hash using hash on author (name);
 
@@ -59,7 +59,7 @@ CREATE TABLE paper
     article_id            int comment 'ieee设立的文献id',
 #外键
     conference_id         int comment '文献所属会议id',
-    foreign key (conference_id) references conference (id)
+    foreign key (conference_id) references conference (id) on delete Cascade
 ) ENGINE = InnoDB comment '文献表'
   ROW_FORMAT = DYNAMIC;
 create index paper_title_hash using hash on paper (title);
@@ -73,8 +73,8 @@ CREATE TABLE paper_authors
     author_id    int comment '作者id',
     paper_id     int comment '文献id',
     author_order int comment '发表作者次序',
-    foreign key (author_id) references author (id),
-    foreign key (paper_id) references paper (id),
+    foreign key (author_id) references author (id) on delete Cascade,
+    foreign key (paper_id) references paper (id) on delete Cascade,
     primary key (author_id, paper_id)
 ) ENGINE = InnoDB comment '作者发表文献_关系表';
 create index idx_paper_id on paper_authors (paper_id);
@@ -92,8 +92,8 @@ CREATE TABLE paper_term
 (
     paper_id int comment '文献id',
     term_id  int comment '受控id',
-    foreign key (term_id) references term (id),
-    foreign key (paper_id) references paper (id),
+    foreign key (term_id) references term (id) on delete Cascade,
+    foreign key (paper_id) references paper (id) on delete Cascade,
     primary key (paper_id, term_id)
 ) ENGINE = InnoDB comment '文献术语关系表';
 create index idx_term_id on paper_term (term_id);
@@ -108,7 +108,7 @@ create table reference
     google_scholar_link text comment '被引文献url',
     ref_type            varchar(16) comment '引用类型',
     article_id          int comment '引用文章的ieee id',
-    foreign key (article_id) references paper (article_id)
+    foreign key (article_id) references paper (article_id) on delete Cascade
 );
 
 ##创建用户表
