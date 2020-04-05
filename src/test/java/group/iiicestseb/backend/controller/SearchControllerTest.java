@@ -98,7 +98,7 @@ public class SearchControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.searchResultVOCollection[0].id").value(1));
-        Mockito.verify(searchServiceStub).advancedSearchPaper(advancedSearchForm);
+        Mockito.verify(searchServiceStub).advancedSearchPaper(Mockito.any(AdvancedSearchForm.class));
     }
 
 
