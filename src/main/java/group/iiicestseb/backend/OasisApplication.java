@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * @author hxd
+ * @author jh
  */
 @EnableScheduling
 //@MapperScan("group.iiicestseb.backend.mapper")

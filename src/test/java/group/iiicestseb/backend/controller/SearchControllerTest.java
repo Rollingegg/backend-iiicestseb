@@ -69,6 +69,7 @@ public class SearchControllerTest {
 
     /**
      * 正常搜索情况
+     *
      * @throws Exception 无
      */
     @Test
@@ -129,13 +130,7 @@ public class SearchControllerTest {
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.result").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperFormException.MSG))
-        ;
-        //Mockito.verify(searchService).advancedSearchPaper(advancedSearchForm);
-
-
-
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperFormException.MSG));
 
         advancedSearchForm.setType(null);
         advancedSearchForm.setAllKeyword("test");
@@ -143,7 +138,6 @@ public class SearchControllerTest {
         advancedSearchForm.setLimit(10);
         advancedSearchForm.setPage(0);
         param = JSON.toJSONString(advancedSearchForm);
-        //Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
         mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(param)
@@ -154,8 +148,6 @@ public class SearchControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperTypeException.MESSAGE));
         //Mockito.verify(searchService).advancedSearchPaper(advancedSearchForm);
 
-
-        advancedSearchForm.setType("all");
         advancedSearchForm.setLimit(500);
         advancedSearchForm.setType("all");
         advancedSearchForm.setAllKeyword("test");
@@ -172,8 +164,6 @@ public class SearchControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(AdvancedSearchForm.LIMIT_ERROR));
-
-
 
         advancedSearchForm.setLimit(10);
         advancedSearchForm.setPage(-1);

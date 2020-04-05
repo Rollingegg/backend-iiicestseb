@@ -2,6 +2,7 @@ package group.iiicestseb.backend.mapper;
 
 
 import group.iiicestseb.backend.entity.Term;
+import group.iiicestseb.backend.vo.affiliation.AffiliationActiveInTerm.AffWithScore;
 import group.iiicestseb.backend.vo.author.AuthorHotVO;
 import group.iiicestseb.backend.vo.statistics.GeneralCountPerYearVO;
 import group.iiicestseb.backend.vo.term.TermWithCountVO;
@@ -23,6 +24,7 @@ public interface StatisticsMapper {
 
     /**
      * 根据名称寻找术语
+     *
      * @param name 术语名称
      * @return 术语
      */
@@ -114,7 +116,8 @@ public interface StatisticsMapper {
      * @param max    最大上限
      * @return 机构id列表
      */
-    @Select("select aff.id from affiliation aff, author aut, " +
+    @Select("select aff.id, avg(x.score) as score, count(*) as paperNum " +
+            "from affiliation aff, author aut, " +
             "   (select pa.author_id, sum(ps.score) as score " +
             "   from paper_statistics ps, paper_authors pa " +
             "   where ps.paper_id in (" +
@@ -125,9 +128,10 @@ public interface StatisticsMapper {
             "   group by pa.author_id " +
             "   ) x " +
             "where aut.affiliation_id = aff.id and aut.id = x.author_id " +
-            "group by aff.id order by avg(x.score) desc " +
+            "group by aff.id order by paperNum " +
             "limit #{max}")
-    Collection<Integer> selectAffiliationsOfTermOrderByActive(@Param("termId") Integer termId, @Param("max") Integer max);
+    @ResultType(AffWithScore.class)
+    Collection<AffWithScore> selectAffiliationsOfTermForActive(@Param("termId") Integer termId, @Param("max") Integer max);
 
     /**
      * 查找最相关几个术语id
@@ -148,7 +152,8 @@ public interface StatisticsMapper {
 
     /**
      * 获取作者的热度研究方向、词云
-     * @param id 作者id
+     *
+     * @param id    作者id
      * @param limit 搜索数
      * @return 研究方向热度列表
      */
@@ -167,7 +172,8 @@ public interface StatisticsMapper {
 
     /**
      * 获取机构的热度研究方向、词云
-     * @param id 机构id
+     *
+     * @param id    机构id
      * @param limit 搜索数
      * @return 研究方向热度列表
      */
@@ -186,11 +192,9 @@ public interface StatisticsMapper {
     Collection<TermWithCountVO> getAffiliationHotTerm(int id, int limit);
 
 
-
-
-
     /**
      * 获取机构每年发表数
+     *
      * @param id 机构id
      * @return 机构每年发表数
      */
@@ -204,11 +208,12 @@ public interface StatisticsMapper {
             "group by p2.chron_date " +
             "order by p2.chron_date ")
     @ResultType(GeneralCountPerYearVO.class)
-    public Collection<GeneralCountPerYearVO> getAffiliationPublishCountPerYear(int id);
+    Collection<GeneralCountPerYearVO> getAffiliationPublishCountPerYear(int id);
 
 
     /**
      * 获取作者每年发表数
+     *
      * @param id 作者id
      * @return 作者每年发表数
      */
@@ -221,12 +226,12 @@ public interface StatisticsMapper {
             "group by p2.chron_date " +
             "order by p2.chron_date ")
     @ResultType(GeneralCountPerYearVO.class)
-    public Collection<GeneralCountPerYearVO> getAuthorPublishCountPerYear(int id);
+    Collection<GeneralCountPerYearVO> getAuthorPublishCountPerYear(int id);
 
     @Select("select p.chron_date as year,count(*) as count " +
             "from paper_term pt,paper p " +
             "where pt.term_id = #{id} and pt.paper_id = p.id " +
             "group by p.chron_date ")
     @ResultType(GeneralCountPerYearVO.class)
-    public Collection<GeneralCountPerYearVO> getTermCountPerYear(int id);
+    Collection<GeneralCountPerYearVO> getTermCountPerYear(int id);
 }

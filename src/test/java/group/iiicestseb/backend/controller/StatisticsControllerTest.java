@@ -183,7 +183,7 @@ public class StatisticsControllerTest {
     @Test
     public void getActiveAffiliationOfTermSuccess() throws Exception {
         Term term1 = regedit.findTermByName("Control5");
-        mvc.perform(MockMvcRequestBuilders.get("/statistics/activeAffiliationOfTerm")
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/term/activeAffiliation")
                 .param("termId", Integer.toString(term1.getId()))
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
@@ -191,7 +191,7 @@ public class StatisticsControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").value(1));
         Term term2 = regedit.findTermByName("Control2");
-        mvc.perform(MockMvcRequestBuilders.get("/statistics/activeAffiliationOfTerm")
+        mvc.perform(MockMvcRequestBuilders.get("/statistics/term/activeAffiliation")
                 .param("termId", Integer.toString(term2.getId()))
                 .param("max", Integer.toString(5))
                 .accept(MediaType.APPLICATION_JSON)
@@ -204,8 +204,8 @@ public class StatisticsControllerTest {
 
 
     @Test
-    public void getAuthorHotTerm() throws  Exception{
-        int param =  authorService.findAuthorByName("author1").getId();
+    public void getAuthorHotTerm() throws Exception {
+        int param = authorService.findAuthorByName("author1").getId();
 
         mvc.perform(MockMvcRequestBuilders.get("/statistics/author/hot/term")
                 .param("id", Integer.toString(param))
@@ -225,8 +225,8 @@ public class StatisticsControllerTest {
     }
 
     @Test
-    public void getAffiliationHotTerm() throws Exception{
-        int param =  affiliationService.findAffiliationByName("affiliation1").getId();
+    public void getAffiliationHotTerm() throws Exception {
+        int param = affiliationService.findAffiliationByName("affiliation1").getId();
 
         mvc.perform(MockMvcRequestBuilders.get("/statistics/affiliation/hot/term")
                 .param("id", Integer.toString(param))
@@ -246,8 +246,8 @@ public class StatisticsControllerTest {
     }
 
     @Test
-    public void getAuthorPublishCountPerYear() throws Exception{
-        int param =  authorService.findAuthorByName("author1").getId();
+    public void getAuthorPublishCountPerYear() throws Exception {
+        int param = authorService.findAuthorByName("author1").getId();
         mvc.perform(MockMvcRequestBuilders.get("/statistics/author/publish/count/per/year")
                 .param("id", Integer.toString(param))
                 .accept(MediaType.APPLICATION_JSON)
@@ -261,8 +261,8 @@ public class StatisticsControllerTest {
     }
 
     @Test
-    public void getAffiliationPublishCountPerYear() throws Exception{
-        int param =  affiliationService.findAffiliationByName("affiliation1").getId();
+    public void getAffiliationPublishCountPerYear() throws Exception {
+        int param = affiliationService.findAffiliationByName("affiliation1").getId();
 
         mvc.perform(MockMvcRequestBuilders.get("/statistics/affiliation/publish/count/per/year")
                 .param("id", Integer.toString(param))
@@ -277,8 +277,8 @@ public class StatisticsControllerTest {
     }
 
     @Test
-    public void getTermCountPerYear() throws Exception{
-        int param =  statisticsMapper.findTermByName("Control1").getId();
+    public void getTermCountPerYear() throws Exception {
+        int param = statisticsMapper.findTermByName("Control1").getId();
 
         mvc.perform(MockMvcRequestBuilders.get("/statistics/term/count/per/year")
                 .param("id", Integer.toString(param))

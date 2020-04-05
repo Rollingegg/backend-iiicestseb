@@ -107,6 +107,13 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     group.iiicestseb.backend: DEBUG
 server:
+  ssl:
+    key-store: classpath:3-dwxh-xyz.jks
+    key-store-type: JKS
+    key-store-password: IIICEStseB
+    protocol: TLSv1.2
+  http2:
+    enabled: true
   port: 4001
 management:
   endpoints:

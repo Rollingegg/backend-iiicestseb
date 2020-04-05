@@ -55,7 +55,6 @@ public class SearchServiceTest extends EasyMockSupport {
         EasyMock.expect(paperMapper.advancedSearch(EasyMock.anyObject())).andReturn(integerCollection);
         EasyMock.expect(paperMapper.getSearchResult(EasyMock.anyObject(),EasyMock.anyInt(),EasyMock.anyInt())).andReturn(searchResultVOList);
         replayAll();
-        //searchService.advancedSearchPaper(form);
         assertEquals(searchResultVO,((CopyOnWriteArrayList<SearchResultVO>)searchService.advancedSearchPaper(form).getSearchResultVOCollection()).get(0));
         verifyAll();
     }
@@ -63,9 +62,6 @@ public class SearchServiceTest extends EasyMockSupport {
     @Test(expected = NoPaperFoundException.class)
     public void advancedSearchPaperFail() {
         List<SearchResultVO> searchResultVOList = new CopyOnWriteArrayList<SearchResultVO>();
-//        SearchResultVO searchResultVO = new SearchResultVO();
-//        searchResultVO.setId(1);
-//        searchResultVOList.add(searchResultVO);
         AdvancedSearchForm form = new AdvancedSearchForm();
         form.setType("all");
         form.setAllKeyword("1");
@@ -73,7 +69,6 @@ public class SearchServiceTest extends EasyMockSupport {
         EasyMock.expect(paperMapper.advancedSearch(EasyMock.anyObject())).andThrow(new NoPaperFoundException());
         replayAll();
         searchService.advancedSearchPaper(form);
-        //assertEquals(1,(int)searchService.advancedSearchPaper(form).get(0).getId());
         verifyAll();
     }
 }
