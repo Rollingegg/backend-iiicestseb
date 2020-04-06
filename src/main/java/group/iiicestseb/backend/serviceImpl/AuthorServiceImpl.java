@@ -3,23 +3,23 @@ package group.iiicestseb.backend.serviceImpl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.entity.AuthorStatistics;
-import group.iiicestseb.backend.entity.PaperStatistics.AuthorPaperCites;
 import group.iiicestseb.backend.factory.AuthorFactory;
 import group.iiicestseb.backend.mapper.AuthorMapper;
 import group.iiicestseb.backend.mapper.AuthorStatisticsMapper;
 import group.iiicestseb.backend.mapper.PaperAuthorMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AuthorService;
-import group.iiicestseb.backend.utils.JSONUtil;
-import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
-import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
-import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
-import group.iiicestseb.backend.vo.author.AuthorInfoVO;
+import group.iiicestseb.backend.vo.author.*;
+import group.iiicestseb.backend.vo.graph.Edge;
+import group.iiicestseb.backend.vo.graph.Graph;
+import group.iiicestseb.backend.vo.graph.Vertex;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author wph
@@ -97,6 +97,65 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
     }
 
 
+    @Override
+    public Graph getAuthorGraphPartner(Integer id, Integer limit) {
+        Collection<AuthorVertexVO> authorVertexVOCollection = authorMapper.selectGraphPartnerById(id,limit);
+        Collection<Vertex> vertexCollection = new ArrayList<>();
+        Collection<Edge> edgeCollection = new ArrayList<>();
+        Graph graph = new Graph();
+        graph.setCenterId(id+"-author");
+        graph.setName("作者合作关系图");
 
+        for (var i : authorVertexVOCollection) {
+            Vertex tempv = new Vertex();
+            tempv.setId(i.getId()+"-author");
+            tempv.setName(i.getName());
+            tempv.setContent(i);
+            tempv.setType("author");
+            tempv.setSize(i.getScore());
+            vertexCollection.add(tempv);
 
+            Edge tempe = new Edge();
+            tempe.setSource(graph.getCenterId());
+            tempe.setTarget(tempv.getId());
+            tempe.setName("合作论文数："+i.getPaperCount());
+            tempe.setWeight(i.getPaperCount().doubleValue());
+            tempe.setContent(null);
+            edgeCollection.add(tempe);
+        }
+        graph.setEdges(edgeCollection);
+        graph.setVertexes(vertexCollection);
+        return graph;
+    }
+
+    @Override
+    public Graph getAuthorGraphAffiliation(Integer id, Integer limit) {
+        Collection<AuthorVertexVO> authorVertexVOCollection = authorMapper.selectGraphAffiliationByPaperId(id,limit);
+        Collection<Vertex> vertexCollection = new ArrayList<>();
+        Collection<Edge> edgeCollection = new ArrayList<>();
+        Graph graph = new Graph();
+        graph.setCenterId(id+"-author");
+        graph.setName("作者机构关系图");
+
+        for (var i : authorVertexVOCollection) {
+            Vertex tempv = new Vertex();
+            tempv.setId(i.getId()+"-author");
+            tempv.setName(i.getName());
+            tempv.setContent(i);
+            tempv.setType("author");
+            tempv.setSize(i.getScore());
+            vertexCollection.add(tempv);
+
+            Edge tempe = new Edge();
+            tempe.setSource(graph.getCenterId());
+            tempe.setTarget(tempv.getId());
+            tempe.setName("所属");
+            tempe.setWeight(i.getPaperCount().doubleValue());
+            tempe.setContent(null);
+            edgeCollection.add(tempe);
+        }
+        graph.setEdges(edgeCollection);
+        graph.setVertexes(vertexCollection);
+        return graph;
+    }
 }

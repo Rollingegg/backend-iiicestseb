@@ -9,6 +9,7 @@ import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
+import group.iiicestseb.backend.vo.graph.Graph;
 import group.iiicestseb.backend.vo.paper.*;
 import group.iiicestseb.backend.vo.user.UserVO;
 import org.springframework.context.annotation.Lazy;
@@ -131,6 +132,11 @@ public class RegeditImpl implements Regedit {
     @Override
     public Collection<AuthorStatistics> getAuthorStatisticsByAuthorIdBatch(Collection<Integer> authorIds) {
         return authorService.getAuthorStatisticsByAuthorIdBatch(authorIds);
+    }
+
+    @Override
+    public Graph getAuthorGraphPartner(Integer id, Integer limit) {
+        return authorService.getAuthorGraphPartner(id,limit);
     }
 
     //-----------------------------------------ConferenceService------------------------------

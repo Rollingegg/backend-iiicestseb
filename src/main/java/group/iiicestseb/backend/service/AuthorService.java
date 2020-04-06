@@ -7,6 +7,8 @@ import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
+import group.iiicestseb.backend.vo.graph.Graph;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Collection;
 import java.util.List;
@@ -101,5 +103,21 @@ public interface AuthorService {
      */
     Collection<AuthorStatistics> getAuthorStatisticsByAuthorIdBatch(Collection<Integer> authorIds);
 
+    /**
+     * 获取指定作者合作伙伴关系图
+     * @param id 作者id
+     * @param limit 上限设置
+     * @return 作者合作伙伴关系图
+     */
+    Graph getAuthorGraphPartner(Integer id,Integer limit);
+
+    /**
+     * 获取指定作者同机构作者关系图
+     * @param id 作者id
+     * @param limit 上限设置
+     * @return 作者同机构关系图
+     */
+    @GetMapping("/graph/affiliation")
+    public Graph getAuthorGraphAffiliation(Integer id, Integer limit);
 
 }

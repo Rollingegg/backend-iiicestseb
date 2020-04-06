@@ -84,4 +84,29 @@ public class AuthorController {
     }
 
 
+
+    /**
+     * 获取指定作者合作伙伴关系图
+     * @param id 作者id
+     * @param limit 上限设置
+     * @return 作者合作伙伴关系图
+     */
+    @GetMapping("/graph/partner")
+    public Response getAuthorGraphPartner
+            (@RequestParam("id") Integer id, @RequestParam(name = "limit", defaultValue = "10") Integer limit) {
+        return Response.buildSuccess(authorService.getAuthorGraphPartner(id,limit));
+    }
+
+    /**
+     * 获取指定作者同机构作者关系图
+     * @param id 作者id
+     * @param limit 上限设置
+     * @return 作者同机构关系图
+     */
+    @GetMapping("/graph/partner")
+    public Response getAuthorGraphAffiliation
+    (@RequestParam("id") Integer id, @RequestParam(name = "limit", defaultValue = "100") Integer limit) {
+        return Response.buildSuccess(authorService.getAuthorGraphAffiliation(id,limit));
+    }
+
 }

@@ -11,7 +11,7 @@ import java.util.UUID;
 public class StringUtil {
 
     public static final String toUUID(Integer id,String type){
-        return UUID.fromString(String.valueOf(id)  + type).toString();
+        return UUID.fromString(String.valueOf(id)+"-"  + type+"-1-1-1").toString();
     }
 
 
