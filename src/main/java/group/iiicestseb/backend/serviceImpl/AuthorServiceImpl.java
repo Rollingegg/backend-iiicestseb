@@ -104,7 +104,7 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
         Collection<Vertex> vertexCollection = new ArrayList<>();
         Collection<Edge> edgeCollection = new ArrayList<>();
         Graph graph = new Graph();
-        graph.setCenterId(id+"-author");
+        graph.setCenterId(StringUtil.toUUID(id,Vertex.TYPE.Author.value));
         graph.setName("作者合作关系图");
 
         for (var i : authorVertexVOCollection) {
