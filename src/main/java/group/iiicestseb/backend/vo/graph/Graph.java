@@ -16,6 +16,12 @@ import java.util.Collection;
 @NoArgsConstructor
 @Data
 public class Graph {
+
+    /**
+     * 中心点uuid
+     */
+    String centerId;
+
     /**
      * 图名称
      */

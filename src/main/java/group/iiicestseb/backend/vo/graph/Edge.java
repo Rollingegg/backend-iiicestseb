@@ -8,10 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Edge {
-    /**
-     * 边id
-     */
-    Integer id;
 
     /**
      * 边名称
@@ -26,7 +22,7 @@ public class Edge {
     /**
      * 起始点uuid
      */
-    String source ;
+    String source;
 
     /**
      * 目的点uuid
