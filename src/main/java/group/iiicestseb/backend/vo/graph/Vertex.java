@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 点VO
+ *
  * @author wph
  */
 @Data
@@ -25,7 +26,7 @@ public class Vertex {
     /**
      * 点名称
      */
-    String name ;
+    String name;
 
     /**
      * 点大小
@@ -36,5 +37,35 @@ public class Vertex {
      * 点相关业务内容，根据type变化
      */
     Object content;
+
+    /**
+     * 这是点的类型
+     * Author("author")
+     * Affiliation("affiliation")
+     * Paper("paper")
+     * Term("term")
+     */
+    public enum TYPE {
+        //
+        Author("author"),
+        Affiliation("affiliation"),
+        Paper("paper"),
+        Term("term");
+        public final String value;
+
+        TYPE(String value) {
+            this.value = value;
+        }
+
+    }
+
+    public Vertex(TYPE type) {
+        this.type = type.value;
+    }
+
+    public Vertex(String id, TYPE type) {
+        this.id = id;
+        this.type = type.value;
+    }
 
 }

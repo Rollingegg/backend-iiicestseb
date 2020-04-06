@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 边VO
+ *
+ * @author wph
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

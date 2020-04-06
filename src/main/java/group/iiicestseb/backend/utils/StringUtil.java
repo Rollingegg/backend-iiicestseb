@@ -10,8 +10,8 @@ import java.util.UUID;
  */
 public class StringUtil {
 
-    public static final String toUUID(Integer id,String type){
-        return UUID.fromString(String.valueOf(id)  + type).toString();
+    public static String toUUID(Integer id, String type) {
+        return type + "-" + id;
     }
 
 
