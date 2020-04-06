@@ -2,15 +2,22 @@ package group.iiicestseb.backend.serviceImpl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import group.iiicestseb.backend.entity.Affiliation;
+import group.iiicestseb.backend.entity.Term;
 import group.iiicestseb.backend.mapper.AffiliationMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.AffiliationService;
+import group.iiicestseb.backend.service.PaperService;
+import group.iiicestseb.backend.utils.StringUtil;
 import group.iiicestseb.backend.vo.affiliation.AffiliationInfoVO;
+import group.iiicestseb.backend.vo.graph.Edge;
+import group.iiicestseb.backend.vo.graph.Graph;
+import group.iiicestseb.backend.vo.graph.Vertex;
+import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * @author wph
@@ -51,10 +58,74 @@ public class AffiliationServiceImpl extends ServiceImpl<AffiliationMapper, Affil
         return affiliationMapper.selectAffiliationInfoByIdBatch(ids);
     }
 
-    // @Override
-    // public AffiliationInfoVO selectBasicInfoByName(String name) {
-    //     return affiliationMapper.selectAffiliationInfoByName(name);
-    // }
+    @Override
+    public Graph getAffiliationGraphPaperWithTerm(Integer id) {
+        //创建主节点
+        Collection<Vertex> vertexCollection = new ArrayList<>();
+        Collection<Edge> edgeCollection = new ArrayList<>();
+        Graph graph = new Graph();
+        graph.setCenterId(StringUtil.toUUID(id,Vertex.TYPE.Affiliation.value));
+        graph.setName("机构文献及相关领域关系图");
+        //添加机构节点
+        Affiliation affiliation = affiliationMapper.selectById(id);
+        Vertex aff_v = new Vertex(StringUtil.toUUID(affiliation.getId(),Vertex.TYPE.Affiliation.value),Vertex.TYPE.Affiliation);
+        aff_v.setName(affiliation.getName());
+        aff_v.setSize(1.0);
+        aff_v.setContent(null);
+        vertexCollection.add(aff_v);
 
+//        Double paperMin = Double.MAX_VALUE;
+//        Double paperMax = Double.MIN_VALUE;
+        //添加所有论文点
+        Collection<SearchResultVO> searchResultVOCollection  = ((PaperService)regedit).getAffiliationAllPublish(id);
 
+        HashMap<String,Integer> termCount = new HashMap<>();
+        HashMap<String,String> termName = new HashMap<>();
+        for (var i:searchResultVOCollection){
+            Vertex paperVertex = new Vertex(StringUtil.toUUID(i.getId(),Vertex.TYPE.Paper.value),Vertex.TYPE.Paper);
+            paperVertex.setId(StringUtil.toUUID(i.getId(),Vertex.TYPE.Paper.value));
+            paperVertex.setName(i.getTitle());
+            paperVertex.setContent(i);
+            paperVertex.setSize(i.getCitationCountPaper().doubleValue());
+            vertexCollection.add(paperVertex);
+
+//            paperMin = paperMin >= i.getCitationCountPaper()? i.getCitationCountPaper():paperMin;
+//            paperMax = paperMax <= i.getCitationCountPaper()? i.getCitationCountPaper():paperMax;
+            edgeCollection.add(new Edge("发表",1.0,aff_v.getId(),paperVertex.getId(),null));
+
+            //在每个论文基础上添加所有论文
+            List<Term> terms = i.getTermsList();
+            for (Iterator<Term> iterator = terms.iterator(); iterator.hasNext(); ) {
+                Term next =  iterator.next();
+                String uuid = StringUtil.toUUID(next.getId(),Vertex.TYPE.Term.value);
+                if (!termName.keySet().contains(next.getName())){
+                    termName.put(uuid,next.getName());
+                    termCount.put(uuid,1);
+                }
+                else {
+                    termCount.put(uuid,termCount.get(uuid)+1);
+                }
+                edgeCollection.add(new Edge("相关",1.0,paperVertex.getId(),uuid,null));
+            }
+        }
+//        graph.getMin().put("paper",paperMax);
+//        graph.getMax().put("paper",paperMin);
+//
+//        Object[] countArray = termCount.values().toArray();
+//        Arrays.sort(countArray);
+//        graph.getMax().put("term",((Integer)countArray[countArray.length-1]).doubleValue());
+//        graph.getMin().put("term",((Integer)countArray[0]).doubleValue());
+
+        for (Iterator<String> iterator = termName.keySet().iterator(); iterator.hasNext(); ) {
+            String next =  iterator.next();
+            Vertex tempVertex = new Vertex(next,Vertex.TYPE.Term);
+            tempVertex.setName(termName.get(next));
+            tempVertex.setSize(termCount.get(next).doubleValue());
+            tempVertex.setContent(null );
+            vertexCollection.add(tempVertex);
+        }
+        graph.setVertexes(vertexCollection);
+        graph.setEdges(edgeCollection);
+        return graph;
+    }
 }

@@ -27,6 +27,10 @@ import java.util.List;
 public class RegeditImpl implements Regedit {
 
     @Lazy
+    @Resource(name = "Term")
+    private TermService termService;
+
+    @Lazy
     @Resource(name = "Affiliation")
     private AffiliationService affiliationService;
     @Lazy
@@ -55,6 +59,11 @@ public class RegeditImpl implements Regedit {
 
 
     //------------------------AffiliationService---------------------------------
+
+    @Override
+    public Graph getAffiliationGraphPaperWithTerm(Integer id) {
+        return affiliationService.getAffiliationGraphPaperWithTerm(id);
+    }
 
     @Override
     public Affiliation findAffiliationByName(String name) {
@@ -132,6 +141,16 @@ public class RegeditImpl implements Regedit {
     @Override
     public Collection<AuthorStatistics> getAuthorStatisticsByAuthorIdBatch(Collection<Integer> authorIds) {
         return authorService.getAuthorStatisticsByAuthorIdBatch(authorIds);
+    }
+
+    @Override
+    public Graph getAuthorGraphPartner(Integer id, Integer limit) {
+        return authorService.getAuthorGraphPartner(id, limit);
+    }
+
+    @Override
+    public Graph getAuthorGraphAffiliation(Integer id, Integer limit) {
+        return authorService.getAuthorGraphAffiliation(id, limit);
     }
 
     //-----------------------------------------ConferenceService------------------------------
@@ -263,21 +282,6 @@ public class RegeditImpl implements Regedit {
         return paperService.findPaperDetail(paperId);
     }
 
-//    @Override
-//    public Collection<PaperOverview> getRecommendPapers(Integer paperId, Integer num) {
-//        return paperService.getRecommendPapers(paperId,num);
-//    }
-//
-//    @Override
-//    public Collection<AuthorInfoVO> getRecommendAuthors(Integer paperId, Integer num) {
-//        return paperService.getRecommendAuthors(paperId,num);
-//    }
-//
-//    @Override
-//    public Collection<Affiliation> getRecommendAffiliations(Integer paperId, Integer num) {
-//        return paperService.getRecommendAffiliations(paperId,num);
-//    }
-
     @Override
     public Collection<PaperBasicVO> getAffiliationRecentlyPublish(Integer id, Integer limit) {
         return paperService.getAffiliationRecentlyPublish(id, limit);
@@ -317,4 +321,12 @@ public class RegeditImpl implements Regedit {
     public Graph computeGraphOfPaperTermPaper(Integer id) {
         return paperService.computeGraphOfPaperTermPaper(id);
     }
+
+    //---------------------------TermService-------------------------------
+
+    @Override
+    public List<Term> getTermByPaperId(Integer id) {
+        return termService.getTermByPaperId(id);
+    }
+
 }
