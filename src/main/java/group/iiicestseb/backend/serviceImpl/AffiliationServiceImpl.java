@@ -74,8 +74,6 @@ public class AffiliationServiceImpl extends ServiceImpl<AffiliationMapper, Affil
         aff_v.setContent(null);
         vertexCollection.add(aff_v);
 
-//        Double paperMin = Double.MAX_VALUE;
-//        Double paperMax = Double.MIN_VALUE;
         //添加所有论文点
         Collection<SearchResultVO> searchResultVOCollection  = ((PaperService)regedit).getAffiliationAllPublish(id);
 
@@ -89,43 +87,32 @@ public class AffiliationServiceImpl extends ServiceImpl<AffiliationMapper, Affil
             paperVertex.setSize(i.getCitationCountPaper().doubleValue());
             vertexCollection.add(paperVertex);
 
-//            paperMin = paperMin >= i.getCitationCountPaper()? i.getCitationCountPaper():paperMin;
-//            paperMax = paperMax <= i.getCitationCountPaper()? i.getCitationCountPaper():paperMax;
             edgeCollection.add(new Edge("发表",1.0,aff_v.getId(),paperVertex.getId(),null));
 
             //在每个论文基础上添加所有论文
             List<Term> terms = i.getTermsList();
-            for (Iterator<Term> iterator = terms.iterator(); iterator.hasNext(); ) {
-                Term next =  iterator.next();
-                String uuid = StringUtil.toUUID(next.getId(),Vertex.TYPE.Term.value);
-                if (!termName.keySet().contains(next.getName())){
-                    termName.put(uuid,next.getName());
-                    termCount.put(uuid,1);
+            for (Term next : terms) {
+                String uuid = StringUtil.toUUID(next.getId(), Vertex.TYPE.Term.value);
+                if (!termName.containsKey(next.getName())) {
+                    termName.put(uuid, next.getName());
+                    termCount.put(uuid, 1);
+                } else {
+                    termCount.put(uuid, termCount.get(uuid) + 1);
                 }
-                else {
-                    termCount.put(uuid,termCount.get(uuid)+1);
-                }
-                edgeCollection.add(new Edge("相关",1.0,paperVertex.getId(),uuid,null));
+                edgeCollection.add(new Edge("相关", 1.0, paperVertex.getId(), uuid, null));
             }
         }
-//        graph.getMin().put("paper",paperMax);
-//        graph.getMax().put("paper",paperMin);
-//
-//        Object[] countArray = termCount.values().toArray();
-//        Arrays.sort(countArray);
-//        graph.getMax().put("term",((Integer)countArray[countArray.length-1]).doubleValue());
-//        graph.getMin().put("term",((Integer)countArray[0]).doubleValue());
 
-        for (Iterator<String> iterator = termName.keySet().iterator(); iterator.hasNext(); ) {
-            String next =  iterator.next();
-            Vertex tempVertex = new Vertex(next,Vertex.TYPE.Term);
+        for (String next : termName.keySet()) {
+            Vertex tempVertex = new Vertex(next, Vertex.TYPE.Term);
             tempVertex.setName(termName.get(next));
             tempVertex.setSize(termCount.get(next).doubleValue());
-            tempVertex.setContent(null );
+            tempVertex.setContent(null);
             vertexCollection.add(tempVertex);
         }
         graph.setVertexes(vertexCollection);
         graph.setEdges(edgeCollection);
+        graph.normalize();
         return graph;
     }
 }

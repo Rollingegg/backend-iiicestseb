@@ -107,9 +107,6 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
         graph.setCenterId(id+"-author");
         graph.setName("作者合作关系图");
 
-
-        Double min = Double.MAX_VALUE;
-        Double max = Double.MIN_VALUE;
         for (var i : authorVertexVOCollection) {
             Vertex tempv = new Vertex(StringUtil.toUUID(i.getId(),Vertex.TYPE.Author.value),Vertex.TYPE.Author);
             tempv.setId(StringUtil.toUUID(i.getId(),Vertex.TYPE.Author.value));
@@ -121,12 +118,8 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
             if (tempv.getId().equals(graph.getCenterId())){
                 continue;
             }
-            min = min >= i.getPaperCount()? i.getPaperCount():min;
-            max = max <= i.getPaperCount()? i.getPaperCount():max;
             edgeCollection.add(new Edge("合作论文数："+i.getPaperCount(),i.getPaperCount().doubleValue(),graph.getCenterId(),tempv.getId(),null));
         }
-        graph.getMin().put("author",min);
-        graph.getMax().put("author",max);
         graph.setEdges(edgeCollection);
         graph.setVertexes(vertexCollection);
         return graph;
