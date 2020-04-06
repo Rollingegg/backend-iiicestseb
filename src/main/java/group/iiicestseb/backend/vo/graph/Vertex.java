@@ -6,15 +6,16 @@ import lombok.NoArgsConstructor;
 
 /**
  * 点VO
+ * @author wph
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Vertex {
     /**
-     * 点id
+     * 点uuid
      */
-    Integer id;
+    String id;
 
     /**
      * 点类型

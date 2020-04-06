@@ -1,14 +1,19 @@
 package group.iiicestseb.backend.utils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 /**
  * @author jh
  * @date 2020/3/3
  */
 public class StringUtil {
+
+    public static final String toUUID(Integer id,String type){
+        return UUID.fromString(String.valueOf(id)  + type).toString();
+    }
+
 
     private static final Map<Character, Character> ACCENTS = new TreeMap<Character, Character>() {
         {

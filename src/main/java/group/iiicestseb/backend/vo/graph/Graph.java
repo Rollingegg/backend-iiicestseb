@@ -19,7 +19,7 @@ public class Graph {
     /**
      * 图名称
      */
-    int name;
+    String name;
 
     /**
      * 点集合

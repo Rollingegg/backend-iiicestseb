@@ -24,14 +24,14 @@ public class Edge {
     Double weight;
 
     /**
-     * 起始点id
+     * 起始点uuid
      */
-    Integer source ;
+    String source ;
 
     /**
-     * 目的点id
+     * 目的点uuid
      */
-    Integer target;
+    String target;
 
     /**
      * 边相关业务内容
