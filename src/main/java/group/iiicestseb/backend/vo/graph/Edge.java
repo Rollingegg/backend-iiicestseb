@@ -17,7 +17,7 @@ public class Edge {
     /**
      * 边名称
      */
-    String name;
+    private String name;
 
     /**
      * 边大小

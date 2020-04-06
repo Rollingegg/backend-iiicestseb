@@ -16,27 +16,27 @@ public class Vertex {
     /**
      * 点uuid
      */
-    String id;
+    private String id;
 
     /**
      * 点类型
      */
-    String type;
+    private String type;
 
     /**
      * 点名称
      */
-    String name;
+    private String name;
 
     /**
      * 点大小
      */
-    Double size;
+    private Double size;
 
     /**
      * 点相关业务内容，根据type变化
      */
-    Object content;
+    private Object content;
 
     /**
      * 这是点的类型

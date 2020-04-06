@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.entity.PaperStatistics;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
+import group.iiicestseb.backend.vo.paper.PaperVertex;
 import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
@@ -106,7 +107,7 @@ public interface PaperMapper extends BaseMapper<Paper> {
             //年份
             " and (p.chron_date between #{chronDateMinKeyword} and #{chronDateMaxKeyword})  " +
             "group by p.id " +
-            "order by p.citation_count_paper desc "+
+            "order by p.citation_count_paper desc " +
             "</script>")
     @ResultType(Integer.class)
     Collection<Integer> advancedSearch(AdvancedSearchForm advancedSearchForm);
@@ -267,11 +268,29 @@ public interface PaperMapper extends BaseMapper<Paper> {
      * @param ids 论文id
      * @return 论文评分集合
      */
-    @Select("<script>" +
+    @Select("<script> " +
             "select paper_id as paperId, score from paper_statistics where paper_id in (" +
-            "   <foreach collection='ids' item='i' separator=',' >" +
-            "   #{i}" +
+            "   null <foreach collection='ids' item='i' separator='' > " +
+            "   ,#{i}" +
             "   </foreach>)" +
             "</script>")
     Collection<PaperStatistics> selectPaperStatisticsByPaperIdBatch(@Param("ids") Collection<Integer> ids);
+
+    /**
+     * 批量获取论文顶点数据
+     *
+     * @param paperIds 论文id集合
+     * @return 论文通用顶点所需要的数据
+     */
+    @Select("<script> " +
+            "select p.id, p.title, p.citation_count_paper as cite, ps.score " +
+            "from paper p, paper_statistics ps " +
+            "where p.id in " +
+            "(null <foreach collection='ids' item='i' separator='' > " +
+            ",#{i}" +
+            "</foreach>) " +
+            "and p.id = ps.paper_id" +
+            "</script> ")
+    @ResultType(PaperVertex.class)
+    Collection<PaperVertex> selectPaperVertexByIds(@Param("ids") Collection<Integer> paperIds);
 }

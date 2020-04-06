@@ -9,8 +9,7 @@ public class NumberUtil {
     public static int string2Int(String s) {
         if (s.isEmpty()) {
             return 0;
-        }
-        else if (s.charAt(0) <= 'z' && s.charAt(0) >= 'a' ||
+        } else if (s.charAt(0) <= 'z' && s.charAt(0) >= 'a' ||
                 s.charAt(0) <= 'Z' && s.charAt(0) >= 'a') {
             return rome2Arabic(s);
         } else {
@@ -67,6 +66,13 @@ public class NumberUtil {
             }
         }
         return rNumber.toString();
+    }
+
+    /**
+     * sigmoid函数
+     */
+    public static Double sigmoid(Double x) {
+        return 1.0 / (Math.exp(-x) + 1);
     }
 
 }

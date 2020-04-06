@@ -9,6 +9,7 @@ import group.iiicestseb.backend.vo.author.AuthorBasicInfoVO;
 import group.iiicestseb.backend.vo.author.AuthorHotInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
+import group.iiicestseb.backend.vo.graph.Graph;
 import group.iiicestseb.backend.vo.paper.*;
 import group.iiicestseb.backend.vo.user.UserVO;
 import org.springframework.context.annotation.Lazy;
@@ -310,5 +311,10 @@ public class RegeditImpl implements Regedit {
     @Override
     public Collection<Term> findTermByIdBatch(Collection<Integer> termIds) {
         return paperService.findTermByIdBatch(termIds);
+    }
+
+    @Override
+    public Graph computeGraphOfPaperTermPaper(Integer id) {
+        return paperService.computeGraphOfPaperTermPaper(id);
     }
 }

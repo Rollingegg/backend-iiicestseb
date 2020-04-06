@@ -3,6 +3,8 @@ package group.iiicestseb.backend.service;
 import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.entity.Paper;
 import group.iiicestseb.backend.entity.Term;
+import group.iiicestseb.backend.vo.Response;
+import group.iiicestseb.backend.vo.graph.Graph;
 import group.iiicestseb.backend.vo.paper.PaperDetail;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.paper.PaperOverview;
@@ -99,4 +101,12 @@ public interface PaperService {
      * @return 术语id
      */
     Collection<Term> findTermByIdBatch(Collection<Integer> termIds);
+
+    /**
+     * 计算
+     *
+     * @param id 论文id
+     * @return 构建后的图
+     */
+    Graph computeGraphOfPaperTermPaper(Integer id);
 }

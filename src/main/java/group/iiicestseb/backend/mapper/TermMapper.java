@@ -2,9 +2,11 @@ package group.iiicestseb.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import group.iiicestseb.backend.entity.Term;
+import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,15 +18,16 @@ public interface TermMapper extends BaseMapper<Term> {
 
     /**
      * 查询文献对应的所有术语
+     *
      * @param paperId 文献id
      * @return 文献所有的术语列表
      */
     @Select("select t.id,t.name " +
             "from paper_term pt, term t " +
             "where pt.paper_id = #{paperId} and t.id = pt.term_id")
-    @Results(id = "TermResultMap",value = {
-            @Result(column = "id",property = "id",javaType = Integer.class, jdbcType = JdbcType.INTEGER),
-            @Result(column = "name",property = "name",javaType = String.class,jdbcType = JdbcType.VARCHAR),
+    @Results(id = "TermResultMap", value = {
+            @Result(column = "id", property = "id", javaType = Integer.class, jdbcType = JdbcType.INTEGER),
+            @Result(column = "name", property = "name", javaType = String.class, jdbcType = JdbcType.VARCHAR),
     })
     List<Term> selectByPaperId(Integer paperId);
 
@@ -44,4 +47,5 @@ public interface TermMapper extends BaseMapper<Term> {
      * @param termList 术语列表
      */
     void insertTermList(List<Term> termList);
+
 }
