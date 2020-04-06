@@ -123,13 +123,7 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
             }
             min = min >= i.getPaperCount()? i.getPaperCount():min;
             max = max <= i.getPaperCount()? i.getPaperCount():max;
-            Edge tempe = new Edge();
-            tempe.setSource(graph.getCenterId());
-            tempe.setTarget(tempv.getId());
-            tempe.setName("合作论文数："+i.getPaperCount());
-            tempe.setWeight(i.getPaperCount().doubleValue());
-            tempe.setContent(null);
-            edgeCollection.add(tempe);
+            edgeCollection.add(new Edge("合作论文数："+i.getPaperCount(),i.getPaperCount().doubleValue(),graph.getCenterId(),tempv.getId(),null));
         }
         graph.getMin().put("author",min);
         graph.getMax().put("author",max);
@@ -155,8 +149,8 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
         aff_v.setContent(null);
         vertexCollection.add(aff_v);
 
-        Double min = Double.MAX_VALUE;
-        Double max = Double.MIN_VALUE;
+//        Double min = Double.MAX_VALUE;
+//        Double max = Double.MIN_VALUE;
         for (var i : authorVertexVOCollection) {
             Vertex tempv = new Vertex(StringUtil.toUUID(i.getId(),Vertex.TYPE.Author.value),Vertex.TYPE.Author);
             tempv.setId(StringUtil.toUUID(i.getId(),Vertex.TYPE.Author.value));
@@ -165,19 +159,13 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
             tempv.setSize(i.getScore());
             vertexCollection.add(tempv);
 
-            min = min >= i.getPaperCount()? i.getScore():min;
-            max = max <= i.getPaperCount()? i.getScore():max;
+//            min = min >= i.getPaperCount()? i.getScore():min;
+//            max = max <= i.getPaperCount()? i.getScore():max;
 
-            Edge tempe = new Edge();
-            tempe.setSource(aff_v.getId());
-            tempe.setTarget(tempv.getId());
-            tempe.setName("所属");
-            tempe.setWeight(null);
-            tempe.setContent(null);
-            edgeCollection.add(tempe);
+            edgeCollection.add(new Edge("所属",1.0,aff_v.getId(),tempv.getId(),null));
         }
-        graph.getMin().put("author",min);
-        graph.getMax().put("author",max);
+//        graph.getMin().put("author",min);
+//        graph.getMax().put("author",max);
         graph.setEdges(edgeCollection);
         graph.setVertexes(vertexCollection);
         return graph;
