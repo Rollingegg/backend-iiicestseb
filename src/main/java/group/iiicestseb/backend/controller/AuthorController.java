@@ -103,7 +103,7 @@ public class AuthorController {
      * @param limit 上限设置
      * @return 作者同机构关系图
      */
-    @GetMapping("/graph/partner")
+    @GetMapping("/graph/affiliation")
     public Response getAuthorGraphAffiliation
     (@RequestParam("id") Integer id, @RequestParam(name = "limit", defaultValue = "100") Integer limit) {
         return Response.buildSuccess(authorService.getAuthorGraphAffiliation(id,limit));

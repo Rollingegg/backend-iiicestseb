@@ -1,12 +1,12 @@
 package group.iiicestseb.backend.vo.graph;
 
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * @author wph
@@ -37,5 +37,13 @@ public class Graph {
      */
     Collection<Edge> edges;
 
+    /**
+     * 区间：点最小值
+     */
+    HashMap<String,Double> min = new HashMap<>();
 
+    /**
+     * 区间：点最大值
+     */
+    HashMap<String,Double> max = new HashMap<>();
 }

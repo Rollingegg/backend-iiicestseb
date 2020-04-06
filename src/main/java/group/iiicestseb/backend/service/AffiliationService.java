@@ -2,6 +2,7 @@ package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.entity.Affiliation;
 import group.iiicestseb.backend.vo.affiliation.AffiliationInfoVO;
+import group.iiicestseb.backend.vo.graph.Graph;
 
 import java.util.Collection;
 
@@ -50,5 +51,10 @@ public interface AffiliationService {
     AffiliationInfoVO selectAffiliationBasicInfoByAffiliationId(Integer id);
 
 
-
+    /**
+     * 机构图，带有相关的机构和术语信息
+     * @param id 机构id
+     * @return 机构图
+     */
+    Graph getAffiliationGraphPaperWithTerm( Integer id);
 }

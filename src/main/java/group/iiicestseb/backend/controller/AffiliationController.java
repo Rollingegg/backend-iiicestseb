@@ -33,4 +33,14 @@ public class AffiliationController {
     }
 
 
+    /**
+     * 机构图，带有相关的机构和术语信息
+     * @param id 机构id
+     * @return 机构图
+     */
+    @GetMapping("/graph/paper/with/term")
+    public Response getAffiliationGraphPaperWithTerm( @RequestParam("id") Integer id){
+        return  Response.buildSuccess(affiliationService.getAffiliationGraphPaperWithTerm(id));
+    }
+
 }

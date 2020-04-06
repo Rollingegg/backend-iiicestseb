@@ -2,7 +2,6 @@ package group.iiicestseb.backend.vo.graph;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 点VO
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Vertex {
     /**
      * 点uuid

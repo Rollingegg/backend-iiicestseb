@@ -92,4 +92,5 @@ public interface AffiliationMapper extends BaseMapper<Affiliation> {
     Collection<AffiliationInfoVO> selectAffiliationInfoByIdBatch(@Param("ids") Collection<Integer> ids);
 
 
+
 }
