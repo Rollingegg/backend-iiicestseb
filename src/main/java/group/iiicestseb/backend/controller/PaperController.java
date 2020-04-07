@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -98,9 +99,17 @@ public class PaperController {
     }
 
     @GetMapping("graph/paper-term-paper/center")
-    public Response getPaperGraphOfPTP(@RequestParam("id") @NotNull(message = PARAMETER_ERROR) Integer id) {
+    public Response getPaperGraphOfPTP(
+            @RequestParam("id")
+            @NotNull(message = PARAMETER_ERROR)
+                    Integer id) {
         return Response.buildSuccess(paperService.computeGraphOfPaperTermPaper(id));
     }
+    /*,
+            @RequestParam(name = "limit", defaultValue = "100")
+            @Min(value = 1, message = PARAMETER_ERROR)
+            @Max(value = 1000, message = PARAMETER_ERROR)
+                    Integer limit*/
 
 
 }

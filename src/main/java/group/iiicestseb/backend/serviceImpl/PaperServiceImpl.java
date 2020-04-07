@@ -14,7 +14,6 @@ import group.iiicestseb.backend.vo.graph.Edge;
 import group.iiicestseb.backend.vo.graph.Graph;
 import group.iiicestseb.backend.vo.graph.Vertex;
 import group.iiicestseb.backend.vo.paper.*;
-import group.iiicestseb.backend.vo.term.TermWithCountVO;
 import group.iiicestseb.backend.vo.term.TermWithHotVO;
 import org.springframework.stereotype.Service;
 
@@ -115,8 +114,7 @@ public class PaperServiceImpl implements PaperService {
     public Collection<PaperBasicVO> getAuthorRecentPaper(Integer id, int limit) {
         Collection<Paper> paperCollection = paperMapper.selectRecentPaperByAuthorId(id, limit);
         Collection<PaperBasicVO> paperBasicVOCollection = new ArrayList<>();
-        for (Iterator<Paper> iterator = paperCollection.iterator(); iterator.hasNext(); ) {
-            Paper next = iterator.next();
+        for (Paper next : paperCollection) {
             paperBasicVOCollection.add(PaperFactory.toPaperBasicVO(next));
         }
         return paperBasicVOCollection;
@@ -148,7 +146,7 @@ public class PaperServiceImpl implements PaperService {
             v.setContent(t);
             termVertexMap.putIfAbsent(t.getId(), v);
         }
-        Collection<PaperTerm> pts = paperTermMapper.selectByTermIds(termIds);
+        Collection<PaperTerm> pts = paperTermMapper.selectRelativePapersByTermIds(termIds);
         paperIds.add(id);
         for (PaperTerm pt : pts) {
             paperIds.add(pt.getPaperId());

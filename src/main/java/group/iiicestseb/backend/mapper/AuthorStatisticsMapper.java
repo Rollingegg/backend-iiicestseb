@@ -67,7 +67,8 @@ public interface AuthorStatisticsMapper extends BaseMapper<AuthorStatistics> {
             "   </foreach>) " +
             "   on duplicate key update " +
             "   h_index=values(h_index), g_index=values(g_index), " +
-            "   avg_cite=values(avg_cite), paper_num=values(paper_num)" +
+            "   avg_cite=values(avg_cite), paper_num=values(paper_num), " +
+            "   ase_paper_num=values(ase_paper_num), icse_paper_num=values(icse_paper_num) " +
             "</script>")
     Integer insertOrUpdateBatch(@Param("asClc") Collection<AuthorStatistics> authorStatistics);
 

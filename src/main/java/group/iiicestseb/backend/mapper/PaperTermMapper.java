@@ -61,15 +61,19 @@ public interface PaperTermMapper extends BaseMapper<PaperTerm> {
      * 查找和术语堆相关的论文
      *
      * @param termIds 术语集合
+     * @param limit 返回的论文数量上限
      * @return 论文id集合
      */
     @Select("<script> " +
-            "select * from paper_term pt where term_id in " +
+            "select * from paper_term pt, paper_statistics ps where term_id in " +
             "(null <foreach collection='termIds' item='i' separator='' > " +
             ",#{i}" +
             "</foreach>) " +
+            "and pt.paper_id = ps.paper_id " +
+            "order by ps.score desc " +
+//            "limit #{limit} " +
             "</script>")
-    Collection<PaperTerm> selectByTermIds(@Param("termIds") Collection<Integer> termIds);
+    Collection<PaperTerm> selectRelativePapersByTermIds(@Param("termIds") Collection<Integer> termIds);
 
 
 }
