@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -119,7 +120,7 @@ public class PaperControllerTest {
     }
 
     @Test
-    public void getAffiliationsRecentlyPublish() throws Exception{
+    public void getAffiliationsRecentlyPublish() throws Exception {
         Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
         mvc.perform(MockMvcRequestBuilders.get("/paper/affiliation/recently/publish")
                 .param("id", String.valueOf(affiliation.getId()))
@@ -135,7 +136,7 @@ public class PaperControllerTest {
     }
 
     @Test
-    public void getAffiliationsAllPublish() throws Exception{
+    public void getAffiliationsAllPublish() throws Exception {
         Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
         mvc.perform(MockMvcRequestBuilders.get("/paper/affiliation/all/publish")
                 .param("id", String.valueOf(affiliation.getId()))
@@ -149,11 +150,11 @@ public class PaperControllerTest {
     }
 
     @Test
-    public void getAuthorRecentlyPublish() throws  Exception{
+    public void getAuthorRecentlyPublish() throws Exception {
         Author author = authorService.findAuthorByName("author1");
         mvc.perform(MockMvcRequestBuilders.get("/paper/author/recently/publish")
                 .param("id", String.valueOf(author.getId()))
-                .param("limit","10")
+                .param("limit", "10")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
@@ -176,4 +177,61 @@ public class PaperControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[1].title").value("Standard1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").doesNotExist());
     }
+
+    @Test
+    public void getPaperGraphOfPTPTest() throws Exception {
+        Paper p = paperMapper.selectByArticleId(111111111);
+        mvc.perform(MockMvcRequestBuilders.get("/paper/graph/paper-term-paper/center")
+                .param("id", String.valueOf(p.getId()))
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.centerId").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.name").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes.length()").value(7))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[0].name").value("Control2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[0].size").value(0.5))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[5].type").value("paper"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[5].name").doesNotExist())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[5].size").value(0.9933071490757153))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges.length()").value(8))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[0].source").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[0].target").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[0].weight").value(0.9933071490757153))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[6].source").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[6].target").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[6].weight").value(0.9933071490757153));
+    }
+
+    @Test
+    public void getPaperGraphOfPTPLimitTest() throws Exception {
+        Paper p = paperMapper.selectByArticleId(111111111);
+        mvc.perform(MockMvcRequestBuilders.get("/paper/graph/paper-term-paper/center")
+                .param("id", String.valueOf(p.getId()))
+                .param("paperNumLimit", String.valueOf(1))
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.centerId").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.name").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes.length()").value(6))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[0].name").value("Control2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[0].size").value(0.5))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[4].type").value("paper"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[4].name").doesNotExist())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[4].size").value(0.9933071490757153))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[4].content.title").value("Standard4"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[5].type").value("paper"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[5].name").doesNotExist())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[5].size").value(0.5))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[5].content.title").value("Standard1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges.length()").value(6))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[0].source").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[0].target").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[0].weight").value(0.9933071490757153))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[4].source").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[4].target").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.edges[4].weight").value(0.9933071490757153));
+    }
+
 }

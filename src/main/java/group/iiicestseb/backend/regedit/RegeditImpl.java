@@ -318,8 +318,8 @@ public class RegeditImpl implements Regedit {
     }
 
     @Override
-    public Graph computeGraphOfPaperTermPaper(Integer id) {
-        return paperService.computeGraphOfPaperTermPaper(id);
+    public Graph computeGraphOfPaperTermPaper(Integer id, Integer paperLimit) {
+        return paperService.computeGraphOfPaperTermPaper(id, paperLimit);
     }
 
     //---------------------------TermService-------------------------------

@@ -2,15 +2,14 @@ package group.iiicestseb.backend.vo.graph;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * 点VO
- *
- * @author wph
+ * @author jh
  */
 @Data
 @AllArgsConstructor
-public class Vertex {
+public class Vertex implements Comparable<Vertex> {
     /**
      * 点uuid
      */
@@ -49,6 +48,7 @@ public class Vertex {
         Affiliation("affiliation"),
         Paper("paper"),
         Term("term");
+
         public final String value;
 
         TYPE(String value) {
@@ -64,6 +64,26 @@ public class Vertex {
     public Vertex(String id, TYPE type) {
         this.id = id;
         this.type = type.value;
+    }
+
+    @Override
+    public int compareTo(@NotNull Vertex o) {
+        int result = this.type.compareTo(o.type);
+        if (result == 0) {
+            return this.size > o.size ? 1 : this.size.equals(o.size) ? 0 : -1;
+        }
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return this.id.equals(((Vertex) o).id);
     }
 
 }

@@ -102,14 +102,17 @@ public class PaperController {
     public Response getPaperGraphOfPTP(
             @RequestParam("id")
             @NotNull(message = PARAMETER_ERROR)
-                    Integer id) {
-        return Response.buildSuccess(paperService.computeGraphOfPaperTermPaper(id));
-    }
-    /*,
-            @RequestParam(name = "limit", defaultValue = "100")
+                    Integer id,
+            @RequestParam(name = "paperNumLimit", defaultValue = "10")
             @Min(value = 1, message = PARAMETER_ERROR)
             @Max(value = 1000, message = PARAMETER_ERROR)
-                    Integer limit*/
+                    Integer paperLimit,
+            @RequestParam(name = "paperDegreeLimit", defaultValue = "30")
+            @Min(value = 1, message = PARAMETER_ERROR)
+            @Max(value = 1000, message = PARAMETER_ERROR)
+                    Integer paperDegreeLimit) {
+        return Response.buildSuccess(paperService.computeGraphOfPaperTermPaper(id, paperLimit));
+    }
 
 
 }

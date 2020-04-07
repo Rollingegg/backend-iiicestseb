@@ -10,11 +10,6 @@ import java.util.UUID;
  */
 public class StringUtil {
 
-    public static String toUUID(Integer id, String type) {
-        return type + "-" + id;
-    }
-
-
     private static final Map<Character, Character> ACCENTS = new TreeMap<Character, Character>() {
         {
             put('Á', 'A');
@@ -57,6 +52,10 @@ public class StringUtil {
         }
     };
 
+    public static String toUUID(Integer id, String type) {
+        return type + "-" + id;
+    }
+
     public static String stripAccents(String raw) {
         if (raw == null) {
             return "";
@@ -70,4 +69,6 @@ public class StringUtil {
         }
         return sb.toString();
     }
+
+
 }

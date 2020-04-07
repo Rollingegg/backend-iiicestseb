@@ -126,17 +126,20 @@ public class PaperServiceImpl implements PaperService {
     }
 
     @Override
-    public Graph computeGraphOfPaperTermPaper(Integer id) {
+    public Graph computeGraphOfPaperTermPaper(Integer id, Integer paperLimit) {
+        // 初始化中心点
         Map<Integer, Vertex> paperVertexMap = new HashMap<>();
         String centerId = StringUtil.toUUID(id, Vertex.TYPE.Paper.value);
         Vertex center = new Vertex(centerId, Vertex.TYPE.Paper);
         center.setSize(1.0);
         paperVertexMap.put(id, center);
+        // 计算和中心点相关的热词领域
         Map<Integer, Vertex> termVertexMap = new HashMap<>();
         Collection<Edge> edges = new LinkedList<>();
         Collection<TermWithHotVO> terms = paperTermMapper.selectHotTermByPaperId(id, Integer.MAX_VALUE);
         Collection<Integer> termIds = new LinkedList<>();
         Collection<Integer> paperIds = new LinkedList<>();
+        //生成热词点并置入图
         for (TermWithHotVO t : terms) {
             termIds.add(t.getId());
             String uuid = StringUtil.toUUID(t.getId(), Vertex.TYPE.Term.value);
@@ -146,11 +149,13 @@ public class PaperServiceImpl implements PaperService {
             v.setContent(t);
             termVertexMap.putIfAbsent(t.getId(), v);
         }
+        //计算并生成二次关系的论文点
         Collection<PaperTerm> pts = paperTermMapper.selectRelativePapersByTermIds(termIds);
         paperIds.add(id);
         for (PaperTerm pt : pts) {
             paperIds.add(pt.getPaperId());
             String uuid = StringUtil.toUUID(pt.getPaperId(), Vertex.TYPE.Paper.value);
+            // 跳过中心点，否则中心点的size会很大
             if (!uuid.equals(centerId)) {
                 Vertex v;
                 if ((v = paperVertexMap.get(pt.getPaperId())) == null) {
@@ -168,6 +173,7 @@ public class PaperServiceImpl implements PaperService {
             e.setWeight(1.0);
             edges.add(e);
         }
+        // 为论文点填充内容
         Collection<PaperVertex> paperVertices = paperMapper.selectPaperVertexByIds(paperIds);
         for (PaperVertex pv : paperVertices) {
             paperVertexMap.get(pv.getId()).setContent(pv);
@@ -179,7 +185,22 @@ public class PaperServiceImpl implements PaperService {
         Collection<Vertex> vertices = new LinkedList<>(paperVertexMap.values());
         vertices.addAll(termVertexMap.values());
         graph.setVertexes(vertices);
+        // 图归一并排序后进行过滤
         graph.normalize();
+        vertices = graph.getVertexes();
+        List<Vertex> remains = new LinkedList<>();
+        remains.add(center);
+        int count = 0;
+        for (Vertex v : vertices) {
+            if (v.getType().equals(Vertex.TYPE.Paper.value)) {
+                if (count >= Math.min(paperLimit, vertices.size())) {
+                    break;
+                }
+                count++;
+            }
+            remains.add(v);
+        }
+        graph.filterVertex((o) -> !remains.contains(o));
         return graph;
     }
 

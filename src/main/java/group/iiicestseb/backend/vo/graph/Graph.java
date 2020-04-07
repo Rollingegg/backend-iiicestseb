@@ -6,13 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
- * @author wph
- * 图谱VO
+ * @author jh
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,6 +38,32 @@ public class Graph {
      */
     private Collection<Edge> edges;
 
+    /**
+     * 过滤掉filter函数test为true的点
+     *
+     * @param filter 过滤函数
+     */
+    public void filterVertex(Predicate<Vertex> filter) {
+        vertexes.removeIf(filter);
+        Collection<String> vId = new LinkedList<>();
+        for (Vertex v : vertexes) {
+            vId.add(v.getId());
+        }
+        filterEdge(edge -> !vId.contains(edge.source) || !vId.contains(edge.target));
+    }
+
+    /**
+     * 过滤掉filter函数test为true的点
+     *
+     * @param filter 过滤函数
+     */
+    public void filterEdge(Predicate<Edge> filter) {
+        edges.removeIf(filter);
+    }
+
+    /**
+     * 归一化并排序，执行该操作后点集和边集都为新对象
+     */
     public void normalize() {
         normalizeVertices();
         normalizeEdges();
@@ -64,6 +89,10 @@ public class Graph {
             String type = v.getType();
             v.setSize(NumberUtil.sigmoid(5 * (v.getSize() - minMap.get(type)) / sectionMap.get(type)));
         }
+        List<Vertex> temp = new ArrayList<>(vertexes);
+        temp.sort(Vertex::compareTo);
+        Collections.reverse(temp);
+        vertexes = temp;
     }
 
     private void normalizeEdges() {
@@ -79,16 +108,10 @@ public class Graph {
         for (Edge e : edges) {
             e.setWeight(NumberUtil.sigmoid(5 * (e.getWeight() - min) / section));
         }
+        List<Edge> temp = new ArrayList<>(edges);
+        temp.sort((Edge::compareTo));
+        Collections.reverse(temp);
+        edges = temp;
     }
-
-//    /**
-//     * 区间：点最小值
-//     */
-//    HashMap<String,Double> min = new HashMap<>();
-//
-//    /**
-//     * 区间：点最大值
-//     */
-//    HashMap<String,Double> max = new HashMap<>();
 
 }

@@ -105,7 +105,8 @@ public interface PaperService {
      * 计算
      *
      * @param id 论文id
+     * @param paperLimit 论文数量上限
      * @return 构建后的图
      */
-    Graph computeGraphOfPaperTermPaper(Integer id);
+    Graph computeGraphOfPaperTermPaper(Integer id, Integer paperLimit);
 }
