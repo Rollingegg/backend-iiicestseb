@@ -16,7 +16,7 @@ node{
     }
     
     stage('report'){
-        jacoco()
+        jacoco classPattern: '**/*serviceImpl,**/*controller', sourceInclusionPattern: '**/*ServiceImpl.java,**/*Controller.java'
     }
     
     stage('clean test'){
