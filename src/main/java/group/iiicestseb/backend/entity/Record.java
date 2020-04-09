@@ -1,36 +1,54 @@
 package group.iiicestseb.backend.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.*;
 
-import lombok.Data;
+import java.util.Objects;
 
 /**
- * @author wph
- * @date 2020/2/29
+ * @author jh
+ * @date 2020/3/25
  */
+@TableName("record")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Record {
 
-    /**
-     * 历史记录id
-     */
-    private Integer id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private int id;
 
-    /**
-     * 搜索记录字段
-     */
+    @TableField("search_record")
     private String searchRecord;
 
-    /**
-     * 历史浏览记录
-     */
-    private String browseRecord;
+    @TableField("user_id")
+    private Integer userId;
 
-    public Record(String searchRecord, String browseRecord) {
-        this.searchRecord = searchRecord;
-        this.browseRecord = browseRecord;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    private User userByUserId;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Record that = (Record) o;
+        return id == that.id &&
+                Objects.equals(searchRecord, that.searchRecord) &&
+                Objects.equals(userId, that.userId);
     }
 
-    public Record() {
-        super();
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, searchRecord, userId);
     }
+
 }

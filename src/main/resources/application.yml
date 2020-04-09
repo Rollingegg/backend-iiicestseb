@@ -4,12 +4,59 @@ spring:
   datasource:
     type: com.mysql.cj.jdbc.MysqlDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.dwxh.xyz:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://3.dwxh.xyz:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
     username: root
     password: IIICEStseB
+
+    druid:
+      #初始化大小
+      initialSize: 5
+      #最小值
+      minIdle: 5
+      #最大值
+      maxActive: 200
+      #最大等待时间，配置获取连接等待超时，时间单位都是毫秒ms
+      maxWait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接
+      timeBetweenEvictionRunsMillis: 60000
+      #配置一个连接在池中最小生存的时间
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，
+      #'wall'用于防火墙，SpringBoot中没有log4j，我改成了log4j2
+      filters: stat,wall,log4j2
+      #最大PSCache连接
+      maxPoolPreparedStatementPerConnectionSize: 20
+      useGlobalDataSourceStat: true
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+      # 配置StatFilter
+      web-stat-filter:
+        #默认为false，设置为true启动
+        enabled: true
+        url-pattern: "/*"
+        exclusions: "*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*"
+      #配置StatViewServlet
+      stat-view-servlet:
+        url-pattern: "/druid/*"
+        #允许那些ip
+        allow: 127.0.0.1
+        login-username: admin
+        login-password: 123456
+        #禁止那些ip
+        #deny: 192.168.1.102
+        #是否可以重置
+        reset-enable: true
+        #启用
+        enabled: true
+
+
   jackson:
     time-zone: GMT+8
-
   servlet:
     multipart:
       max-file-size:
@@ -25,8 +72,16 @@ server:
   tomcat:
     uri-encoding: utf-8
   port: 4000
-
-
+#xd让我帮忙做的测试，先留着
+#---
+#spring:
+#  profiles: test_another_database
+#  datasource:
+#    type: com.mysql.cj.jdbc.MysqlDataSource
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://3.dwxh.xyz:12345/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
+#    username: IIICEStseB
+#    password: IIICEStseB
 ---
 spring:
   profiles: prod
@@ -46,8 +101,19 @@ spring:
     username: root
 logging:
   level:
+    org.hibernate.SQL: debug
+    org.engine.QueryParameters: debug
+    org.hibernate.engine.query.HQLQueryPlan: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
     group.iiicestseb.backend: DEBUG
 server:
+  ssl:
+    key-store: classpath:3-dwxh-xyz.jks
+    key-store-type: JKS
+    key-store-password: IIICEStseB
+    protocol: TLSv1.2
+  http2:
+    enabled: true
   port: 4001
 management:
   endpoints:
@@ -60,29 +126,15 @@ spring:
   devtools:
     add-properties: true
   datasource:
-    username: root
-logging:
-  level:
-    group.iiicestseb.backend: DEBUG
-server:
-  port: 4001
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
----
-
-spring:
-  profiles: test
-  devtools:
-    add-properties: true
-  datasource:
-    username: root
+    url: jdbc:mysql://172.29.4.23:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
+    username: IIICEStseB
     password: IIICEStseB
 logging:
   level:
+    org.hibernate.SQL: debug
+    org.engine.QueryParameters: debug
+    org.hibernate.engine.query.HQLQueryPlan: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
     group.iiicestseb.backend: DEBUG
 server:
   port: 4001
@@ -92,34 +144,6 @@ management:
       exposure:
         include: "*"
 
----
-
-spring:
-  profiles: dwh
-  datasource:
-    password: 123456
-    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    hikari:
-      max-lifetime: 3600000
-  devtools:
-    add-properties: true
-server:
-  servlet:
-    session:
-      timeout: 7200
-logging:
-  level:
-    group:
-      iiicestseb:
-        backend: DEBUG
-management:
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: "*"
 ---
 spring:
   profiles: jh
@@ -136,6 +160,10 @@ server:
       timeout: 7200
 logging:
   level:
+    org.hibernate.SQL: debug
+    org.engine.QueryParameters: debug
+    org.hibernate.engine.query.HQLQueryPlan: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
     group:
       iiicestseb:
         backend:
@@ -154,11 +182,13 @@ spring:
   profiles: wph
   datasource:
     password: shengdasogood
-    url: jdbc:mysql://localhost:3306/iiicestseb?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/iiicestseb?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowMultiQueries=true
+
     hikari:
       max-lifetime: 3600000
     username: root
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   devtools:
     add-properties: true
 
@@ -168,36 +198,11 @@ server:
       timeout: 7200
 logging:
   level:
-    group:
-      iiicestseb:
-        backend:
-          DEBUG
-management:
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+    org.hibernate.SQL: debug
+    org.engine.QueryParameters: debug
+    org.hibernate.engine.query.HQLQueryPlan: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
 
----
-spring:
-  profiles: lwj
-  datasource:
-    username: root
-    password:  LWJsteve98
-    url: jdbc:mysql://localhost:3306/IIICEStseB?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    hikari:
-      max-lifetime: 3600000
-  devtools:
-    add-properties: true
-server:
-  servlet:
-    session:
-      timeout: 7200
-logging:
-  level:
     group:
       iiicestseb:
         backend:
@@ -234,5 +239,4 @@ management:
     web:
       exposure:
         include: "*"
-
 ---

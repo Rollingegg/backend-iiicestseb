@@ -1,17 +1,16 @@
 package group.iiicestseb.backend.serviceImpl;
 
-import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.exception.paper.NoPaperFoundException;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.mapper.PaperMapper;
+import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.SearchService;
-import group.iiicestseb.backend.vo.AuthorInfoVO;
-import group.iiicestseb.backend.vo.PaperInfoVO;
-import group.iiicestseb.backend.vo.SearchResultVO;
+import group.iiicestseb.backend.vo.paper.SearchVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Collection;
 
 /**
  * @author jh
@@ -20,36 +19,34 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Transactional(rollbackFor = Exception.class)
 @Service("Search")
 public class SearchServiceImpl implements SearchService {
-    public final String ALL = "all";
-    public final String AFFILIATION ="affiliation_name";
-    public final String AUTHOR ="author_name";
-    public final String TERM ="term";
+
+    @Resource(name = "Regedit")
+    private Regedit regedit;
+//    public static final String ALL = "all";
+//    public static final String AFFILIATION ="affiliation_name";
+//    public static final String TITLE ="title";
+//    public static final String ABSTRACT ="paper_abstract";
+//    public static final String DOI ="doi";
+//    public static final String AUTHOR ="author_name";
+//    public static final String TERM ="term";
 
     @Resource
     private PaperMapper paperMapper;
-    @Override
-    public CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaper(String  type, String keyword,Integer limit){
 
-        if (ALL.equals(type)){
-            //all类型的全模糊查询
-            return paperMapper.simpleSearchPaperAll(keyword,limit);
-        }
-        else {
-            //单一类型的模糊查询
-            if (AUTHOR.equals(type)) {
-                type = "au1.name";
-            } else if (AFFILIATION.equals(type)) {
-                type = "af1.name";
-            } else if (TERM.equals(type)) {
-                type = "t1.word";
-            }
-
-            return paperMapper.simpleSearchPaperByType(type, keyword,limit);
-        }
-    }
 
     @Override
-    public CopyOnWriteArrayList<PaperInfoVO> advancedSearchPaper(AdvancedSearchForm advancedSearchForm, Integer limit) {
-        return paperMapper.advancedSearch(advancedSearchForm,limit);
+    public SearchVO advancedSearchPaper(AdvancedSearchForm advancedSearchForm) {
+
+        advancedSearchForm.setPage(advancedSearchForm.getPage() * advancedSearchForm.getLimit());
+        Collection<Integer> resultId = paperMapper.advancedSearch(advancedSearchForm);
+        int paperCount = resultId.size();
+        if (resultId.size() == 0) {
+            throw new NoPaperFoundException();
+        }
+        SearchVO searchVO = new SearchVO();
+        searchVO.setPaperCount(paperCount);
+        searchVO.setSearchResultVOCollection(paperMapper.getSearchResult(resultId, advancedSearchForm.getPage(), advancedSearchForm.getLimit()));
+
+        return searchVO;
     }
 }

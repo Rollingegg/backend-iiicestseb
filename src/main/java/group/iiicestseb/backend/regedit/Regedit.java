@@ -2,5 +2,9 @@ package group.iiicestseb.backend.regedit;
 
 import group.iiicestseb.backend.service.*;
 
-public interface Regedit extends AffiliationService, AuthorService, PaperManageService, UserService ,SearchService{
+/**
+ * @author jh
+ * @date 2020/3/22
+ */
+public interface Regedit extends TermService, AffiliationService, AuthorService, ManageService, UserService, SearchService, ConferenceService, PaperService {
 }

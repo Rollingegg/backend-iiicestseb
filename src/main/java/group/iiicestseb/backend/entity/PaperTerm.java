@@ -1,42 +1,48 @@
 package group.iiicestseb.backend.entity;
 
-import lombok.Data;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.*;
+
+import java.util.Objects;
+
+
 /**
- * @author wph
- * @date 2020/2/29
+ * @author jh
+ * @date 2020/3/25
  */
+@TableName("paper_term")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaperTerm {
+    @TableField("paper_id")
+    private int paperId;
 
-    /**
-     * 文献术语_关系id
-     */
-    private Integer id;
+    @TableField("term_id")
+    private int termId;
 
-    /**
-     * 文献id
-     */
-    private Integer paperId;
+//    @ManyToOne
+//    @JoinColumn(name = "paper_id", referencedColumnName = "id", nullable = false)
+//    private Paper paperByPaperId;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "term_id", referencedColumnName = "id", nullable = false)
+//    private Term termByTermId;
 
-    /**
-     * 术语id
-     */
-    private Integer termId;
 
-    public PaperTerm() {
-        super();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PaperTerm that = (PaperTerm) o;
+        return paperId == that.paperId &&
+                termId == that.termId;
     }
 
-
-    public PaperTerm(Integer id, Integer paperId, Integer termId) {
-        this.id = id;
-        this.paperId = paperId;
-        this.termId = termId;
-    }
-
-    public PaperTerm(Paper paper, Term term) {
-        this.paperId = paper.getId();
-        this.termId = term.getId();
+    @Override
+    public int hashCode() {
+        return Objects.hash(paperId, termId);
     }
 
 }

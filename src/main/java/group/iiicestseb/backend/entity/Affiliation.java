@@ -1,35 +1,47 @@
 package group.iiicestseb.backend.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Objects;
 
 /**
- * @author wph
- * @date 2020/2/29
+ * @author jh
+ * @date 2020/3/25
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@TableName("affiliation")
 public class Affiliation {
 
-    /**
-     * 机构id
-     */
+    @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * 机构名
-     */
+    @TableField("name")
     private String name;
 
-    public Affiliation(int id, String name) {
-        this.id = id;
-        this.name = name;
+//    @OneToMany(mappedBy = "affiliationByAffiliationId")
+//    private Collection<Author> authorsById;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Affiliation that = (Affiliation) o;
+        return id == that.id &&
+                Objects.equals(name, that.name);
     }
 
-    public Affiliation(String name) {
-        this.name = name;
-    }
-
-    public Affiliation() {
-        super();
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
 }

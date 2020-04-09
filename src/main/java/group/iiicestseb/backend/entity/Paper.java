@@ -1,124 +1,115 @@
 package group.iiicestseb.backend.entity;
 
-import group.iiicestseb.backend.form.PaperForm;
-import lombok.Data;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+
 
 /**
- * @author wph
- * @date 2020/2/29
+ * @author jh
+ * @date 2020/3/25
  */
+@TableName(value = "paper")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Paper {
+    @TableId(value = "id", type = IdType.AUTO)
+    private int id;
 
-    /**
-     * 文献id
-     */
-    private Integer id;
+    @TableField("pdf_url")
+    private String pdfUrl;
 
-    /**
-     * 文献所属出版刊物名称
-     */
-    private String publicationTitle;
+    @TableField("author_keywords")
+    private String authorKeywords;
 
-    /**
-     * 刊物所属出版社id
-     */
-    private Integer publisherId;
+    @TableField("title")
+    private String title;
 
-    /**
-     * 文献所属会议id
-     */
-    private Integer conferenceId;
-
-    /**
-     * 文献pdf连接
-     */
-    private String pdfLink;
-
-    /**
-     * DOI
-     */
-    private String doi;
-
-    /**
-     * 文献标题
-     */
-    private String paperTitle;
-
-    /**
-     * 摘要
-     */
+    @TableField("paper_abstract")
     private String paperAbstract;
 
-    /**
-     * 参考文献数
-     */
-    private Integer referenceCount;
+    @TableField("doi")
+    private String doi;
 
-    /**
-     * 文献被引用次数
-     */
-    private Integer citationCount;
+    @TableField("publication_title")
+    private String publicationTitle;
 
-    /**
-     * 出版年份
-     */
-    private LocalDateTime publicationYear;
+    @TableField("citation_count_paper")
+    private Integer citationCountPaper;
 
-    /**
-     * 起始页
-     */
+    @TableField("citation_count_patent")
+    private Integer citationCountPatent;
+
+    @TableField("total_downloads")
+    private Integer totalDownloads;
+
+    @TableField("start_page")
     private String startPage;
 
-    /**
-     * 结束页
-     */
+    @TableField("end_page")
     private String endPage;
 
-    /**
-     * document_identifier （讨论中不知道啥意思的项，保留英文）
-     */
-    private String documentIdentifier;
+    @TableField("pub_link")
+    private String pubLink;
 
-    public Paper(Integer id, String publicationTitle, Integer publisherId, Integer conferenceId, String pdfLink, String doi, String paperTitle, String paperAbstract, Integer referenceCount, Integer citationCount, LocalDateTime publicationYear, String startPage, String endPage, String documentIdentifier) {
-        this.id = id;
-        this.publicationTitle = publicationTitle;
-        this.publisherId = publisherId;
-        this.conferenceId = conferenceId;
-        this.pdfLink = pdfLink;
-        this.doi = doi;
-        this.paperTitle = paperTitle;
-        this.paperAbstract = paperAbstract;
-        this.referenceCount = referenceCount;
-        this.citationCount = citationCount;
-        this.publicationYear = publicationYear;
-        this.startPage = startPage;
-        this.endPage = endPage;
-        this.documentIdentifier = documentIdentifier;
+    @TableField("issue_link")
+    private String issueLink;
+
+    @TableField("publisher")
+    private String publisher;
+
+    @TableField("conf_loc")
+    private String confLoc;
+
+    @TableField("chron_date")
+    private LocalDateTime chronDate;
+
+    @TableField("article_id")
+    private Integer articleId;
+
+    @TableField("conference_id")
+    private Integer conferenceId;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Paper that = (Paper) o;
+        return id == that.id &&
+                Objects.equals(pdfUrl, that.pdfUrl) &&
+                Objects.equals(authorKeywords, that.authorKeywords) &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(paperAbstract, that.paperAbstract) &&
+                Objects.equals(doi, that.doi) &&
+                Objects.equals(publicationTitle, that.publicationTitle) &&
+                Objects.equals(citationCountPaper, that.citationCountPaper) &&
+                Objects.equals(citationCountPatent, that.citationCountPatent) &&
+                Objects.equals(totalDownloads, that.totalDownloads) &&
+                Objects.equals(startPage, that.startPage) &&
+                Objects.equals(endPage, that.endPage) &&
+                Objects.equals(pubLink, that.pubLink) &&
+                Objects.equals(issueLink, that.issueLink) &&
+                Objects.equals(publisher, that.publisher) &&
+                Objects.equals(confLoc, that.confLoc) &&
+                Objects.equals(chronDate, that.chronDate)
+                && Objects.equals(articleId, that.articleId)
+                &&Objects.equals(conferenceId, that.conferenceId);
     }
 
-    public Paper() {
-        super();
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, pdfUrl, authorKeywords, title, paperAbstract, doi, publicationTitle, citationCountPaper, citationCountPatent, totalDownloads, startPage, endPage, pubLink, issueLink, publisher, confLoc, chronDate,articleId, conferenceId);
     }
 
-
-    public Paper(PaperForm paperForm){
-        this.citationCount = paperForm.getCitationCount();
-        this.conferenceId = paperForm.getConferenceId();
-        this.documentIdentifier = paperForm.getDocumentIdentifier();
-        this.doi = paperForm.getDoi();
-        this.endPage = paperForm.getEndPage();
-        this.startPage = paperForm.getStartPage();
-        this.id = paperForm.getId();
-        this.pdfLink = paperForm.getPdfLink();
-        this.paperAbstract = paperForm.getPaperAbstract();
-        this.paperTitle = paperForm.getPaperTitle();
-        this.publicationYear = paperForm.getPublicationYear();
-        this.referenceCount = paperForm.getReferenceCount();
-        this.publicationTitle = paperForm.getPublicationTitle();
-        this.publisherId = paperForm.getPublisherId();
-
-    }
 }

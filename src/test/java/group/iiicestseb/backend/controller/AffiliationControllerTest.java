@@ -1,9 +1,8 @@
 package group.iiicestseb.backend.controller;
 
 import group.iiicestseb.backend.entity.Affiliation;
-import group.iiicestseb.backend.entity.Author;
-import group.iiicestseb.backend.mapper.AffiliationMapper;
-import group.iiicestseb.backend.mapper.AuthorMapper;
+import group.iiicestseb.backend.serviceImpl.AffiliationServiceImpl;
+import group.iiicestseb.backend.utils.JSONUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +20,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.Resource;
 
-import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
@@ -32,28 +30,41 @@ public class AffiliationControllerTest {
     private MockMvc mvc;
     private MockHttpSession session;
 
-    @Resource
-    AffiliationMapper affiliationMapper;
+    @Resource(name = "Affiliation")
+    AffiliationServiceImpl affiliationService;
 
     @Before
     public void setUp() throws Exception {
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
         session = new MockHttpSession();
-        affiliationMapper.insert(new Affiliation("nju"));
+        JSONUtil.loadTestData();
     }
+
+
     @Test
-    public void getAffiliationInfo() throws Exception {
-
-
-
-
+    public void getAffiliationBasicInfo() throws Exception {
+        Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
         mvc.perform(MockMvcRequestBuilders.get("/affiliation/info")
-                .param("name","nju")
+                .param("id", String.valueOf(affiliation.getId()))
                 .accept(MediaType.APPLICATION_JSON)
-                .session(session)
-        ).andExpect(MockMvcResultMatchers.status().isOk()) //验证响应contentType
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .session(session))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.paperNum").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.authorNum").value(2));
+
+    }
+
+    @Test
+    public void getAffiliationGraphPaperWithTerm() throws Exception{
+        Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
+        mvc.perform(MockMvcRequestBuilders.get("/affiliation/graph/paper/with/term")
+                .param("id", String.valueOf(affiliation.getId()))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[8]").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[9]").doesNotExist());
     }
 }

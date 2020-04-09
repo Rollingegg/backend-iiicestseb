@@ -1,8 +1,8 @@
 package group.iiicestseb.backend.utils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 /**
  * @author jh
@@ -52,7 +52,14 @@ public class StringUtil {
         }
     };
 
+    public static String toUUID(Integer id, String type) {
+        return type + "-" + id;
+    }
+
     public static String stripAccents(String raw) {
+        if (raw == null) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder(raw);
         for (int i = 0; i < raw.length(); i++) {
             char c = raw.charAt(i);
@@ -62,4 +69,6 @@ public class StringUtil {
         }
         return sb.toString();
     }
+
+
 }

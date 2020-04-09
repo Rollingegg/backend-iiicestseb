@@ -1,28 +1,60 @@
 package group.iiicestseb.backend.service;
 
 import group.iiicestseb.backend.entity.Affiliation;
-import group.iiicestseb.backend.vo.AffiliationInfoVO;
+import group.iiicestseb.backend.vo.affiliation.AffiliationInfoVO;
+import group.iiicestseb.backend.vo.graph.Graph;
+
+import java.util.Collection;
 
 /**
  * @author wph
  * @date 2020/03/01
  */
+
 public interface AffiliationService {
 
     /**
-     * 获取机构页面的机构详细信息
-     * @param name 机构名称
-     * @return 机构详细信息
+     * 通过机构名查找机构
+     *
+     * @param name 机构名
+     * @return 机构PO
      */
-    public AffiliationInfoVO getAffiliationInfo(String name);
+    Affiliation findAffiliationByName(String name);
+
+    /**
+     * 保存机构
+     * @param affiliation 机构PO
+     */
+    void saveAffiliation(Affiliation affiliation);
+
+    /**
+     * 通过id批量获取作者的机构
+     *
+     * @param ids id列表
+     * @return 机构集合
+     */
+    Collection<Affiliation> findAffiliationByIdBatch(Collection<Integer> ids);
+
+    /**
+     * 批量查询机构详情
+     *
+     * @param ids 机构id集合
+     * @return 机构详情集合
+     */
+    Collection<AffiliationInfoVO> findAffiliationInfoByIdBatch(Collection<Integer> ids);
+
+    /**
+     * 根据机构名称查询其基本信息
+     * @param id 机构id
+     * @return 机构基本信息
+     */
+    AffiliationInfoVO selectAffiliationBasicInfoByAffiliationId(Integer id);
 
 
     /**
-     * 通过id查找Affiliation
+     * 机构图，带有相关的机构和术语信息
      * @param id 机构id
-     * @return 机构实体
+     * @return 机构图
      */
-    public Affiliation selectAffiliationById(int id);
-
-
+    Graph getAffiliationGraphPaperWithTerm( Integer id);
 }

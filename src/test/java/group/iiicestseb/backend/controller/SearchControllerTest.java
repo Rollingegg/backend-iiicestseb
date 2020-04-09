@@ -1,18 +1,22 @@
 package group.iiicestseb.backend.controller;
 
+
 import com.alibaba.fastjson.JSON;
-import group.iiicestseb.backend.entity.*;
+import group.iiicestseb.backend.exception.paper.PaperFormException;
+import group.iiicestseb.backend.exception.paper.PaperTypeException;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
-import group.iiicestseb.backend.form.PaperForm;
-import group.iiicestseb.backend.mapper.AffiliationMapper;
-import group.iiicestseb.backend.mapper.AuthorMapper;
-import group.iiicestseb.backend.mapper.PaperMapper;
-import group.iiicestseb.backend.mapper.StatisticsMapper;
-import group.iiicestseb.backend.service.StatisticsService;
-import org.apache.ibatis.annotations.ResultMap;
+import group.iiicestseb.backend.service.SearchService;
+import group.iiicestseb.backend.vo.paper.SearchResultVO;
+import group.iiicestseb.backend.vo.paper.SearchVO;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -25,11 +29,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @Transactional
@@ -37,121 +39,147 @@ public class SearchControllerTest {
     @Autowired
     private WebApplicationContext wac;
     private MockMvc mvc;
+    private MockMvc mvcStandalone;
     private MockHttpSession session;
-    @Resource
-    StatisticsService statisticsService;
-    @Resource
-    PaperMapper paperMapper;
-    @Resource
-    AuthorMapper authorMapper;
-    @Resource
-    AffiliationMapper affiliationMapper;
-    private Paper paper1;
-    private Paper paper2;
-    private  Conference c;
-    private Publisher p;
-    private Affiliation a;
 
-    private void createPaper(Paper paper,String paper_title,String doi,String abstarct,String authorname,String affiliationname){
-//        paper = new Paper();
-//        paper.setPaperTitle(paper_title);
-//        paper.setPaperAbstract(doi);
-//        paper.setDoi(doi);
-//        Author author = new Author();
-//        author.setName(authorname);
-//        a = new Affiliation();
-//        a.setName(affiliationname);
-//        affiliationMapper.insert(a);
-//        author.setAffiliationId(a.getId());
-//        authorMapper.insert(author);
-//        paper.setPublisherId(p.getId());
-//        paper.setConferenceId(c.getId());
-//        paperMapper.insert(paper);
-//        Publish publish = new Publish(paper,author);
-//        List<Publish> publishes = new ArrayList<>();
-//        publishes.add(publish);
-//        paperMapper.insertPublishList(publishes);
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Mock
+    SearchService searchServiceStub;
+    @InjectMocks
+    SearchController searchController;
 
 
-
-    }
+    private List<SearchResultVO> searchResultVOList = new ArrayList<>();
 
 
     @Before
     public void setUp() throws Exception {
-        mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        MockitoAnnotations.initMocks(this);
         session = new MockHttpSession();
-        c = new Conference("iee");
-        p = new Publisher("nju");
-        List<Conference> conferenceList = new ArrayList<>();
-        List<Publisher> publisherList = new ArrayList<>();
-        conferenceList.add(c);
-        publisherList.add(p);
-        paperMapper.insertConferenceList(conferenceList);
-        paperMapper.insertPublisherList(publisherList);
-        statisticsService.loadExistedCSV("Standard.csv");
+        mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mvcStandalone = MockMvcBuilders.standaloneSetup(searchController).build();
 
+        SearchResultVO searchResultVO = new SearchResultVO();
+        searchResultVO.setId(1);
+        searchResultVOList.add(searchResultVO);
 
-
-
-        createPaper(paper1,"a","100","test1","hxd","nju");
-        createPaper(paper2,"b","1010","test2","jh","nju");
     }
+
+    /**
+     * 正常搜索情况
+     *
+     * @throws Exception 无
+     */
     @Test
-    public void simpleSearchPaper() throws Exception{
-        mvc.perform(MockMvcRequestBuilders.get("/search/simple")
-                .param("type", "author_name")
-                .param("keyword", "an")
-                .accept(MediaType.APPLICATION_JSON)
-                .session(session)
-        ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists())
-        ;
+    public void advancedPaperSuccess() throws Exception {
+        AdvancedSearchForm advancedSearchForm = new AdvancedSearchForm();
+        advancedSearchForm.setTermKeyword(null);
+        advancedSearchForm.setTitleKeyword("a");
+        advancedSearchForm.setAllKeyword("e");
+        advancedSearchForm.setAuthorKeyword("Dool");
+        advancedSearchForm.setDoiKeyword(null);
+        advancedSearchForm.setAffiliationKeyword(null);
+        advancedSearchForm.setPaperAbstractKeyword(null);
+        advancedSearchForm.setType("advanced");
+        //advancedSearchForm.setDoiKeyword("1");
+        advancedSearchForm.setLimit(10);
+        advancedSearchForm.setPage(0);
+        String param = JSON.toJSONString(advancedSearchForm);
+        SearchVO searchVO = new SearchVO();
+        searchVO.setSearchResultVOCollection(searchResultVOList);
 
-        mvc.perform(MockMvcRequestBuilders.get("/search/simple")
-                .param("type", "author_name")
-                .param("keyword", "aaaaaaaa")
+        Mockito.when(searchServiceStub.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchVO);
+        mvcStandalone.perform(MockMvcRequestBuilders.post("/search/advanced")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.searchResultVOCollection[0].id").value(1));
+        Mockito.verify(searchServiceStub).advancedSearchPaper(Mockito.any(AdvancedSearchForm.class));
     }
 
+
+    /**
+     * 搜索出现异常
+     */
     @Test
-    public void advancedSearchPaper() throws Exception{
+    public void advancedPaperInvalidInfo() throws Exception {
+        AdvancedSearchForm advancedSearchForm = new AdvancedSearchForm();
+        advancedSearchForm.setTermKeyword(null);
+        advancedSearchForm.setTitleKeyword(null);
+        advancedSearchForm.setAllKeyword(null);
+        advancedSearchForm.setAuthorKeyword(null);
+        advancedSearchForm.setDoiKeyword(null);
+        advancedSearchForm.setAffiliationKeyword(null);
+        advancedSearchForm.setPaperAbstractKeyword(null);
+        advancedSearchForm.setType("advanced");
+        //advancedSearchForm.setDoiKeyword("1");
+        advancedSearchForm.setLimit(10);
+        advancedSearchForm.setPage(0);
+        String param = JSON.toJSONString(advancedSearchForm);
+        //Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
 
-
-
-        mvc.perform(MockMvcRequestBuilders.get("/search/advanced")
-                .param("paper_title","a")
-                .param("paper_abstract","a")
-                .param("doi","a")
-                .param("author_name","a")
-                .param("affiliation_name","a")
-                .param("term","programs")
-                .param("limit","50")
+        mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperFormException.MSG));
 
-
-        mvc.perform(MockMvcRequestBuilders.get("/search/advanced")
-                .param("paper_title","aaaaaaaaaa")
-                .param("paper_abstract","a")
-                .param("doi","a")
-                .param("author_name","a")
-                .param("affiliation_name","a")
-                .param("term","programs")
-                .param("limit","50")
+        advancedSearchForm.setType(null);
+        advancedSearchForm.setAllKeyword("test");
+        //advancedSearchForm.setDoiKeyword("1");
+        advancedSearchForm.setLimit(10);
+        advancedSearchForm.setPage(0);
+        param = JSON.toJSONString(advancedSearchForm);
+        mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(param)
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(PaperTypeException.MESSAGE));
+        //Mockito.verify(searchService).advancedSearchPaper(advancedSearchForm);
+
+        advancedSearchForm.setLimit(500);
+        advancedSearchForm.setType("all");
+        advancedSearchForm.setAllKeyword("test");
+        //advancedSearchForm.setDoiKeyword("1");
+        //advancedSearchForm.setLimit(10);
+        advancedSearchForm.setPage(0);
+        param = JSON.toJSONString(advancedSearchForm);
+        //Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
+        mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(param)
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(AdvancedSearchForm.LIMIT_ERROR));
+
+        advancedSearchForm.setLimit(10);
+        advancedSearchForm.setPage(-1);
+        param = JSON.toJSONString(advancedSearchForm);
+        //Mockito.when(searchService.advancedSearchPaper(Mockito.any(AdvancedSearchForm.class))).thenReturn(searchResultVOList);
+        mvc.perform(MockMvcRequestBuilders.post("/search/advanced")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(param)
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("false"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(AdvancedSearchForm.PAGE_ERROR));
+
 
     }
+
+
 }

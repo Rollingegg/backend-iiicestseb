@@ -1,17 +1,22 @@
 package group.iiicestseb.backend.service;
-import group.iiicestseb.backend.utils.DateUtil;
-import group.iiicestseb.backend.entity.Paper;
+
+import group.iiicestseb.backend.exception.paper.NoPaperFoundException;
+import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.mapper.PaperMapper;
 import group.iiicestseb.backend.serviceImpl.SearchServiceImpl;
+import group.iiicestseb.backend.vo.paper.SearchResultVO;
+import group.iiicestseb.backend.vo.paper.SearchVO;
 import org.easymock.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.transaction.annotation.Transactional;
-import group.iiicestseb.backend.form.AdvancedSearchForm;
-import java.time.LocalDateTime;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 @Transactional
@@ -27,38 +32,43 @@ public class SearchServiceTest extends EasyMockSupport {
 
 
     @Test
-    public void simpleSearchPaper() {
+    public void advancedSearchPaperSuccess() {
+        List<SearchResultVO> searchResultVOList = new CopyOnWriteArrayList<SearchResultVO>();
+        SearchResultVO searchResultVO = new SearchResultVO();
+        searchResultVO.setId(1);
+        searchResultVO.setCitationCountPaper(1);
+        searchResultVO.setPdfUrl("www");
+        searchResultVO.setTitle("do");
+        searchResultVO.setPaperAbstract("nothing");
+        searchResultVO.setAuthorList(null);
+        searchResultVO.setTermsList(null);
+        searchResultVOList.add(searchResultVO);
+        AdvancedSearchForm form = new AdvancedSearchForm();
+        SearchVO searchVO = new SearchVO();
+        Collection<Integer> integerCollection = new ArrayList<>();
+        integerCollection.add(1);
+        searchVO.setSearchResultVOCollection(searchResultVOList);
 
-//        CopyOnWriteArrayList<Paper> paperList = new CopyOnWriteArrayList<>();
-//        Paper paperA = new Paper();
-//        paperA.setPaperTitle("hxd");
-//        paperA.setId(1);
-//        paperA.setCitationCount(10);
-//        paperA.setPublicationYear(DateUtil.parseYear("2000"));
-//        paperList.add(paperA);
-//        EasyMock.expect(paperMapper.simpleSearchPaperAll("hxd")).andReturn(paperList);
-//        EasyMock.expect(paperMapper.simpleSearchPaperByType("paper_abstract","hxd")).andReturn(paperList);
-//        replayAll();
-//        assertEquals(searchService.simpleSearchPaper("all","hxd").get(0).getPaperTitle(),"hxd");
-//        assertEquals(searchService.simpleSearchPaper("paper_abstract","hxd").get(0).getPaperTitle(),"hxd");
-//        verifyAll();
-        //System.out.println(searchService.simpleSearchPaper("paper_title","aaaaa",50));
-        //System.out.println(searchService.simpleSearchPaper("paper_title","a",50));
+        form.setType("all");
+        form.setAllKeyword("1");
+        form.setPage(0);
+        EasyMock.expect(paperMapper.advancedSearch(EasyMock.anyObject())).andReturn(integerCollection);
+        EasyMock.expect(paperMapper.getSearchResult(EasyMock.anyObject(),EasyMock.anyInt(),EasyMock.anyInt())).andReturn(searchResultVOList);
+        replayAll();
+        assertEquals(searchResultVO,((CopyOnWriteArrayList<SearchResultVO>)searchService.advancedSearchPaper(form).getSearchResultVOCollection()).get(0));
+        verifyAll();
     }
 
-    @Test
-    public void advancedSearchPaper() {
-//        CopyOnWriteArrayList<Paper> paperList = new CopyOnWriteArrayList<Paper>();
-//        Paper paperA = new Paper();
-//        paperA.setPaperTitle("jh");
-//        paperA.setId(1);
-//        paperA.setCitationCount(20);
-//        paperA.setPublicationYear(DateUtil.parseYear("2000"));
-//        paperList.add(paperA);
-//        AdvancedSearchForm form = new AdvancedSearchForm();
-//        EasyMock.expect(paperMapper.advancedSearch(form)).andReturn(paperList);
-//        replayAll();
-//        assertEquals(searchService.advancedSearchPaper(form).get(0).getPaperTitle(),"jh");
-//        verifyAll();
+    @Test(expected = NoPaperFoundException.class)
+    public void advancedSearchPaperFail() {
+        List<SearchResultVO> searchResultVOList = new CopyOnWriteArrayList<SearchResultVO>();
+        AdvancedSearchForm form = new AdvancedSearchForm();
+        form.setType("all");
+        form.setAllKeyword("1");
+        form.setPage(0);
+        EasyMock.expect(paperMapper.advancedSearch(EasyMock.anyObject())).andThrow(new NoPaperFoundException());
+        replayAll();
+        searchService.advancedSearchPaper(form);
+        verifyAll();
     }
 }

@@ -1,15 +1,14 @@
 package group.iiicestseb.backend;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * @author hxd
+ * @author jh
  */
 @EnableScheduling
-@MapperScan("group.iiicestseb.backend.mapper")
+//@MapperScan("group.iiicestseb.backend.mapper")
 @SpringBootApplication
 public class OasisApplication {
 

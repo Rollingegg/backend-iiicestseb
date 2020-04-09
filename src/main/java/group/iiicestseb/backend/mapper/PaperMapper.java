@@ -1,318 +1,296 @@
 package group.iiicestseb.backend.mapper;
 
 
-import group.iiicestseb.backend.entity.*;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import group.iiicestseb.backend.entity.Paper;
+import group.iiicestseb.backend.entity.PaperStatistics;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
-import group.iiicestseb.backend.vo.AuthorInfoVO;
-import group.iiicestseb.backend.vo.PaperInfoVO;
+import group.iiicestseb.backend.vo.paper.PaperVertex;
+import group.iiicestseb.backend.vo.paper.SearchResultVO;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
+import org.apache.ibatis.type.JdbcType;
 
-import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
  * @author jh
  * @date 2020/2/22
  */
-public interface PaperMapper {
+@Mapper
+public interface PaperMapper extends BaseMapper<Paper> {
 
     /**
-     * 通过id删除文献
+     * 根据IEEE的articleId查找论文
      *
-     * @param id 文献id
-     * @return 影响行数
+     * @param articleId IEEE的articleId
+     * @return 论文
      */
-    @Delete("delete from paper where id = #{id,jdbcType=INTEGER}")
-    int deleteByPrimaryKey(Integer id);
+    @Select("select * from paper where article_id=#{articleId}")
+    @ResultType(Paper.class)
+    Paper selectByArticleId(@Param("articleId") Integer articleId);
 
     /**
-     * 插入文献
+     * 根据搜索表单搜索符合条件的论文id
      *
-     * @param record 文献id
-     * @return 插入的id
+     * @param advancedSearchForm 搜索表单
+     * @return 论文id列表
      */
-    @Insert("insert into paper ( publication_title, publisher_id, " +
-            "      conference_id, pdf_link, DOI, " +
-            "      paper_title, paper_abstract, reference_count, " +
-            "      citation_count, publication_year, start_page, " +
-            "      end_page, document_identifier" +
-            "      )" +
-            "    values ( #{publicationTitle,jdbcType=VARCHAR}, #{publisherId,jdbcType=INTEGER}, " +
-            "      #{conferenceId,jdbcType=INTEGER}, #{pdfLink,jdbcType=VARCHAR}, #{doi,jdbcType=VARCHAR}, " +
-            "      #{paperTitle,jdbcType=VARCHAR}, #{paperAbstract,jdbcType=VARCHAR}, #{referenceCount,jdbcType=INTEGER}, " +
-            "      #{citationCount,jdbcType=INTEGER}, #{publicationYear,jdbcType=TIMESTAMP}, #{startPage,jdbcType=VARCHAR}, " +
-            "      #{endPage,jdbcType=VARCHAR}, #{documentIdentifier,jdbcType=VARCHAR}" +
-            "      ) ;")
-    @Options(useGeneratedKeys = true,keyProperty = "id")
-    int insert(Paper record);
-
-    /**
-     * 插入文献列表
-     *
-     * @param paperList 文献实体列表
-     * @return 插入的行数
-     */
-    int insertPaperList(@Param("paperList") List<Paper> paperList);
-
-    /**
-     * 通过id选择文献
-     *
-     * @param id 文献id
-     * @return 文献实体
-     */
-    @Select("    select * from paper where id = #{id,jdbcType=INTEGER}")
-    @ResultMap("PaperResultMap")
-    Paper selectByPrimaryKey(Integer id);
-
-    /**
-     * 通过id更新文献
-     *
-     * @param record 文献实体
-     * @return 影响行数
-     */
-    @Update("update paper" +
-            "    set publication_title = #{publicationTitle,jdbcType=VARCHAR}," +
-            "      publisher_id = #{publisherId,jdbcType=INTEGER}," +
-            "      conference_id = #{conferenceId,jdbcType=INTEGER}," +
-            "      pdf_link = #{pdfLink,jdbcType=VARCHAR}," +
-            "      DOI = #{doi,jdbcType=VARCHAR}," +
-            "      paper_title = #{paperTitle,jdbcType=VARCHAR}," +
-            "      paper_abstract = #{paperAbstract,jdbcType=VARCHAR}," +
-            "      reference_count = #{referenceCount,jdbcType=INTEGER}," +
-            "      citation_count = #{citationCount,jdbcType=INTEGER}," +
-            "      publication_year = #{publicationYear,jdbcType=TIMESTAMP}," +
-            "      start_page = #{startPage,jdbcType=VARCHAR}," +
-            "      end_page = #{endPage,jdbcType=VARCHAR}" +
-            "    where id = #{id,jdbcType=INTEGER}")
-    int updateByPrimaryKey(Paper record);
-
-    /**
-     * 通过文献名删除文献
-     *
-     * @param name 文献名
-     * @return 影响行数
-     */
-    @Delete("delete from paper where paper_title = #{name,jdbcType=VARCHAR}")
-    int deleteByName(String name);
-
-    /**
-     * 通过文献名更新文献
-     *
-     * @param paper 文献实体
-     * @return 影响行数
-     */
-    @Update("update paper" +
-            "    set publication_title = #{publicationTitle,jdbcType=VARCHAR}," +
-            "      publisher_id = #{publisherId,jdbcType=INTEGER}," +
-            "      conference_id = #{conferenceId,jdbcType=INTEGER}," +
-            "      pdf_link = #{pdfLink,jdbcType=VARCHAR}," +
-            "      DOI = #{doi,jdbcType=VARCHAR}," +
-            "      paper_title = #{paperTitle,jdbcType=VARCHAR}," +
-            "      paper_abstract = #{paperAbstract,jdbcType=VARCHAR}," +
-            "      reference_count = #{referenceCount,jdbcType=INTEGER}," +
-            "      citation_count = #{citationCount,jdbcType=INTEGER}," +
-            "      publication_year = #{publicationYear,jdbcType=TIMESTAMP}," +
-            "      start_page = #{startPage,jdbcType=VARCHAR}," +
-            "      end_page = #{endPage,jdbcType=VARCHAR}" +
-            "    where paper_title = #{paperTitle,jdbcType=VARCHAR}")
-    int updateByName(Paper paper);
+    @Select("<script>" +
+            "select p.id  " +
+            "from paper p " +
+            //高级搜索
+            "<if test='type==\"advanced\"'> " +
+            ",((select pa.paper_id as key_id " +
+            "from author a, affiliation aff, paper_authors pa " +
+            "where a.id = pa.author_id and a.affiliation_id = aff.id  " +
+            "and ((#{affiliationKeyword} is null or  LOCATE(#{affiliationKeyword}, aff.name)>0) and (#{authorKeyword} is null or LOCATE(#{authorKeyword}, a.name)>0))) as x " +
+            "inner join " +
+            "(select pt.paper_id as key_id " +
+            "from paper_term pt, term t " +
+            "where t.id = pt.term_id " +
+            "and (#{termKeyword} is null or LOCATE(#{termKeyword}, t.name)>0)) as y on(x.key_id = y.key_id) ) " +
+            "where p.id = x.key_id " +
+            "and (#{titleKeyword} is null or LOCATE(#{titleKeyword}, p.title)>0) " +
+            "and (#{paperAbstractKeyword} is null or LOCATE(#{paperAbstractKeyword}, p.paper_abstract)>0)" +
+            "and (#{doiKeyword} is null or LOCATE(#{doiKeyword}, p.doi)>0)" +
+            "</if>" +
+            //all搜索
+            "<if test='type==\"all\"'> " +
+            ",((select pa.paper_id as key_id " +
+            "from author a, affiliation aff, paper_authors pa " +
+            "where a.id = pa.author_id and a.affiliation_id = aff.id  " +
+            "and (( LOCATE(#{allKeyword}, aff.name)>0) or ( LOCATE(#{allKeyword}, a.name)>0))) " +
+            "union " +
+            "(select pt.paper_id as key_id " +
+            "from paper_term pt, term t " +
+            "where t.id = pt.term_id " +
+            "and (LOCATE(#{allKeyword}, t.name)>0))) as x " +
+            "where (p.id = x.key_id  " +
+            "or (LOCATE(#{allKeyword}, p.title)>0)" +
+            "or (LOCATE(#{allKeyword}, p.paper_abstract)>0)" +
+            "or (LOCATE(#{allKeyword}, p.doi)>0))" +
+            "</if>" +
+            //简单搜索术语， 连接文献表
+            "<if test='type==\"term\"'> " +
+            ", paper_term pt, term t " +
+            "where p.id = pt.paper_id and t.id = pt.term_id " +
+            "and LOCATE(#{termKeyword}, t.name)>0 " +
+            "</if>" +
+            //简单搜索机构， 连接作者表、机构表
+            "<if test='type==\"affiliation_name\"'> " +
+            ", author a, paper_authors pa,affiliation aff " +
+            "where p.id = pa.paper_id and a.id = pa.author_id and a.affiliation_id = aff.id " +
+            "and LOCATE(#{affiliationKeyword}, aff.name)>0" +
+            "</if>" +
+            //简单搜索搜索作者 只连接作者表
+            "<if test='type==\"author_name\"'> " +
+            ", author a, paper_authors pa " +
+            "where p.id = pa.paper_id and a.id = pa.author_id  " +
+            "and LOCATE(#{authorKeyword}, a.name)>0" +
+            "</if>" +
+            //简单搜索 论文的三个信息 无需提前链接
+            "<if test='type==\"doi\" or  type==\"title\" or type==\"paper_abstract\"'> " +
+            "where 1=1 " +
+            "<if test='type==\"doi\"'> " +
+            " and LOCATE(#{doiKeyword}, p.doi)>0" +
+            "</if>" +
+            "<if test='type==\"titleKeyword\"'> " +
+            " and LOCATE(#{titleKeyword}, p.title)>0" +
+            "</if>" +
+            "<if test='type==\"paperAbstract\"'> " +
+            " and LOCATE(#{paperAbstractKeyword}, p.paper_abstract)>0)" +
+            "</if>" +
+            "</if> " +
+            //年份
+            " and (p.chron_date between #{chronDateMinKeyword} and #{chronDateMaxKeyword})  " +
+            "group by p.id " +
+            "order by p.citation_count_paper desc " +
+            "</script>")
+    @ResultType(Integer.class)
+    Collection<Integer> advancedSearch(AdvancedSearchForm advancedSearchForm);
 
 
     /**
-     * 通过文献名查找文献信息 TODO: 应该返回一个列表，因为有同名文献
+     * 根据论文id 生成搜搜结果
      *
-     * @param name 文献名
-     * @return 文献实体
+     * @param idList 论文id列表
+     * @param page   页数
+     * @param limit  每页搜索数
+     * @return 搜索结果
      */
-    @Select("select * from paper where paper_title = #{name}")
-    @ResultMap("PaperResultMap")
-    Paper selectByName(String name);
+    @Select("<script>" +
+            "select p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id " +
+            "from paper p " +
+            "where p.id in " +
+            "(<foreach collection='idList' item='i' separator=','> " +
+            "#{i}" +
+            "</foreach>)" +
+            "limit #{page},#{limit}" +
+            "</script>")
+    @Results(id = "SearchResultVOResultMap", value = {
+            @Result(column = "id", property = "id", jdbcType = JdbcType.INTEGER),
+            @Result(column = "title", property = "title", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "paper_abstract", property = "paperAbstract", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "pdf_url", property = "pdfUrl", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "chron_date", property = "chronDate", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "citation_count_paper", property = "citationCountPaper", jdbcType = JdbcType.INTEGER),
+            @Result(column = "id", property = "authorList", many = @Many(select = "group.iiicestseb.backend.mapper.AuthorMapper.selectAuthorInfoByPaperId", fetchType = FetchType.EAGER)),
+            @Result(column = "id", property = "termsList", many = @Many(select = "group.iiicestseb.backend.mapper.TermMapper.selectByPaperId", fetchType = FetchType.EAGER))}
+    )
+    Collection<SearchResultVO> getSearchResult(@Param("idList") Collection<Integer> idList, int page, int limit);
 
     /**
-     * 通过文献名和文献发布年份查找文献信息
+     * 查找机构最近文章
      *
-     * @param name 文献名
-     * @param year 发布年份
-     * @return 文献实体
+     * @param id    机构id
+     * @param limit 搜索数
+     * @return 机构最近文章列表
      */
-    @Select("select * from paper where paper_title = #{name} and publication_year = #{year}")
-    @ResultMap("PaperResultMap")
-    Paper selectByNameAndYear(String name, LocalDateTime year);
-
-    /**
-     * 通过id查找出版社名称
-     *
-     * @param id 出版社id
-     * @return 出版社名称实体
-     */
-    @Select("select * from publisher where id = #{id};")
-    Publisher selectPublisherById(int id);
-
-    /**
-     * 通过出版社名称查找出版社
-     *
-     * @param name 出版社名
-     * @return 出版社实体对象
-     */
-    @Select("select * from publisher where name = #{name}")
-    @ResultMap("PublisherResultMap")
-    Publisher selectPublisherByName(@Param("name") String name);
-
-    /**
-     * 增加出版社列表
-     *
-     * @param publisherList 出版社实体列表
-     * @return 插入的行数
-     */
-    int insertPublisherList(@Param("publisherList") List<Publisher> publisherList);
-
+    @Select("select distinct p.* " +
+            "from paper p,author au, affiliation aff,paper_authors pa " +
+            "where aff.id=#{id} and aff.id = au.affiliation_id and au.id = pa.author_id and p.id = pa.paper_id " +
+            "order by chron_date desc " +
+            "limit #{limit}")
+    @ResultType(Paper.class)
+    List<Paper> selectRecentPaperByAffiliationId(Integer id, Integer limit);
 
 
     /**
-     * 通过id查找会议
+     * 查找机构所有文章
      *
-     * @param id 会议id
-     * @return 会议实体
+     * @param id 机构id
+     * @return 机构文章列表
      */
-    @Select("select * from conference where id = #{id}")
-    @ResultMap("ConferenceResultMap")
-    Conference selectConferenceById(int id);
-
-    /**
-     * 通过会议名查找会议
-     *
-     * @param name 会议名
-     * @return 会议对象
-     */
-    @Select("select * from conference where name = #{name}")
-    @ResultMap("ConferenceResultMap")
-    Conference selectConferenceByName(@Param("name") String name);
-
-    /**
-     * 增加会议列表
-     *
-     * @param conferenceList 会议实体列表
-     * @return 插入的行数
-     */
-    int insertConferenceList(@Param("conferenceList") List<Conference> conferenceList);
-
-    /**
-     * 通过术语名查找术语
-     *
-     * @param name 术语名
-     * @return 术语对象
-     */
-    @Select("select * from term where word = #{name}")
-    @ResultMap("TermResultMap")
-    Term selectTermByName(String name);
-
-    /**
-     * 增加术语列表
-     *
-     * @param termList 术语实体列表
-     * @return 插入的行数
-     */
-    int insertTermList(@Param("termList") List<Term> termList);
-
-    /**
-     * 增加文献所含术语列表
-     *
-     * @param paperTermList 文献所含术语实体列表
-     * @return 插入的行数
-     */
-    int insertPaperTermList(@Param("paperTermList") List<PaperTerm> paperTermList);
-
-    /**
-     * 增加文献发布列表
-     *
-     * @param publishList 文献发布实体列表
-     * @return 插入的行数
-     */
-    int insertPublishList(@Param("publishList") List<Publish> publishList);
-
-    /**
-     * 适用于 单字段 查找 DOI、标题、摘要 类型的简单查询
-     *
-     * @param type     查询类型 适用于 DOI 标题 摘要 作者 机构
-     * @param keywords 搜索关键字
-     * @return 文献列表
-     */
-    @Select("select " +
-            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
-            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
-            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
-            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
-            ",paper_term pt1,term t1 " +
-            "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
-            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
-            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
-            " ${type} like '%${keywords}%'" +
-            "group by p1.id " +
-            "order by citation_count desc limit #{limit}")
-    @ResultMap("PaperInfoVOResultMap")
-    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperByType(String type, String keywords,Integer limit);
-
-    List<AuthorInfoVO> selectAuthorInfoById(Integer paperId);
-
-    List<AuthorInfoVO> selectTermById(Integer paperId);
-
-
+    @Select("select distinct p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id  " +
+            "from paper p, paper_authors pa, author au, affiliation aff " +
+            "where aff.id = #{id} and pa.paper_id = p.id and pa.author_id = au.id and aff.id = au.affiliation_id " +
+            "order by p.citation_count_paper desc")
+    @ResultMap(value = "SearchResultVOResultMap")
+    Collection<SearchResultVO> selectAllPaperByAffiliationId(Integer id);
 
 
     /**
-     * 适用于模糊字段查找 全部 类型的简单查询
+     * 查找作者的所有文献
      *
-     * @param keywords 关键字
-     * @return 文献列表
+     * @param id 作者id
+     * @return 作者所有文献
      */
-    @Select("select " +
-            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
-            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
-            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
-            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
-            ",paper_term pt1,term t1 " +
-            "where p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
-            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
-            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
-            "(au1.name like '%${keywords}%' or " +
-            "af1.name like '%${keywords}%' or " +
-            "p1.DOI like '%${keywords}%' or " +
-            "p1.paper_abstract like '%${keywords}%' or " +
-            "p1.paper_title like '%${keywords}%' or " +
-            "t1.word like '%${keywords}%')" +
-            "group by p1.id " +
-            "order by citation_count desc limit #{limit}")
-    @ResultMap("PaperInfoVOResultMap")
-    CopyOnWriteArrayList<PaperInfoVO> simpleSearchPaperAll(String keywords,Integer limit);
-
+    @Select("select p.id,p.title,p.paper_abstract,p.pdf_url,p.chron_date,p.citation_count_paper,p.id,p.id  " +
+            "from paper p, paper_authors pa, author au " +
+            "where au.id = #{id} and pa.paper_id = p.id and pa.author_id = au.id " +
+            "order by p.citation_count_paper desc")
+    @ResultMap(value = "SearchResultVOResultMap")
+    Collection<SearchResultVO> selectAllPaperByAuthorId(Integer id);
 
     /**
-     * 多字段高级检索
+     * 查找作者最近发表文献
      *
-     * @param advancedSearchForm 高级检索表单
-     * @return 论文列表
+     * @param id    作者id
+     * @param limit 搜索数
+     * @return 作者最近发表文献列表
      */
-    @Select("select " +
-            "p1.id,p1.publication_title,p1.publisher_id,p1.conference_id,p1.pdf_link,p1.DOI, " +
-            "p1.paper_title,p1.paper_abstract,p1.reference_count,p1.citation_count," +
-            "p1.publication_year,p1.start_page,p1.end_page,p1.document_identifier ,publisher.name publisher_name, conference.name conference_name " +
-            "from paper p1,publish pub1,author au1,affiliation af1, conference,publisher " +
-            ",paper_term pt1,term t1 " +
-            "where (p1.conference_id=conference.id and publisher.id = p1.publisher_id and " +
-            "p1.id = pub1.paper_id and pub1.author_id = au1.id and au1.affiliation_id = af1.id " +
-            "and p1.id = pt1.paper_id and t1.id= pt1.term_id and" +
-            "(p1.paper_title like '%${advancedSearchForm.paperTitleKeyword}%' OR #{advancedSearchForm.paperTitleKeyword,jdbcType=VARCHAR} IS NULL) and" +
-            "(p1.paper_abstract like '%${advancedSearchForm.paperAbstractKeyword}%'  OR #{advancedSearchForm.paperAbstractKeyword,jdbcType=VARCHAR} IS NULL) and " +
-            "(p1.DOI like '%${advancedSearchForm.doiKeyword}%'  OR #{advancedSearchForm.doiKeyword,jdbcType=VARCHAR} IS NULL) and " +
-            "(au1.name like '%${advancedSearchForm.authorKeyword}%'  OR #{advancedSearchForm.authorKeyword,jdbcType=VARCHAR} IS NULL) and" +
-            "(af1.name like '%${advancedSearchForm.affiliationKeyword}%'  OR #{advancedSearchForm.affiliationKeyword,jdbcType=VARCHAR} IS NULL) and" +
-            "(t1.word like '%${advancedSearchForm.termKeyword}%'  OR #{advancedSearchForm.termKeyword,jdbcType=VARCHAR} IS NULL))  " +
-            "group by p1.id " +
-            "order by citation_count desc limit #{limit,jdbcType=INTEGER}")
-    @ResultMap("PaperInfoVOResultMap")
-    CopyOnWriteArrayList<PaperInfoVO> advancedSearch(AdvancedSearchForm advancedSearchForm,
-                                                     Integer limit);
+    @Select("select p.* " +
+            "from paper p,author au,paper_authors pa " +
+            "where au.id=#{id} and au.id = pa.author_id and p.id = pa.paper_id " +
+            "order by chron_date desc " +
+            "limit #{limit}")
+    @ResultType(Paper.class)
+    List<Paper> selectRecentPaperByAuthorId(Integer id, Integer limit);
 
+    /**
+     * 计算所有新论文的评分
+     * 公式：+0.7 / 200引用数 + 0.1 / 2000下载量(0-2000) - 0.1 / 15论文年份久远(1年为单位，区间[0, 15])
+     *
+     * @return 计算的行数
+     */
+    @Insert("insert into paper_statistics(paper_id, score) " +
+            "   select p.id as paper_id, p.citation_count_paper*0.7/200 " +
+            "       + total_downloads*0.1/2000 " +
+            "       - (year(now())-year(p.chron_date))*0.1/15 as score " +
+            "   from paper p " +
+            "   where p.id not in (" +
+            "       select ps.paper_id from paper_statistics ps " +
+            "   )")
+    int reComputePapersScore();
+
+    /**
+     * 计算指定id论文的评分
+     * 公式：+0.7 / 200引用数 + 0.1 / 2000下载量(0-2000) - 0.1 / 15论文年份久远(1年为单位，区间[0, 15])
+     *
+     * @param id 论文id
+     */
+    @Update("insert into paper_statistics(paper_id, score) " +
+            "   select p.id, " +
+            "       p.citation_count_paper*0.7/200 " +
+            "       + p.total_downloads*0.1/2000" +
+            "       - (year(now())-year(p.chron_date))*0.1/15 " +
+            "   from paper p where p.id=#{id} " +
+            "   on duplicate key update " +
+            "   score=values(score)")
+    void updatePaperScore(@Param("id") Integer id);
+
+    /**
+     * 批量计算指定id论文的评分
+     * 公式：+0.7 / 200引用数 + 0.1 / 2000下载量(0-2000) - 0.1 / 15论文年份久远(1年为单位，区间[0, 15])
+     *
+     * @param ids 论文id的集合
+     */
+    @Update("<script>" +
+            "insert into paper_statistics(paper_id, score) " +
+            "   select p.id, " +
+            "       p.citation_count_paper*0.7/200 " +
+            "       + p.total_downloads*0.1/2000" +
+            "       - (year(now())-year(p.chron_date))*0.1/15 " +
+            "   from paper p where p.id in " +
+            "   (<foreach collection='ids' item='i' separator=',' >" +
+            "   #{i}" +
+            "   </foreach>) " +
+            "   on duplicate key update " +
+            "   score=values(score)" +
+            "</script>")
+    void updatePaperScoreBatch(@Param("ids") Collection<Integer> ids);
+
+    /**
+     * 获取论文的评分
+     *
+     * @param paperId 论文id
+     * @return 论文评分
+     */
+    @Select("select paper_id as paperId, score from paper_statistics where paper_id=#{paperId}")
+    PaperStatistics selectPaperStatisticsByPaperId(@Param("paperId") Integer paperId);
+
+    /**
+     * 批量获取论文的评分
+     *
+     * @param ids 论文id
+     * @return 论文评分集合
+     */
+    @Select("<script> " +
+            "select paper_id as paperId, score from paper_statistics where paper_id in (" +
+            "   null <foreach collection='ids' item='i' separator='' > " +
+            "   ,#{i}" +
+            "   </foreach>)" +
+            "</script>")
+    Collection<PaperStatistics> selectPaperStatisticsByPaperIdBatch(@Param("ids") Collection<Integer> ids);
+
+    /**
+     * 批量获取论文顶点数据
+     *
+     * @param paperIds 论文id集合
+     * @return 论文通用顶点所需要的数据
+     */
+    @Select("<script> " +
+            "select p.id, p.title, p.citation_count_paper as cite, ps.score " +
+            "from paper p, paper_statistics ps " +
+            "where p.id in " +
+            "(null <foreach collection='ids' item='i' separator='' > " +
+            ",#{i}" +
+            "</foreach>) " +
+            "and p.id = ps.paper_id" +
+            "</script> ")
+    @ResultType(PaperVertex.class)
+    Collection<PaperVertex> selectPaperVertexByIds(@Param("ids") Collection<Integer> paperIds);
 }

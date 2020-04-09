@@ -1,7 +1,9 @@
 package group.iiicestseb.backend.mapper;
 
-import group.iiicestseb.backend.entity.Record;
-import group.iiicestseb.backend.utils.CSVUtil;
+import group.iiicestseb.backend.entity.Affiliation;
+import group.iiicestseb.backend.utils.JSONUtil;
+import group.iiicestseb.backend.vo.statistics.GeneralCountPerYearVO;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import static org.junit.Assert.*;
+import java.util.Collection;
+
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @Transactional
@@ -19,25 +22,25 @@ public class StatisticsMapperTest {
     @Resource
     private StatisticsMapper statisticsMapper;
 
+    @Resource
+    private AffiliationMapper affiliationMapper;
+
     @Before
-    public void setUp(){
-        CSVUtil.analyzeExistedCSV("Standard.csv");
-    }
-
-    private Record record =  new Record("","");
-    @Test
-    public void insertUserRecord() {
-        assertEquals(1,statisticsMapper.insertUserRecord(record));
-
+    public void setUp() {
+        JSONUtil.loadTestData();
     }
 
     @Test
     public void selectTermsWithHotLimit() {
-        assertEquals(10, statisticsMapper.selectTermsWithHotLimit(10).size());
+        Affiliation affiliation = affiliationMapper.selectByName("affiliation1");
+        Collection<GeneralCountPerYearVO> vos = statisticsMapper.getAffiliationPublishCountPerYear(affiliation.getId());
+        Assert.assertNotEquals(0, vos.size());
     }
 
     @Test
     public void selectMaxPublishAuthorLimit() {
-        assertEquals(10, statisticsMapper.selectTermsWithHotLimit(10).size());
+        Assert.assertEquals(5, statisticsMapper.selectTermsWithHotLimit(5).size());
     }
+
+
 }

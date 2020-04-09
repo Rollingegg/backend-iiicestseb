@@ -1,6 +1,10 @@
 package group.iiicestseb.backend.mapper;
 
 import group.iiicestseb.backend.entity.Affiliation;
+import group.iiicestseb.backend.utils.JSONUtil;
+import group.iiicestseb.backend.vo.affiliation.AffiliationInfoVO;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,11 +12,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.LinkedList;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 /**
  * @author wph
@@ -21,55 +24,37 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @Transactional
 public class AffiliationMapperTest {
+
     @Resource
     private AffiliationMapper affiliationMapper;
 
-    private Affiliation affiliation = new Affiliation("unit");
-
-    private Affiliation affiliation2 = new Affiliation("test");
-    @Test
-    public void deleteByPrimaryKey() {
-        affiliationMapper.insert(affiliation);
-        assertEquals(1,affiliationMapper.deleteByPrimaryKey(affiliation.getId()));
-        assertEquals(0,affiliationMapper.deleteByPrimaryKey(affiliation.getId()));
-
-
+    @Before
+    public void setUp() {
+        JSONUtil.loadTestData();
     }
 
     @Test
-    public void insert() {
-        affiliationMapper.insert(affiliation);
-        assertEquals(affiliation,affiliationMapper.selectByPrimaryKey(affiliation.getId()));
-    }
+    public void selectAffiliationInfoByIdBatch() {
+        Affiliation a1 = affiliationMapper.selectByName("affiliation1");
+        Affiliation a2 = affiliationMapper.selectByName("affiliation2");
+        Collection<Integer> ids = new LinkedList<>() {{
+            add(a1.getId());
+            add(a2.getId());
+        }};
+        Collection<AffiliationInfoVO> infos = affiliationMapper.selectAffiliationInfoByIdBatch(ids);
+        for (AffiliationInfoVO i : infos) {
+            if (a1.getId().equals(i.getId())){
+                Assert.assertEquals(a1.getName(), i.getName());
+                Assert.assertEquals(2, (int) i.getAuthorNum());
+                Assert.assertEquals(2, (int) i.getPaperNum());
+            } else if (a2.getId().equals(i.getId())){
+                Assert.assertEquals(a2.getName(), i.getName());
+                Assert.assertEquals(1, (int) i.getAuthorNum());
+                Assert.assertEquals(2, (int) i.getPaperNum());
+            } else {
+                fail();
+            }
+        }
 
-    @Test
-    public void insertAffiliationList() {
-        List<Affiliation> test = new ArrayList<>();
-        test.add(affiliation);
-        test.add(affiliation2);
-        assertEquals(2,affiliationMapper.insertAffiliationList(test));
-        assertEquals(affiliation,affiliationMapper.selectByPrimaryKey(affiliation.getId()));
-        assertEquals(affiliation2,affiliationMapper.selectByPrimaryKey(affiliation2.getId()));
-    }
-
-    @Test
-    public void selectByPrimaryKey() {
-        affiliationMapper.insert(affiliation2);
-        assertEquals(affiliation2,affiliationMapper.selectByPrimaryKey(affiliation2.getId()));
-    }
-
-    @Test
-    public void updateByPrimaryKey() {
-        affiliationMapper.insert(affiliation);
-        affiliation.setName("test_init");
-        affiliationMapper.updateByPrimaryKey(affiliation);
-        assertEquals(affiliation,affiliationMapper.selectByPrimaryKey(affiliation.getId()));
-    }
-
-    @Test
-    public void selectByName() {
-        affiliation.setName("gogo");
-        affiliationMapper.insert(affiliation);
-        assertEquals(affiliation,affiliationMapper.selectByName(affiliation.getName()));
     }
 }

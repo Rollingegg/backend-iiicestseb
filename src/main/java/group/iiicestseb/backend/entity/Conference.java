@@ -1,36 +1,46 @@
 package group.iiicestseb.backend.entity;
-import lombok.Data;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.*;
+
+import java.util.Objects;
 
 /**
- * @author wph
- * @date 2020/2/29
+ * @author jh
+ * @date 2020/3/25
  */
+@TableName(value = "conference")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Conference {
 
-    /**
-     * 会议id
-     */
-    private Integer id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private int id;
 
-    /**
-     * 会议名称
-     */
+    @TableField("name")
     private String name;
 
-    public Conference() {
-        super();
+
+//    @OneToMany(mappedBy = "conferenceByConferenceId")
+//    private Collection<Paper> papersById;
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Conference that = (Conference) o;
+        return id == that.id &&
+                Objects.equals(name, that.name);
     }
 
-    public Conference(String name) {
-        this.name = name;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
-
-    public Conference(Integer id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-
 }
