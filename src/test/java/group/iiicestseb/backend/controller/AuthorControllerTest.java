@@ -108,4 +108,32 @@ public class AuthorControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.paperCount").value(2));
     }
+
+    @Test
+    public void getAuthorGraphPartner() throws Exception{
+        Author author = authorService.findAuthorByName("author1");
+        mvc.perform(MockMvcRequestBuilders.get("/author/graph/partner")
+                .param("id", String.valueOf(author.getId()))
+                .param("limit", String.valueOf(10))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[3]").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[4]").doesNotExist());
+    }
+
+    @Test
+    public void getAuthorGraphAffiliation() throws Exception{
+        Author author = authorService.findAuthorByName("author1");
+        mvc.perform(MockMvcRequestBuilders.get("/author/graph/affiliation")
+                .param("id", String.valueOf(author.getId()))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[2]").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[3]").doesNotExist());
+    }
 }

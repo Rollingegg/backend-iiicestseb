@@ -54,4 +54,17 @@ public class AffiliationControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.authorNum").value(2));
 
     }
+
+    @Test
+    public void getAffiliationGraphPaperWithTerm() throws Exception{
+        Affiliation affiliation = affiliationService.findAffiliationByName("affiliation1");
+        mvc.perform(MockMvcRequestBuilders.get("/affiliation/graph/paper/with/term")
+                .param("id", String.valueOf(affiliation.getId()))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[8]").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.vertexes[9]").doesNotExist());
+    }
 }
