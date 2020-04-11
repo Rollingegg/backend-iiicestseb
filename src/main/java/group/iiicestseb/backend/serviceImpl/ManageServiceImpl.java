@@ -139,7 +139,7 @@ public class ManageServiceImpl extends ServiceImpl<PaperMapper, Paper> implement
             for (Integer cite : cites) {
                 h = cite >= i ? h + 1 : h;
                 total += cite;
-                g = (i ^ 2) <= total ? g + 1 : g;
+                g = i*i <= total ? g + 1 : g;
                 i++;
             }
             authorStatistics.add(new AuthorStatistics(key, h, g, ((double) total) / cites.size(), cites.size(), aseCounts.get(key), icseCounts.get(key)));
