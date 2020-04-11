@@ -16,9 +16,8 @@ node{
     }
     
     stage('report'){
-        jacoco classPattern: '**/*serviceImpl,**/*controller', sourceInclusionPattern: '**/*ServiceImpl.java,**/*Controller.java'
+        jacoco classPattern: '**/classes/**/controller,**/classes/**/serviceImpl', exclusionPattern: '**/*Test*.class', sourceInclusionPattern: '**/*ServiceImpl.java,**/*Controller.java'
     }
-    
     stage('clean test'){
         updateGitlabCommitStatus name: 'jenkins', state: 'running'
         sh label: 'test', returnStatus: true, script: 'mvn clean'
