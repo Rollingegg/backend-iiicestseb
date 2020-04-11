@@ -137,7 +137,8 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
         //添加机构节点
         AuthorVertexVO forAffiliationGenerator = ((ArrayList<AuthorVertexVO>)authorVertexVOCollection).get(0);
         Vertex aff_v = new Vertex(StringUtil.toUUID(forAffiliationGenerator.getAffiliationId(),Vertex.TYPE.Affiliation.value),Vertex.TYPE.Affiliation);
-        aff_v.setName(forAffiliationGenerator.getName());
+
+        aff_v.setName(forAffiliationGenerator.getAffiliationName());
         aff_v.setSize(1.0);
         aff_v.setContent(null);
         vertexCollection.add(aff_v);
