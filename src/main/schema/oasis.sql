@@ -3,9 +3,9 @@ CREATE DATABASE IIICEStseB DEFAULT CHARACTER SET utf8;
 USE IIICEStseB;
 
 
-# CREATE USER if not exists 'iii'@'3.dwxh.xyz' IDENTIFIED BY 'iii';
-# grant all on IIICEStseB.* to 'iii'@'3.dwxh.xyz';
-# flush privileges;
+CREATE USER if not exists 'iii'@'3.dwxh.xyz' IDENTIFIED BY 'iii';
+grant all on IIICEStseB.* to 'iii'@'3.dwxh.xyz';
+flush privileges;
 
 ##创建机构表
 CREATE TABLE affiliation
