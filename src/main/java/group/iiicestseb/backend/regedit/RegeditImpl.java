@@ -1,5 +1,6 @@
 package group.iiicestseb.backend.regedit;
 
+import group.iiicestseb.backend.constant.rank.RankType;
 import group.iiicestseb.backend.entity.*;
 import group.iiicestseb.backend.form.AdvancedSearchForm;
 import group.iiicestseb.backend.form.UserForm;
@@ -11,6 +12,8 @@ import group.iiicestseb.backend.vo.author.AuthorInAffiliationVO;
 import group.iiicestseb.backend.vo.author.AuthorInfoVO;
 import group.iiicestseb.backend.vo.graph.Graph;
 import group.iiicestseb.backend.vo.paper.*;
+import group.iiicestseb.backend.vo.rank.AuthorRankVO;
+import group.iiicestseb.backend.vo.rank.RankOverviewVO;
 import group.iiicestseb.backend.vo.user.UserVO;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,10 @@ import java.util.List;
  */
 @Service("Regedit")
 public class RegeditImpl implements Regedit {
+
+    @Lazy
+    @Resource(name = "Rank")
+    private RankService rankService;
 
     @Lazy
     @Resource(name = "Term")
@@ -329,4 +336,15 @@ public class RegeditImpl implements Regedit {
         return termService.getTermByPaperId(id);
     }
 
+    //------------------------------RankService--------------------
+
+    @Override
+    public AuthorRankVO getRank(Integer page, Integer size, RankType rankType){
+        return rankService.getRank(page,size, rankType);
+    }
+
+    @Override
+    public RankOverviewVO getOverView() {
+        return rankService.getOverView();
+    }
 }

@@ -1,0 +1,71 @@
+package group.iiicestseb.backend.serviceImpl;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import group.iiicestseb.backend.constant.rank.RankType;
+import group.iiicestseb.backend.entity.Author;
+import group.iiicestseb.backend.entity.AuthorStatistics;
+import group.iiicestseb.backend.mapper.RankMapper;
+import group.iiicestseb.backend.regedit.Regedit;
+import group.iiicestseb.backend.service.RankService;
+import group.iiicestseb.backend.vo.rank.AuthorRankVO;
+import group.iiicestseb.backend.vo.rank.RankOverviewVO;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * @author kenny
+ */
+@Service("Rank")
+@Slf4j
+public class RankServiceImpl extends ServiceImpl<RankMapper,AuthorStatistics> implements RankService {
+
+    @Resource(name = "Regedit")
+    private Regedit regedit;
+
+
+    @Resource
+    private RankMapper rankMapper;
+
+    @Override
+    public AuthorRankVO getRank(Integer page, Integer size, RankType rankType){
+        AuthorRankVO authorRankVO = new AuthorRankVO();
+        authorRankVO.setPage(page);
+        List<AuthorStatistics> scores = null;
+        if(rankType.equals(RankType.H_INDEX)){
+            scores = rankMapper.getRankByHScore((page-1)*size,page * size);
+        }else if(rankType.equals(RankType.G_INDEX)){
+            scores = rankMapper.getRankByGScore((page-1)*size,page * size);
+        }else if(rankType.equals(RankType.AVG_CITE)){
+            scores = rankMapper.getRankByAvgCite((page-1)*size,page * size);
+        }else if(rankType.equals(RankType.PAPER_NUM)){
+            scores = rankMapper.getRankByPaperNum((page-1)*size,page * size);
+        }
+        if(CollectionUtils.isEmpty(scores)){
+            throw new RuntimeException("获取排名错误");
+        }
+        Map<Integer,AuthorStatistics> scoresMap = scores.stream().collect(Collectors.toMap(AuthorStatistics::getAuthorId, x->x));
+        Collection<Author> authors = regedit.findAuthorByIdBatch(scoresMap.keySet());
+        Map<Author,AuthorStatistics> authorStatisticsMap = authors.stream().collect(Collectors.toMap(x->x,x->scoresMap.get(x.getId())));
+        authorRankVO.setAuthorMap(authorStatisticsMap);
+        return authorRankVO;
+    }
+
+
+    @Override
+    public RankOverviewVO getOverView() {
+        RankOverviewVO rankOverviewVO = new RankOverviewVO();
+        rankOverviewVO.setHRank(getRank(1,3,RankType.H_INDEX));
+        rankOverviewVO.setGRank(getRank(1,3,RankType.G_INDEX));
+        rankOverviewVO.setAvgCiteRank(getRank(1,3,RankType.AVG_CITE));
+        rankOverviewVO.setPaperNumRank(getRank(1,3,RankType.PAPER_NUM));
+
+        return rankOverviewVO;
+    }
+}
