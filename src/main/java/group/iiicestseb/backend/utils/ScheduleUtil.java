@@ -3,7 +3,6 @@ package group.iiicestseb.backend.utils;
 
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.ManageService;
-import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +27,15 @@ public class ScheduleUtil {
     public void updateStatistics() {
         ((ManageService)regedit).reComputePapersScore();
         ((ManageService)regedit).reComputeAuthorStatistics();
+    }
+
+    /**
+     * 每 10s 检测一次爬虫任务
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Scheduled(cron = "0 0/1 * * * *")
+    public void checkCrawler() {
+        PyUtil.checkCrawler();
     }
 
 

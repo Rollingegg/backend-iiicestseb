@@ -153,3 +153,17 @@ create table paper_statistics
     foreign key (paper_id) references paper (id) on delete Cascade
 ) ENGINE = InnoDB comment '论文统计信息';
 
+##创建爬虫任务表
+create table crawler
+(
+    crawler_id      int PRIMARY KEY auto_increment comment '爬虫任务id',
+    add_time        datetime   default CURRENT_TIMESTAMP null comment '爬虫任务添加时间',
+    start_time      datetime                             null comment '爬虫开始时间',
+    end_time        datetime                             null comment '爬虫结束时间',
+    is_waiting      tinyint(1) default 1                 null comment '等待运行',
+    is_running      tinyint(1) default 0                 not null comment '是否在运行',
+    is_killed       tinyint(1) default 0                 null comment '是否被杀死',
+    conference_name varchar(200)                         null comment '爬取的会议名',
+    start_year      int        default 2015              not null comment '会议开始年份',
+    end_year        int        default 2020              not null comment '会议结束年份(含)'
+) ENGINE = InnoDB comment '爬虫任务表';

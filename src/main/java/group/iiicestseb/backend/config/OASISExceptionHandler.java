@@ -3,6 +3,7 @@ package group.iiicestseb.backend.config;
 import group.iiicestseb.backend.exception.paper.*;
 import group.iiicestseb.backend.exception.user.UserAlreadyRegisterException;
 import group.iiicestseb.backend.exception.user.WrongLoginInfoException;
+import group.iiicestseb.backend.utils.PyUtil;
 import group.iiicestseb.backend.vo.Response;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -89,6 +90,10 @@ public class OASISExceptionHandler {
         return Response.buildFailure(e.getMessage());
     }
 
+    @ExceptionHandler(PyUtil.PythonException.class)
+    public Response handlePythonException(PyUtil.PythonException e) {
+        return Response.buildFailure(e.getMessage());
+    }
 
     //全局未知错误
     @ExceptionHandler(Exception.class)

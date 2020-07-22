@@ -99,7 +99,8 @@ public class JSONUtil {
         StartPage("startPage"),
         EndPage("endPage"),
         Metrics("metrics"),
-        Publisher("publisher");
+        Publisher("publisher"),
+        ConferenceName("conferenceName");
         private final String value;
 
         KEY(String value) {
@@ -134,14 +135,27 @@ public class JSONUtil {
     }
 
     /**
-     * 会议名
      * ASE("ASE"),
-     * ICSE("ICSE");
+     * ICSE("ICSE"),
+     * CVRP("CVPR"),
+     * ICCV("ICCV"),
+     * VTS("VTS"),
+     * ICMLA("ICMLA"),
+     * ISCA("ISCA"),
+     * ICIP("ICIP"),
+     * DSN("DSN")
      */
     public enum CONFERENCE {
-        //
+        //ICSE, ASE, CVPR, ICCV, VTS, ICMLA, ISCA, ICIP, DSN
         ASE("ASE"),
-        ICSE("ICSE");
+        ICSE("ICSE"),
+        CVRP("CVPR"),
+        ICCV("ICCV"),
+        VTS("VTS"),
+        ICMLA("ICMLA"),
+        ISCA("ISCA"),
+        ICIP("ICIP"),
+        DSN("DSN");
         public final String value;
 
         CONFERENCE(String value) {
@@ -230,6 +244,35 @@ public class JSONUtil {
     }
 
     /**
+     * 返回的结果的key
+     * TotalCount("totalCount"),
+     * SuccessCount("successCount"),
+     * ExistedCount("existedCount"),
+     * ErrorCount("errorCount"),
+     * ErrorLogs("errorLogs"),
+     * Papers("papers");
+     */
+    public enum RESULT_KEY {
+        //
+        TotalCount("totalCount"),
+        SuccessCount("successCount"),
+        ExistedCount("existedCount"),
+        ErrorCount("errorCount"),
+        ErrorLogs("errorLogs"),
+        Papers("papers");
+
+        public final String value;
+
+        RESULT_KEY(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return this.value;
+        }
+    }
+
+    /**
      * 加载测试数据
      */
     public static void loadTestData() {
@@ -245,11 +288,28 @@ public class JSONUtil {
      * @return 解析日志
      */
     public static JSONObject analyzeExistedJsonFile(String filename) {
-        return Instance.analyzeExistedJsonFileInner(filename);
+        return Instance.analyzeExistedJsonFileInner("json/" + filename);
+    }
+
+    public static JSONObject analyzeTempJson(String filename) {
+        File file = new File(filename);
+        List<JSONObject> jsonObjects = new LinkedList<>();
+        List<String> logs = new LinkedList<>();
+        BufferedReader br;
+        try {
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            Instance.ReadLines(jsonObjects, br, logs);
+            br.close();
+        } catch (FileNotFoundException e) {
+            throw new JSONAnalyzeException(FILE_NOT_FOUND + filename);
+        } catch (IOException e) {
+            throw new JSONAnalyzeException(INPUT_STREAM_CLOSE_ERROR);
+        }
+        return Instance.analyze(jsonObjects, logs);
     }
 
     private JSONObject analyzeExistedJsonFileInner(String filename) {
-        ClassPathResource file = new ClassPathResource("json/" + filename);
+        ClassPathResource file = new ClassPathResource(filename);
         List<JSONObject> jsonObjects = new LinkedList<>();
         List<String> logs = new LinkedList<>();
         BufferedReader br;
@@ -378,12 +438,12 @@ public class JSONUtil {
         LOGGER.info(EXISTED_COUNT_INFO + existed);
         LOGGER.info(ERROR_COUNT_INFO + error);
 
-        result.put("totalCount", count);
-        result.put("successCount", success);
-        result.put("existedCount", existed);
-        result.put("errorCount", error);
-        result.put("errorLogs", logs);
-        result.put("papers", NewLists.get(Paper.class));
+        result.put(RESULT_KEY.TotalCount.value, count);
+        result.put(RESULT_KEY.SuccessCount.value, success);
+        result.put(RESULT_KEY.ExistedCount.value, existed);
+        result.put(RESULT_KEY.ErrorCount.value, error);
+        result.put(RESULT_KEY.ErrorLogs.value, logs);
+        result.put(RESULT_KEY.Papers.value, NewLists.get(Paper.class));
         return result;
     }
 
@@ -448,24 +508,24 @@ public class JSONUtil {
 
     @SuppressWarnings("unchecked")
     private Conference analyzeConference(JSONObject jo, Map<Class<?>, Map<?, ?>> existedMaps, Map<Class<?>, List<?>> newLists) {
-        Conference c;
         Map<String, Conference> existed = (Map<String, Conference>) existedMaps.get(Conference.class);
         List<Conference> news = (LinkedList<Conference>) newLists.get(Conference.class);
-        String name = StringUtil.stripAccents(jo.getString(KEY.PublicationTitle.value()).trim());
-        String substring = name.substring(name.length() - 7).toUpperCase();
-        if (substring.contains(CONFERENCE.ASE.value())) {
-            name = CONFERENCE.ASE.value();
-        } else if (substring.contains(CONFERENCE.ICSE.value())) {
-            name = CONFERENCE.ICSE.value();
-        } else {
-            //todo: 等赖总加商会议名
-            name = Math.random() > 0.5 ? CONFERENCE.ICSE.value() : CONFERENCE.ASE.value();
-//            throw new JSONException(CONFERENCE_NOT_EXIST);
+        String name = StringUtil.stripAccents(jo.getString(KEY.ConferenceName.value()).trim());
+        boolean flag = false;
+        for (CONFERENCE conference : CONFERENCE.values()) {
+            if (conference.value.equals(name)) {
+                flag = true;
+                break;
+            }
+        }
+        if (!flag) {
+            throw new JSONAnalyzeException(CONFERENCE_NOT_EXIST);
         }
         if (existed.containsKey(name)) {
             return existed.get(name);
         }
-        if ((c = conferenceService.findConferenceByName(name)) == null) {
+        Conference c = conferenceService.findConferenceByName(name);
+        if (c == null) {
             c = new Conference();
             c.setName(name);
             conferenceService.insertConference(c);
