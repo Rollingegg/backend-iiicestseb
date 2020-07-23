@@ -20,18 +20,7 @@ import javax.validation.Valid;
 @Validated
 public class SearchController {
 
-//    //搜索类型
-//    private static final String ALL = "all";
-//    private static final String AFFILIATION = "affiliation_name";
-//    private static final String TITLE = "title";
-//    private static final String ABSTRACT = "paper_abstract";
-//    private static final String DOI = "doi";
-//    private static final String AUTHOR = "author_name";
-//    private static final String TERM = "term";
-//
-//
-//    public static final String PAPER_FORM_EMPTY = "搜索内容不能为空";
-//    public static final String SEARCH_ERROR = "搜索出现未知错误";
+
 
     @Resource(name = "Regedit")
     SearchService searchService;
