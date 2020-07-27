@@ -33,7 +33,18 @@ public class ScheduleUtil {
         ((ManageService)regedit).reComputeAuthorStatistics();
     }
 
+    /**
+     * 每 1min 检测一次爬虫任务
+     */
+    @Scheduled(cron = "0 0/1 * * * *")
+    public void checkCrawler() throws Exception {
+        PyUtil.checkCrawler();
+    }
 
+
+    /**
+     * 每天凌晨3点进行 spark 的 page rank 计算
+     */
     @Transactional(rollbackFor = Exception.class)
     @Scheduled(cron = "0 0 3 * * *")
     public void pagerank(){

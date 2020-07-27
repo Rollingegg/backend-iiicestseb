@@ -65,17 +65,17 @@ public class ManageServiceTest extends EasyMockSupport {
         Author author3 = regedit.findAuthorByName("author3");
         AuthorStatistics as1 = regedit.getAuthorStatisticsByAuthorId(author1.getId());
         AuthorStatistics as3 = regedit.getAuthorStatisticsByAuthorId(author3.getId());
-        Assert.assertEquals(Integer.valueOf(1), as1.getHIndex());
+        Assert.assertEquals(Integer.valueOf(2), as1.getHIndex());
         Assert.assertEquals(Integer.valueOf(2), as1.getGIndex());
-        Assert.assertEquals(Double.valueOf(8.0), as1.getAvgCite());
+        Assert.assertEquals(Double.valueOf(10.0), as1.getAvgCite());
         Assert.assertEquals(Integer.valueOf(2), as1.getPaperNum());
-        Assert.assertEquals(Integer.valueOf(1), as1.getAsePaperNum());
-        Assert.assertEquals(Integer.valueOf(1), as1.getIcsePaperNum());
-        Assert.assertEquals(Integer.valueOf(2), as3.getHIndex());
+        Assert.assertEquals(Integer.valueOf(2), as1.getAsePaperNum());
+        Assert.assertNull(as1.getIcsePaperNum());
+        Assert.assertEquals(Integer.valueOf(3), as3.getHIndex());
         Assert.assertEquals(Integer.valueOf(3), as3.getGIndex());
-        Assert.assertEquals(Double.valueOf(10.333333333333334), as3.getAvgCite());
+        Assert.assertEquals(Double.valueOf(11.666666666666666), as3.getAvgCite());
         Assert.assertEquals(Integer.valueOf(3), as3.getPaperNum());
-        Assert.assertEquals(Integer.valueOf(2), as3.getAsePaperNum());
-        Assert.assertEquals(Integer.valueOf(1), as3.getIcsePaperNum());
+        Assert.assertEquals(Integer.valueOf(3), as3.getAsePaperNum());
+        Assert.assertNull(as3.getIcsePaperNum());
     }
 }

@@ -37,7 +37,7 @@ public class DateUtil {
             ZoneId zoneId = ZoneId.systemDefault();
             return instant.atZone(zoneId).toLocalDateTime();
         } catch (ParseException e) {
-            throw new DateException(FORMAT_ERROR);
+            throw new DateException(FORMAT_ERROR + " : " + year + "不符合\"yyyy\"格式");
         }
     }
 
