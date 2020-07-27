@@ -2,11 +2,11 @@ package group.iiicestseb.backend.serviceImpl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import group.iiicestseb.backend.constant.rank.RankType;
-import group.iiicestseb.backend.entity.Author;
 import group.iiicestseb.backend.entity.AuthorStatistics;
 import group.iiicestseb.backend.mapper.RankMapper;
 import group.iiicestseb.backend.regedit.Regedit;
 import group.iiicestseb.backend.service.RankService;
+import group.iiicestseb.backend.vo.rank.AuthorRankDataVO;
 import group.iiicestseb.backend.vo.rank.AuthorRankVO;
 import group.iiicestseb.backend.vo.rank.RankOverviewVO;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author kenny
@@ -37,7 +34,7 @@ public class RankServiceImpl extends ServiceImpl<RankMapper,AuthorStatistics> im
     public AuthorRankVO getRank(Integer page, Integer size, RankType rankType){
         AuthorRankVO authorRankVO = new AuthorRankVO();
         authorRankVO.setPage(page);
-        List<AuthorStatistics> scores = null;
+        List<AuthorRankDataVO> scores = null;
         if(rankType.equals(RankType.H_INDEX)){
             scores = rankMapper.getRankByHScore((page-1)*size,page * size);
         }else if(rankType.equals(RankType.G_INDEX)){
@@ -52,10 +49,8 @@ public class RankServiceImpl extends ServiceImpl<RankMapper,AuthorStatistics> im
         if(CollectionUtils.isEmpty(scores)){
             throw new RuntimeException("获取排名错误");
         }
-        Map<Integer,AuthorStatistics> scoresMap = scores.stream().collect(Collectors.toMap(AuthorStatistics::getAuthorId, x->x));
-        Collection<Author> authors = regedit.findAuthorByIdBatch(scoresMap.keySet());
-        Map<Author,AuthorStatistics> authorStatisticsMap = authors.stream().collect(Collectors.toMap(x->x,x->scoresMap.get(x.getId())));
-        authorRankVO.setAuthorMap(authorStatisticsMap);
+        authorRankVO.setAuthorRankDataVOList(scores);
+        authorRankVO.setPage((rankMapper.getCount()-1)/size+1);
         return authorRankVO;
     }
 
