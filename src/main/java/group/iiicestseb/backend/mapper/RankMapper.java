@@ -31,6 +31,10 @@ public interface RankMapper extends BaseMapper<AuthorStatistics>{
     @Select("select * from author_statistics  order by paper_num desc ,author_id desc limit #{start},#{end}")
     List<AuthorStatistics> getRankByPaperNum(Integer start,Integer end);
 
+    @ResultType(AuthorStatistics.class)
+    @Select("select au.id as authorId ,pj.page_rank as sociability from author_page_rank pj, author au where au.id = pj.author_id by pj.page_rank desc ,pj.author_id desc limit #{start},#{end}")
+    List<AuthorStatistics> getRankBySociability(Integer start,Integer end);
+
 //    /**
 //     * 根据对应的术语找寻相关论文的所有作者
 //     * 计算搜索年份内的平均被引数作为排名参考

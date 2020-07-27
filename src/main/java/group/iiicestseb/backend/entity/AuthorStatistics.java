@@ -39,6 +39,8 @@ public class AuthorStatistics {
     @TableField("icse_paper_num")
     private Integer icsePaperNum;
 
+    private Double sociability;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

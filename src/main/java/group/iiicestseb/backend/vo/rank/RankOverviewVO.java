@@ -25,4 +25,8 @@ public class RankOverviewVO {
      * 前三论文数作者
      */
     AuthorRankVO paperNumRank;
+    /**
+     * 前三人脉
+     */
+    AuthorRankVO sociabilityRank;
 }
