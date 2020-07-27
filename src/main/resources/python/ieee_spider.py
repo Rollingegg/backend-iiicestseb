@@ -11,6 +11,10 @@ import json
 import re
 import sys
 import time
+import threading
+import inspect
+import ctypes
+import os
 
 import requests
 
@@ -52,7 +56,7 @@ headers = {
 
 # ===========================FUNC UTILS==============================
 def log(info: str):
-    print('[crawler]' + info)
+    print('[crawler]' + info, flush=True)
 
 
 def get_referer_header(url: str):
@@ -171,7 +175,7 @@ class IeeeSpider:
         self.search_conference = search_conference
         self.start_year = int(start_year)
         self.end_year = int(end_year)
-        self.output = output_file
+        self.out_file = open(output_file, "w+", encoding='utf-8')
         self.session = requests.Session()
         self.session.headers = headers
         self.con_params = list()
@@ -181,6 +185,8 @@ class IeeeSpider:
     def run(self):
         self.start_request()
         self.scratch_articles()
+        self.out_file.close()
+        log('end')
 
     def start_request(self):
         """
@@ -253,45 +259,71 @@ class IeeeSpider:
         利用上一步获取的文章id，进一步获取文章详情和引用列表
         :return:
         """
-        with open(self.output, 'a') as f:
-            for i in range(len(self.total_article_param_list)):
-                log('current : ' + str(i + 1))
-                cur_pub_title = self.total_article_param_list[i]['publicationTitle']
-                cur_article_number = self.total_article_param_list[i]['articleNumber']
-                cur_article_url = paper_url.format(articleNumber=cur_article_number)
-                try:
-                    r = self.session.get(url=cur_article_url,
-                                         headers=get_referer_header(cur_article_url),
-                                         timeout=timeout)
-                    if r.status_code == requests.codes.ok:
-                        cur_paper = ieee_info(r.text)
-                        if len(cur_paper.get('authors')) == 0:
-                            log('exception : Invalid paper')
-                            continue
-                        cur_paper.update({'conferenceName': self.search_conference})
-                        cur_paper.update({'publication': cur_pub_title})
-                        cur_paper.update(
-                            {'ref': self.get_reference(paper_ref_url.format(articleNumber=cur_article_number))})
-                        f.write(json.dumps(cur_paper) + '\n')
-                        f.flush()
-                        time.sleep(0.1)
-                except Exception:
-                    log('exception : Go on next paper')
+        for i in range(len(self.total_article_param_list)):
+            log('current : ' + str(i + 1))
+            cur_pub_title = self.total_article_param_list[i]['publicationTitle']
+            cur_article_number = self.total_article_param_list[i]['articleNumber']
+            cur_article_url = paper_url.format(articleNumber=cur_article_number)
+            try:
+                r = self.session.get(url=cur_article_url,
+                                     headers=get_referer_header(cur_article_url),
+                                     timeout=timeout)
+                if r.status_code == requests.codes.ok:
+                    cur_paper = ieee_info(r.text)
+                    if len(cur_paper.get('authors')) == 0:
+                        log('exception : Invalid paper')
+                        continue
+                    cur_paper.update({'conferenceName': self.search_conference})
+                    cur_paper.update({'publication': cur_pub_title})
+                    cur_paper.update(
+                        {'ref': self.get_reference(paper_ref_url.format(articleNumber=cur_article_number))})
+                    self.out_file.write(json.dumps(cur_paper) + '\n')
+                    self.out_file.flush()
+                    time.sleep(0.1)
+            except Exception:
+                log('exception : Go on next paper')
 
     def get_reference(self, url: str):
         reference = list()
         r = self.session.get(url=url, headers=get_referer_header(url), timeout=timeout)
         if r.status_code == requests.codes.ok:
             content = r.json()
-            for ref in content['references']:
+            for ref in content.get('references', list()):
                 reference.append({
-                    "order": ref['order'],
-                    "title": ref['title'],
-                    "text": ref['text'],
-                    "googleScholarLink": ref['googleScholarLink'],
-                    "refType": ref['refType']
+                    "order": ref.get('order', ''),
+                    "title": ref.get('title', ''),
+                    "text": ref.get('text', ''),
+                    "googleScholarLink": ref.get('googleScholarLink', ''),
+                    "refType": ref.get('refType', '')
                 })
         return reference
+
+
+def _async_raise(tid, exctype):
+    """raises the exception, performs cleanup if needed"""
+    tid = ctypes.c_long(tid)
+    if not inspect.isclass(exctype):
+        exctype = type(exctype)
+    res = ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, ctypes.py_object(exctype))
+    if res == 0:
+        raise ValueError("invalid thread id")
+    elif res != 1:
+        # """if it returns a number greater than one, you're in trouble,
+        # and you should call it again with exc=NULL to revert the effect"""
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
+        raise SystemError("PyThreadState_SetAsyncExc failed")
+
+
+def stop_thread(thread):
+    _async_raise(thread.ident, SystemExit)
+
+
+class SpiderThread(threading.Thread):
+    def __init__(self, spider: IeeeSpider):
+        self.spider = spider
+
+    def run(self):
+        self.func()
 
 
 if __name__ == '__main__':
@@ -301,5 +333,13 @@ if __name__ == '__main__':
     ey = sys.argv[3].split('=')[1]
     out = sys.argv[4].split('=')[1]
     spider = IeeeSpider(con, sy, ey, out)
-    spider.run()
-    log('end')
+    spider_thread = threading.Thread(target=spider.run)
+    spider_thread.start()
+
+    cmd = input()
+    if cmd == 'cancel':
+        stop_thread(spider_thread)
+        spider.out_file.close()
+        if os.path.exists(out):
+            os.remove(out)
+        log('cancel')

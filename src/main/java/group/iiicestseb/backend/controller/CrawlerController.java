@@ -31,7 +31,7 @@ public class CrawlerController {
     }
 
     @PostMapping("/start")
-    public Response startCrawler() {
+    public Response startCrawler() throws Exception {
         PyUtil.checkCrawler();
         return Response.buildSuccess();
     }
@@ -62,10 +62,9 @@ public class CrawlerController {
         return Response.buildSuccess(crawlerService.cancelCrawler(crawlerId));
     }
 
-    @GetMapping("test")
-    public Response test() {
-//        PyUtil.test();
-        return Response.buildSuccess();
+    @GetMapping("/log")
+    public Response getCrawlerLog(@RequestParam("crawlerId") Integer crawlerId) {
+        return Response.buildSuccess(crawlerService.getLog(crawlerId));
     }
 
 }

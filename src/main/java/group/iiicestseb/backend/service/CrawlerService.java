@@ -64,4 +64,12 @@ public interface CrawlerService {
      * @return 当前运行中的爬虫任务，如果没有运行中的任务，返回null
      */
     CrawlerTaskVO getCurrentTask();
+
+    /**
+     * 获取爬虫日志
+     *
+     * @param crawlerId 爬虫id
+     * @return 爬虫日志
+     */
+    String getLog(Integer crawlerId);
 }

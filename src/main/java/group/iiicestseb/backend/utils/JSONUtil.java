@@ -301,7 +301,7 @@ public class JSONUtil {
             Instance.ReadLines(jsonObjects, br, logs);
             br.close();
         } catch (FileNotFoundException e) {
-            throw new JSONAnalyzeException(FILE_NOT_FOUND + filename);
+            throw new JSONAnalyzeException(FILE_NOT_FOUND + file.getName());
         } catch (IOException e) {
             throw new JSONAnalyzeException(INPUT_STREAM_CLOSE_ERROR);
         }
@@ -318,7 +318,7 @@ public class JSONUtil {
             ReadLines(jsonObjects, br, logs);
             br.close();
         } catch (FileNotFoundException e) {
-            throw new JSONAnalyzeException(FILE_NOT_FOUND + filename);
+            throw new JSONAnalyzeException(FILE_NOT_FOUND + file.getFilename());
         } catch (IOException e) {
             throw new JSONAnalyzeException(INPUT_STREAM_CLOSE_ERROR);
         }

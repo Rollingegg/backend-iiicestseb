@@ -30,11 +30,10 @@ public class ScheduleUtil {
     }
 
     /**
-     * 每 10s 检测一次爬虫任务
+     * 每 1min 检测一次爬虫任务
      */
-    @Transactional(rollbackFor = Exception.class)
     @Scheduled(cron = "0 0/1 * * * *")
-    public void checkCrawler() {
+    public void checkCrawler() throws Exception {
         PyUtil.checkCrawler();
     }
 

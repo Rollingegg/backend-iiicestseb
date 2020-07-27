@@ -7,6 +7,9 @@ import group.iiicestseb.backend.vo.crawler.CrawlerTaskVO;
 import lombok.Cleanup;
 import lombok.Data;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,18 +31,19 @@ import java.util.concurrent.*;
  * @date 2020/7/12
  */
 @Component("Python")
+@EnableAsync
 public class PyUtil {
 
     public static final String TOO_LONG_TO_UPDATE_RECOMMEND_ERROR = "经过4h仍未跑完推荐更新";
     public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final String TEST_MAIN_PY = "test_ieee.py";
+    public static final String MAIN_PY = "ieee_spider.py";
+    public static final String TEMP_PY_FILE = "temp.py";
+    public static final String TEMP_JSON_RESULT = "temp_result.json";
 
     private static final String SEP = System.getProperty("file.separator");
     private static String EXE;
     private static final String PYPATH = "python";
-    private static final String MAIN_PY = "ieee_spider.py";
-    private static final String TEMP_PY_FILE = "temp.py";
-    private static final String TEMP_JSON_RESULT = "temp_result.json";
 
     private static PyUtil Instance;
 
@@ -62,7 +66,7 @@ public class PyUtil {
 
     public static CrawlerTaskVO getCurrentTask() {
         CrawlerTaskVO taskVO = new CrawlerTaskVO();
-        if (currentTask.state.equals(CrawlerTask.STATE.Free)) {
+        if (currentTask.state.equals(CrawlerTask.STATE.Free) || currentTask.crawler == null) {
             return null;
         }
         taskVO.setCrawlerId(currentTask.crawler.getCrawlerId());
@@ -84,6 +88,7 @@ public class PyUtil {
      * 正在爬取第几个： "current : i" // 爬取子会议和爬取文献时都是这个输出，i 从 1 开始
      * 异常 : "exception : 异常信息" // todo: 各种异常信息等遇到了再处理
      * 进程心跳 : "heartbeat : 消息" // 如果要附加信息就在后面加
+     * 进程被取消 : "cancel"
      * <p>
      * 未知标记 : "unknown" // python里的误输出，注意出现这个只是因为python里写错了
      */
@@ -97,6 +102,8 @@ public class PyUtil {
         Current("current"),
         Exception("exception"),
         Heartbeat("heartbeat"),
+        Cancel("cancel"),
+        Timeout("timeout"),
         Unknown("unknown");
 
         public final String value;
@@ -127,48 +134,103 @@ public class PyUtil {
         }
     }
 
-    public static void checkCrawler() {
-        Instance.checkCrawlerInner();
-    }
-
     /**
-     * 检查当前状态，如果没有进行中的任务，则取下一个等待中的任务进行
+     * 还原环境
      */
-    @Transactional(rollbackFor = Exception.class)
-    public void checkCrawlerInner() {
-        if (currentTask.state != CrawlerTask.STATE.Free) {
-            return;
-        }
-        Instance.startNewCrawler(MAIN_PY);
+    public static void reset() {
+        currentTask.reset();
     }
 
     /**
      * 杀死当前进行的爬虫任务
      */
     public static void killCurrent() {
-        Instance.killCurrentInner();
+        try {
+            Instance.notifyPython("cancel\n");
+        } catch (IOException e) {
+            throw new PythonException("关闭爬虫线程失败");
+        }
     }
 
-    private void killCurrentInner() {
+    private void notifyPython(String msg) throws IOException{
         if (currentTask.state == CrawlerTask.STATE.Free) {
             return;
         }
+        currentTask.process.getOutputStream().write(msg.getBytes());
+        currentTask.process.getOutputStream().flush();
+    }
+
+    public static void checkCrawler() throws Exception {
+        Instance.checkCrawlerInner();
+    }
+
+    /**
+     * 检查当前状态，如果没有进行中的任务，则取下一个等待中的任务进行
+     * //这里因为要更新状态所以不需要 @Transactional(rollbackFor = Exception.class, noRollbackFor = PythonException.class)
+     */
+    public void checkCrawlerInner() throws Exception {
+        if (currentTask.state != CrawlerTask.STATE.Free) {
+            return;
+        }
+        currentTask.reset();
+        // 获取下一个任务
+        Crawler crawler;
+        if ((crawler = crawlerService.getNextTask()) == null) {
+            return;
+        }
+        crawler.setStartTime(LocalDateTime.now());
+        crawler.setState(Crawler.STATE.Running.value);
+        currentTask.crawler = crawler;
+        // 保存数据
+        saveCrawlerState();
+        String log;
+        boolean success;
+        try {
+            Future<String> process = Instance.startNewCrawler(MAIN_PY, currentTask.crawler);
+            log = process.get(4, TimeUnit.HOURS);
+            success = currentTask.guarder.get();
+        } catch (TimeoutException e) {
+            currentTask.crawler.setState(Crawler.STATE.Fail.value);
+            saveCrawlerState();
+            currentTask.reset();
+            throw new PythonException("爬虫执行超时: 4h");
+        } catch (ExecutionException e) {
+            if ("爬虫任务被手动取消".equals(e.getMessage())) {
+                currentTask.crawler.setState(Crawler.STATE.Canceled.value);
+                saveCrawlerState();
+                currentTask.reset();
+                throw new PythonException("爬虫任务被手动取消");
+            }
+            if ("爬虫任务心跳超时".equals(e.getMessage())) {
+                currentTask.crawler.setState(Crawler.STATE.Fail.value);
+                saveCrawlerState();
+                currentTask.reset();
+                throw new PythonException("爬虫任务心跳超时");
+            }
+            e.printStackTrace();
+            currentTask.crawler.setState(Crawler.STATE.Fail.value);
+            saveCrawlerState();
+            System.out.println(e.getMessage());
+            currentTask.reset();
+            throw new Exception("爬虫执行失败");
+        }
+        if (success) {
+            // 保存日志
+            crawlerService.saveLog(currentTask.crawler.getCrawlerId(), log);
+            saveCrawlerState();
+            // 解析并导入爬取的数据
+            analyzeJson();
+        }
+        // 删除临时文件、还原环境
         currentTask.reset();
     }
 
     /**
      * 开启新的爬虫任务
      */
-    public void startNewCrawler(String filename) {
-        currentTask.reset();
-        // 获取下一个任务
-        if ((currentTask.crawler = crawlerService.getNextTask()) == null) {
-            return;
-        }
-        // 保存数据
-        currentTask.crawler.setStartTime(LocalDateTime.now());
-        currentTask.crawler.setState(Crawler.STATE.Running.value);
-        saveCrawlerState();
+    @Async
+    public Future<String> startNewCrawler(String filename, Crawler crawler) throws ExecutionException, InterruptedException {
+        currentTask.crawler = crawler;
         currentTask.state = CrawlerTask.STATE.Starting;
         // 创建临时文件
         createTempFile(filename);
@@ -183,44 +245,37 @@ public class PyUtil {
             return trace(currentTask);
         });
         currentTask.tracer = traceTask;
+        // 返回 true 代表爬虫运行完成
         FutureTask<Boolean> timerTask = new FutureTask<>(() -> {
             while (currentTask.state != CrawlerTask.STATE.Free) {
                 TimeUnit.SECONDS.sleep(1);
                 currentTask.clock();
                 System.out.println(DateUtil.toStringDateTime(LocalDateTime.now()) + " timer " + currentTask.heartbeat);
-                if (currentTask.heartbeat >= 30) {
-                    currentTask.reset();
+                if (currentTask.crawler == null) {
+                    return false;
+                }
+                int waitTime;
+                switch (currentTask.state) {
+                    case GetSubConference:
+                        waitTime = 120;
+                        break;
+                    case AnalyzingJson:
+                        return true;
+                    default:
+                        waitTime = 30;
+                }
+                if (currentTask.heartbeat >= waitTime) {
+                    notifyPython("timeout\n");
                     return false;
                 }
             }
             return true;
         });
+        currentTask.guarder = timerTask;
         threadPool.submit(timerTask);
         threadPool.submit(traceTask);
-        String log;
-        try {
-            // 最长允许执行 4h
-            log = traceTask.get(4, TimeUnit.HOURS);
-        } catch (InterruptedException e) {
-            currentTask.reset();
-            throw new PythonException("爬虫被中断（Interrupted）");
-        } catch (ExecutionException e) {
-            currentTask.reset();
-            throw new PythonException("爬虫执行失败");
-        } catch (TimeoutException e) {
-            currentTask.reset();
-            throw new PythonException("爬虫执行超时");
-        } catch (CancellationException e) {
-            currentTask.reset();
-            throw new PythonException("爬虫任务被手动取消");
-        }
-        // 保存日志
-        crawlerService.saveLog(currentTask.crawler.getCrawlerId(), log);
-        saveCrawlerState();
-        // 解析并导入爬取的数据
-        analyzeJson();
-        // 删除临时文件、还原环境
-        currentTask.reset();
+        String log = traceTask.get();
+        return new AsyncResult<>(log);
     }
 
     /**
@@ -274,7 +329,7 @@ public class PyUtil {
                 FLAG flag = FLAG.getType(msg);
                 if (!msg.startsWith(FLAG.Symbol.value)) {
                     System.out.println("未定义的输出：" + msg);
-                    throw new PythonException("未定义的输出：" + msg);
+                    continue;
                 }
                 task.heartbeat();
                 sb.append(DateUtil.toStringDateTime(LocalDateTime.now())).append(" ")
@@ -299,6 +354,12 @@ public class PyUtil {
                     case Current:
                         task.currentI = Integer.valueOf(msg.split(" : ")[1]);
                         break;
+                    case Cancel:
+                        task.state = CrawlerTask.STATE.Free;
+                        throw new PythonException("爬虫任务被手动取消");
+                    case Timeout:
+                        task.state = CrawlerTask.STATE.Free;
+                        throw new PythonException("爬虫任务心跳超时");
                     case Exception:
                     case Heartbeat:
                     case Symbol:
@@ -308,6 +369,7 @@ public class PyUtil {
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
             throw new PythonException("执行py脚本失败");
         }
         return sb.toString();
@@ -318,12 +380,12 @@ public class PyUtil {
      */
     private void analyzeJson() {
         JSONObject result = JSONUtil.analyzeTempJson(TEMP_JSON_RESULT);
-        currentTask.crawler.setState(Crawler.STATE.Finished.value);
-        currentTask.crawler.setEndTime(LocalDateTime.now());
         currentTask.crawler.setTotalCount(result.getInteger(JSONUtil.RESULT_KEY.TotalCount.value));
         currentTask.crawler.setSuccessCount(result.getInteger(JSONUtil.RESULT_KEY.SuccessCount.value));
         currentTask.crawler.setExistedCount(result.getInteger(JSONUtil.RESULT_KEY.ExistedCount.value));
         currentTask.crawler.setErrorCount(result.getInteger(JSONUtil.RESULT_KEY.ErrorCount.value));
+        currentTask.crawler.setState(Crawler.STATE.Finished.value);
+        currentTask.crawler.setEndTime(LocalDateTime.now());
 
         crawlerService.updateCrawler(currentTask.crawler);
     }
@@ -358,6 +420,7 @@ public class PyUtil {
         private Integer currentTotal = 0;
         private STATE state = STATE.Free;
 
+        private FutureTask<Boolean> guarder = null;
         private FutureTask<String> tracer = null;
 
         private Integer heartbeat = 0;
@@ -389,9 +452,20 @@ public class PyUtil {
          * 删除临时文件并还原环境
          */
         private void reset() {
-            crawler = null;
-            if (process != null) process.destroyForcibly();
+            try {
+                crawler = null;
+                if (process != null) {
+                    process.getInputStream().close();
+                    process.getOutputStream().close();
+                    process.getErrorStream().close();
+                    process.destroyForcibly();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new PythonException("关闭爬虫线程失败");
+            }
             if (tracer != null) tracer.cancel(true);
+            if (guarder != null) guarder.cancel(true);
             threadPool.shutdown();
             threadPool = Executors.newCachedThreadPool();
             state = STATE.Free;

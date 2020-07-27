@@ -24,8 +24,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.annotation.Resource;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,8 +58,13 @@ public class CrawlerControllerTest {
     private Crawler waitingCrawler;
     private Crawler finishedCrawler;
 
+    private static final String testLog = "testLog";
+
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        //子线程继承主线程的上下文
+        RequestContextHolder.setRequestAttributes(RequestContextHolder.currentRequestAttributes(), true);
+
         MockitoAnnotations.initMocks(this);
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
         session = new MockHttpSession();
@@ -84,16 +92,20 @@ public class CrawlerControllerTest {
         finishedCrawler.setSuccessCount(90);
         finishedCrawler.setErrorCount(10);
         crawlerService.updateCrawler(finishedCrawler);
+        crawlerService.saveLog(finishedCrawler.getCrawlerId(), testLog);
     }
 
     @After
-    public void cleanUp() {
-        PyUtil.killCurrent();
+    public void cleanUp() throws Exception {
+        Files.deleteIfExists(Paths.get(PyUtil.TEMP_PY_FILE));
+        Files.deleteIfExists(Paths.get(PyUtil.TEMP_JSON_RESULT));
     }
 
 
     @Test
     public void getAllCrawler() throws Exception {
+        pyUtil.startNewCrawler(PyUtil.TEST_MAIN_PY, runningCrawler);
+        TimeUnit.SECONDS.sleep(2);
         mvc.perform(MockMvcRequestBuilders.get("/crawler/all")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
@@ -101,23 +113,32 @@ public class CrawlerControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.length()").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result[2]").exists());
+        PyUtil.killCurrent();
     }
 
     @Test
     public void getCurrent() throws Exception {
+        pyUtil.startNewCrawler(PyUtil.TEST_MAIN_PY, runningCrawler);
+        TimeUnit.SECONDS.sleep(2);
         mvc.perform(MockMvcRequestBuilders.get("/crawler/current")
                 .accept(MediaType.APPLICATION_JSON)
                 .session(session)
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result.total").value(10))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.result.current").value(10))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.total").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.current").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.state").isNotEmpty());
         Assert.assertNotNull(PyUtil.getCurrentTask());
+        PyUtil.killCurrent();
     }
 
     @Test
     public void cancelCrawler() throws Exception {
+        waitingCrawler = crawlerMapper.selectById(waitingCrawler.getCrawlerId());
+        runningCrawler = crawlerMapper.selectById(runningCrawler.getCrawlerId());
+        finishedCrawler = crawlerMapper.selectById(finishedCrawler.getCrawlerId());
+        pyUtil.startNewCrawler(PyUtil.TEST_MAIN_PY, runningCrawler);
+
         mvc.perform(MockMvcRequestBuilders.post("/crawler/cancel")
                 .param("crawlerId", String.valueOf(waitingCrawler.getCrawlerId()))
                 .accept(MediaType.APPLICATION_JSON)
@@ -125,6 +146,9 @@ public class CrawlerControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(true));
+
+        Assert.assertNotNull(PyUtil.getCurrentTask());
+        TimeUnit.SECONDS.sleep(2);
         mvc.perform(MockMvcRequestBuilders.post("/crawler/cancel")
                 .param("crawlerId", String.valueOf(runningCrawler.getCrawlerId()))
                 .accept(MediaType.APPLICATION_JSON)
@@ -132,6 +156,9 @@ public class CrawlerControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(true));
+        TimeUnit.SECONDS.sleep(1);
+        Assert.assertNull(PyUtil.getCurrentTask());
+
         mvc.perform(MockMvcRequestBuilders.post("/crawler/cancel")
                 .param("crawlerId", String.valueOf(finishedCrawler.getCrawlerId()))
                 .accept(MediaType.APPLICATION_JSON)
@@ -139,6 +166,7 @@ public class CrawlerControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(true));
+
         waitingCrawler = crawlerMapper.selectById(waitingCrawler.getCrawlerId());
         runningCrawler = crawlerMapper.selectById(runningCrawler.getCrawlerId());
         finishedCrawler = crawlerMapper.selectById(finishedCrawler.getCrawlerId());
@@ -149,13 +177,14 @@ public class CrawlerControllerTest {
     }
 
     @Test
-    public void test() throws Exception {
-        Thread thread = new Thread(() -> pyUtil.startNewCrawler(PyUtil.TEST_MAIN_PY));
-        thread.start();
-        Assert.assertTrue(thread.isAlive());
-        TimeUnit.SECONDS.sleep(30);
-        Assert.assertTrue(thread.isAlive());
-        Assert.assertNotNull(PyUtil.getCurrentTask());
+    public void getLogTest() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/crawler/log")
+                .param("crawlerId", String.valueOf(finishedCrawler.getCrawlerId()))
+                .accept(MediaType.APPLICATION_JSON)
+                .session(session)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("true"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result").value(testLog));
     }
 
 

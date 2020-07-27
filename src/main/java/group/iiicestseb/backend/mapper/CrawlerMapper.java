@@ -41,6 +41,15 @@ public interface CrawlerMapper extends BaseMapper<Crawler> {
     @Insert("insert into crawler_log set crawler_id=#{crawlerId}, log=#{log}")
     void insertLog(Integer crawlerId, String log);
 
+    /**
+     * 获取爬虫日志
+     *
+     * @param crawlerId 爬虫任务id
+     * @return 日志
+     */
+    @Select("select log from crawler_log where crawler_id=#{crawlerId}")
+    String selectLogById(Integer crawlerId);
+
 //
 //    /**
 //     * 更新爬虫任务的状态

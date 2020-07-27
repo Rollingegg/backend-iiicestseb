@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * @date 2020/7/13
  */
 @Service("Crawler")
-public class CrawlerServiceImpl extends ServiceImpl<CrawlerMapper, Crawler> implements CrawlerService{
+public class CrawlerServiceImpl extends ServiceImpl<CrawlerMapper, Crawler> implements CrawlerService {
 
     @Resource
     CrawlerMapper crawlerMapper;
@@ -41,9 +41,10 @@ public class CrawlerServiceImpl extends ServiceImpl<CrawlerMapper, Crawler> impl
     public Boolean cancelCrawler(Integer crawlerId) {
         Crawler crawler = crawlerMapper.selectById(crawlerId);
         String currentState = crawler.getState();
-        if (Crawler.STATE.Running.value.equals(currentState)) {
-            PyUtil.killCurrent();
-        } else if (!Crawler.STATE.Waiting.value.equals(currentState)){
+        PyUtil.killCurrent();
+        if (Crawler.STATE.Finished.value.equals(currentState)
+                || Crawler.STATE.Canceled.value.equals(currentState)
+                || Crawler.STATE.Fail.value.equals(currentState)) {
             return true;
         }
         String state = Crawler.STATE.Canceled.value;
@@ -73,5 +74,11 @@ public class CrawlerServiceImpl extends ServiceImpl<CrawlerMapper, Crawler> impl
     public CrawlerTaskVO getCurrentTask() {
         return PyUtil.getCurrentTask();
     }
+
+    @Override
+    public String getLog(Integer crawlerId) {
+        return crawlerMapper.selectLogById(crawlerId);
+    }
+
 
 }

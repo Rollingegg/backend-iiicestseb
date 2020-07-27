@@ -4,15 +4,18 @@ import group.iiicestseb.backend.entity.Crawler;
 import group.iiicestseb.backend.form.CrawlerForm;
 import group.iiicestseb.backend.mapper.CrawlerMapper;
 import group.iiicestseb.backend.service.CrawlerService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author jh
@@ -64,9 +67,17 @@ public class PyUtilTest {
     }
 
     @Test
-    public void test() {
-        System.out.println(System.getProperty("user.dir"));
-        pyUtil.startNewCrawler(PyUtil.TEST_MAIN_PY);
+    public void startNewCrawlerTest() throws Exception {
+        //子线程继承主线程的上下文
+        RequestContextHolder.setRequestAttributes(RequestContextHolder.currentRequestAttributes(), true);
+
+        pyUtil.startNewCrawler(PyUtil.TEST_MAIN_PY, runningCrawler);
+        TimeUnit.SECONDS.sleep(2);
+        Assert.assertNotNull(PyUtil.getCurrentTask());
+        PyUtil.killCurrent();
+        TimeUnit.SECONDS.sleep(1);
+        Assert.assertNull(PyUtil.getCurrentTask());
+        PyUtil.reset();
     }
 
 

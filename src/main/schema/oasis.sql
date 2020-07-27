@@ -53,7 +53,7 @@ CREATE TABLE paper
     end_page              varchar(15) comment '终止页',
     pub_link              text comment '所属会议的总页面',
     issue_link            text comment '这篇文章的某一次会议的链接',
-    publisher             varchar(10) comment '刊物所属出版社',
+    publisher             varchar(50) comment '刊物所属出版社',
     conf_loc              varchar(50) comment '会议地点',
     chron_date            date comment '发表日期',
     article_id            int comment 'ieee设立的文献id',
@@ -157,13 +157,24 @@ create table paper_statistics
 create table crawler
 (
     crawler_id      int PRIMARY KEY auto_increment comment '爬虫任务id',
-    add_time        datetime   default CURRENT_TIMESTAMP null comment '爬虫任务添加时间',
-    start_time      datetime                             null comment '爬虫开始时间',
-    end_time        datetime                             null comment '爬虫结束时间',
-    is_waiting      tinyint(1) default 1                 null comment '等待运行',
-    is_running      tinyint(1) default 0                 not null comment '是否在运行',
-    is_killed       tinyint(1) default 0                 null comment '是否被杀死',
-    conference_name varchar(200)                         null comment '爬取的会议名',
-    start_year      int        default 2015              not null comment '会议开始年份',
-    end_year        int        default 2020              not null comment '会议结束年份(含)'
+    add_time        datetime    default CURRENT_TIMESTAMP null comment '爬虫任务添加时间',
+    start_time      datetime                              null comment '爬虫开始时间',
+    end_time        datetime                              null comment '爬虫结束时间',
+    state           varchar(20) default '等待中'             null comment '状态',
+    conference_name varchar(200)                          null comment '爬取的会议名',
+    start_year      int         default 2015              not null comment '会议开始年份',
+    end_year        int         default 2020              not null comment '会议结束年份(含)',
+    total_count     int                                   null comment '爬取的总文献数',
+    success_count   int                                   null comment '成功爬取并导入的文献数',
+    existed_count   int                                   null comment '库内已存在的文献数',
+    error_count     int                                   null comment '爬取后导入失败的文献数量'
 ) ENGINE = InnoDB comment '爬虫任务表';
+
+# 创建爬虫日志表
+create table crawler_log
+(
+    crawler_id int  not null comment '爬虫任务id',
+    log        text null comment '日志',
+    constraint crawler_log_crawler_id_uindex
+        unique (crawler_id)
+) ENGINE = InnoDB comment '爬虫任务表' comment '爬虫日志';
