@@ -20,5 +20,10 @@ public enum RankType {
     /**
      * 文献数
      */
-    PAPER_NUM
+    PAPER_NUM,
+    /**
+     * 人脉，pagerank计算
+     */
+    SOCIABILITY
+
 }

@@ -1,10 +1,8 @@
 package group.iiicestseb.backend.vo.rank;
 
-import group.iiicestseb.backend.entity.Author;
-import group.iiicestseb.backend.entity.AuthorStatistics;
 import lombok.Data;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author wph
@@ -15,7 +13,7 @@ public class AuthorRankVO {
     /**
      * 作者H指数排名 
      */
-    private Map<Author, AuthorStatistics> AuthorMap;
+    private List<AuthorRankDataVO> authorRankDataVOList;
 
     /**
      * 页码
