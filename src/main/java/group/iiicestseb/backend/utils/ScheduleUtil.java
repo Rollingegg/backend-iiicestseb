@@ -36,30 +36,31 @@ public class ScheduleUtil {
     /**
      * 每 1min 检测一次爬虫任务
      */
-    @Scheduled(cron = "0 0/1 * * * *")
-    public void checkCrawler() throws Exception {
-        PyUtil.checkCrawler();
-    }
+//    @Scheduled(cron = "0 0/1 * * * *")
+//    public void checkCrawler() throws Exception {
+//        PyUtil.checkCrawler();
+//    }
 
 
     /**
      * 每天凌晨3点进行 spark 的 page rank 计算
      */
     @Transactional(rollbackFor = Exception.class)
-    @Scheduled(cron = "0 55 16 * * *")
+    @Scheduled(cron = "0 15 17 * * *")
     public void pagerank(){
         try{
-            String[] cmd = new String[]{
-                    "/opt/models/spark/bin/spark-submit",
-                    "--master",
-                    "spark://hadoop1:7077",
-                    "--class",
-                    "spark.LoadData",
-                    "--deploy-mode",
-                    "cluster" +
-                    "hdfs://hadoop1:9000/jars/graph-1.0-SNAPSHOT-jar-with-dependencies.jar",
-                    "0.001",
-                    "0.15"};
+//            String[] cmds = new String[]{
+//                    "/opt/models/spark/bin/spark-submit",
+//                    "--master",
+//                    "spark://hadoop1:7077",
+//                    "--class",
+//                    "spark.LoadData",
+//                    "--deploy-mode",
+//                    "cluster" +
+//                    "hdfs://hadoop1:9000/jars/graph-1.0-SNAPSHOT-jar-with-dependencies.jar",
+//                    "0.001",
+//                    "0.15"};
+            String cmd = "/opt/models/spark/bin/spark-submit --master spark://hadoop1:7077 --class spark.LoadData --deploy-mode cluster hdfs://hadoop1:9000/jars/graph-1.0-SNAPSHOT-jar-with-dependencies.jar 0.001 0.15";
             Process ps = Runtime.getRuntime().exec(cmd);
             BufferedReader output = new BufferedReader(new InputStreamReader(ps.getInputStream()));
             BufferedReader error = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
