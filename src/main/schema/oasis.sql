@@ -177,4 +177,10 @@ create table crawler_log
     log        text null comment '日志',
     constraint crawler_log_crawler_id_uindex
         unique (crawler_id)
-) ENGINE = InnoDB comment '爬虫任务表' comment '爬虫日志';
+) ENGINE = InnoDB  comment '爬虫日志';
+
+create table author_page_rank
+(
+	author_id int ,
+	page_rank double
+)ENGINE = InnoDB ;

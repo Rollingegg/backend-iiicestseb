@@ -4,7 +4,22 @@ node{
         checkout([$class: 'GitSCM', branches: [[name: '*/dev']], browser: [$class: 'GitLab', repoUrl: 'http://212.129.149.40'], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '3', url: 'http://212.129.149.40/171250507_IIICEStseB/Backend-iiicestseb']]])
         echo '=== git clone end ==='
     }
-    
+
+    stage('set test database'){
+        try{
+        updateGitlabCommitStatus name: 'jenkins', state: 'running'
+        sh encoding: 'UTF-8', label: '', returnStdout: true, script: '''
+bash /etc/shell/test_db.sh
+'''
+        echo '=== set test database end ==='
+        }
+        catch(exc){
+            updateGitlabCommitStatus name: 'jenkins', state: 'failure'
+            echo '=== build failure ==='
+            throw exc
+        }
+    }
+
     stage('clean'){
         updateGitlabCommitStatus name: 'jenkins', state: 'running'
         sh label: 'test', returnStatus: true, script: 'mvn clean'
@@ -14,7 +29,22 @@ node{
         updateGitlabCommitStatus name: 'jenkins', state: 'running'
         sh label: 'test', returnStatus: true, script: 'mvn test -P test'
     }
-    
+
+    stage('reset database'){
+        try{
+        updateGitlabCommitStatus name: 'jenkins', state: 'running'
+        sh encoding: 'UTF-8', label: '', returnStdout: true, script: '''
+bash /etc/shell/reset_db.sh
+'''
+        echo '=== reset database end ==='
+        }
+        catch(exc){
+            updateGitlabCommitStatus name: 'jenkins', state: 'failure'
+            echo '=== build failure ==='
+            throw exc
+        }
+    }
+
     stage('report'){
         jacoco classPattern: '**/classes/**/controller,**/classes/**/serviceImpl', exclusionPattern: ' **/*Test*.class', sourceInclusionPattern: '**/*ServiceImpl.java,**/*Controller.java'
     }

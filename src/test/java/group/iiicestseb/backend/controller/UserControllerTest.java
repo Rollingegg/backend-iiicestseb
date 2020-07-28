@@ -141,8 +141,6 @@ public class UserControllerTest{
      */
     @Test
     public void isExistSuccess() throws Exception {
-        UserForm userForm = new UserForm("testtest","testhxd");
-        String param = JSON.toJSONString(userForm);
         Mockito.doNothing().when(userServiceStub).isExist("testset1");
         mvcStandalone.perform(MockMvcRequestBuilders.get("/user/judge")
                 .param("username","testset1")
