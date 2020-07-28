@@ -152,7 +152,7 @@ public class PyUtil {
         }
     }
 
-    private void notifyPython(String msg) throws IOException{
+    private void notifyPython(String msg) throws IOException {
         if (currentTask.state == CrawlerTask.STATE.Free) {
             return;
         }
@@ -195,19 +195,23 @@ public class PyUtil {
             currentTask.reset();
             throw new PythonException("爬虫执行超时: 4h");
         } catch (ExecutionException e) {
-            if ("爬虫任务被手动取消".equals(e.getMessage())) {
-                currentTask.crawler.setState(Crawler.STATE.Canceled.value);
-                saveCrawlerState();
-                currentTask.reset();
-                throw new PythonException("爬虫任务被手动取消");
+            if (e.getCause() instanceof PythonException) {
+                String msg = e.getCause().getMessage();
+                if ("爬虫任务被手动取消".equals(msg)) {
+                    currentTask.crawler.setState(Crawler.STATE.Canceled.value);
+                    saveCrawlerState();
+                    currentTask.reset();
+                    System.out.println(e.getMessage());
+                    throw (PythonException) e.getCause();
+                }
+                if ("爬虫任务心跳超时".equals(msg)) {
+                    currentTask.crawler.setState(Crawler.STATE.Fail.value);
+                    saveCrawlerState();
+                    currentTask.reset();
+                    System.out.println(e.getMessage());
+                    throw (PythonException) e.getCause();
+                }
             }
-            if ("爬虫任务心跳超时".equals(e.getMessage())) {
-                currentTask.crawler.setState(Crawler.STATE.Fail.value);
-                saveCrawlerState();
-                currentTask.reset();
-                throw new PythonException("爬虫任务心跳超时");
-            }
-            e.printStackTrace();
             currentTask.crawler.setState(Crawler.STATE.Fail.value);
             saveCrawlerState();
             System.out.println(e.getMessage());

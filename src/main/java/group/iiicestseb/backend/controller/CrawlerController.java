@@ -32,7 +32,11 @@ public class CrawlerController {
 
     @PostMapping("/start")
     public Response startCrawler() throws Exception {
-        PyUtil.checkCrawler();
+        try {
+            PyUtil.checkCrawler();
+        } catch (PyUtil.PythonException e) {
+            System.out.println(e.getMessage());
+        }
         return Response.buildSuccess();
     }
 
