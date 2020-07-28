@@ -16,9 +16,9 @@ public class AuthorRankVO {
     private List<AuthorRankDataVO> authorRankDataVOList;
 
     /**
-     * 页码
+     * 总数
      */
-    private Integer page;
+    private Integer total;
 
 
 }

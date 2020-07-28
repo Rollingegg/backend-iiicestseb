@@ -46,7 +46,7 @@ public class ScheduleUtil {
      * 每天凌晨3点进行 spark 的 page rank 计算
      */
     @Transactional(rollbackFor = Exception.class)
-    @Scheduled(cron = "0 40 9 * * *")
+    @Scheduled(cron = "0 55 16 * * *")
     public void pagerank(){
         try{
             String[] cmd = new String[]{

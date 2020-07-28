@@ -33,7 +33,6 @@ public class RankServiceImpl extends ServiceImpl<RankMapper,AuthorStatistics> im
     @Override
     public AuthorRankVO getRank(Integer page, Integer size, RankType rankType){
         AuthorRankVO authorRankVO = new AuthorRankVO();
-        authorRankVO.setPage(page);
         List<AuthorRankDataVO> scores = null;
         if(rankType.equals(RankType.H_INDEX)){
             scores = rankMapper.getRankByHScore((page-1)*size,page * size);
@@ -50,7 +49,7 @@ public class RankServiceImpl extends ServiceImpl<RankMapper,AuthorStatistics> im
             throw new RuntimeException("获取排名错误");
         }
         authorRankVO.setAuthorRankDataVOList(scores);
-        authorRankVO.setPage((rankMapper.getCount()-1)/size+1);
+        authorRankVO.setTotal(rankMapper.getCount());
         return authorRankVO;
     }
 
