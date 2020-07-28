@@ -7,4 +7,3 @@ insert into author (id, name, first_name, last_name, affiliation_id) values (-3,
 insert into author_page_rank (author_id, page_rank) values (-1,0.33);
 insert into author_page_rank (author_id, page_rank) values (-2,0.13);
 insert into author_page_rank (author_id, page_rank) values (-3,0.43);
-insert into user value (4, 'testset1', '123456', '管理员');
