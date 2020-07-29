@@ -49,7 +49,7 @@ public class ScheduleUtil {
     @Scheduled(cron = "0 0 3 * * *")
     public void pagerank(){
         try{
-            String cmd = "/opt/models/spark/bin/spark-submit --master spark://hadoop1:7077 --class spark.LoadData --deploy-mode cluster hdfs://hadoop1:9000/jars/graph-1.0-SNAPSHOT-jar-with-dependencies.jar 0.001 0.15";
+            String cmd = "/opt/models/spark/bin/spark-submit --master spark://hadoop1:7077 --class spark.LoadData --deploy-mode cluster hdfs://hadoop1:9000/jars/graph-1.0-SNAPSHOT-jar-with-dependencies.jar 0.0001 0.15";
             Process ps = Runtime.getRuntime().exec(cmd);
             BufferedReader output = new BufferedReader(new InputStreamReader(ps.getInputStream()));
             BufferedReader error = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
